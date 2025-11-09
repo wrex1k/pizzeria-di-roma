@@ -1,0 +1,32 @@
+<!-- Pizzacard Fragment -->
+<div th:fragment="pizza-card(pizza)">
+    <a th:href="@{'/pizza/' + ${pizza.id}}"
+       class="group block rounded-xl border border-border bg-white shadow-sm hover:shadow-lg transition overflow-hidden">
+
+        <div class="aspect-[4/3] bg-muted overflow-hidden">
+            <img th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}"
+                 th:alt="${pizza.name}"
+                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        </div>
+
+        <div class="p-5">
+            <h3 class="font-playfair text-xl font-semibold mb-2"
+                th:text="${pizza.name}">Pizza Name</h3>
+
+            <p class="text-sm text-muted-foreground line-clamp-2 mb-4"
+               th:text="${pizza.description}">
+                Description
+            </p>
+
+            <div class="flex items-center justify-between">
+                <div th:replace="~{fragments/components/pizza/pizza-tags :: pizza-tags(${pizza}, 'small')}"></div>
+
+                <span class="text-2xl font-bold text-primary"
+                      th:text="'€' + ${pizza.basePrice}">
+                    €0.00
+                </span>
+            </div>
+        </div>
+    </a>
+</div>
+

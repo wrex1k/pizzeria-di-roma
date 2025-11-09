@@ -1,0 +1,8 @@
+<!-- Pizzagrid Fragment -->
+<div th:fragment="pizza-grid(pizzas)">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+        <div th:each="pizza : ${pizzas}">
+            <div th:replace="~{fragments/components/pizza/pizza-card :: pizza-card(${pizza})}"></div>
+        </div>
+    </div>
+</div>

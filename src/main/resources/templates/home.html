@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <!-- Meta & Basic -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="pizza, italian food, delivery, authentic pizza, pizzeria, wood fired">
+    <meta name="author" content="Pizzeria di Roma">
+    <title>Pizzeria di Roma - Authentic Italian Pizza</title>
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        background: 'rgb(250, 241, 229)',
+                        foreground: 'rgb(6, 7, 12)',
+                        card: 'rgb(255,255,255)',
+                        'card-foreground': 'rgb(6, 7, 12)',
+                        primary: 'rgb(211, 47, 47)',
+                        'primary-foreground': 'rgb(255, 255, 255)',
+                        'primary-hover': 'rgb(183, 28, 28)',
+                        muted: 'rgb(245, 245, 245)',
+                        'muted-foreground': 'rgb(100, 112, 128)',
+                        accent: 'rgb(250, 204, 21)',
+                        border: 'rgb(227, 204, 187)',
+                        ring: 'rgb(211, 47, 47)',
+                    },
+                    borderRadius: {
+                        xl: '0.75rem',
+                        '2xl': '1rem',
+                    },
+                    boxShadow: {
+                        warm: '0 10px 25px -5px rgba(211,47,47,0.1), 0 10px 10px -5px rgba(211,47,47,0.04)',
+                        'warm-hover': '0 20px 40px -10px rgba(211,47,47,0.15)',
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.6s ease-out',
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%)',
+                        'hero-gradient-hover': 'linear-gradient(135deg, #B71C1C 0%, #C62828 100%)',
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Styles for tag button active states -->
+    <style>
+        .tag-button.active {
+            background-color: rgb(211, 47, 47);
+            color: white !important;
+            border-color: rgb(211, 47, 47);
+        }
+
+        .tag-button[data-tag="Vegetarian"].active {
+            background-color: #fef9c3 !important;
+            color: #854d0e !important;
+            border-color: #fef08a !important;
+        }
+
+        .tag-button[data-tag="Vegan"].active {
+            background-color: #dcfce7 !important;
+            color: #166534 !important;
+            border-color: #bbf7d0 !important;
+        }
+
+        .tag-button[data-tag="Spicy"].active {
+            background-color: #fee2e2 !important;
+            color: #991b1b !important;
+            border-color: #fecaca !important;
+        }
+
+        .tag-button[data-tag="Gluten-Free"].active {
+            background-color: #ffedd5 !important;
+            color: #9a3412 !important;
+            border-color: #fed7aa !important;
+        }
+
+        .tag-button[data-tag="Gourmet"].active {
+            background-color: #dbeafe !important;
+            color: #1e3a8a !important;
+            border-color: #bfdbfe !important;
+        }
+
+    </style>
+</head>
+    <body class="min-h-screen flex flex-col bg-background font-montserrat text-foreground antialiased">
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/layout/navbar :: navbar}"></div>
+
+    <!-- Hero Section -->
+    <section class="relative h-[600px] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center"
+             th:style="|background-image: url(@{/img/default_pizza.jpg});|"></div>
+        <div class="absolute inset-0 bg-[#D32F2F]/80"></div>
+
+        <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto animate-fade-in">
+            <h1 class="text-5xl md:text-7xl font-playfair font-bold mb-6 leading-tight">
+                Pizzeria di Roma
+            </h1>
+            <p class="text-lg md:text-xl mb-8 text-white/90 max-w-2xl mx-auto">
+                Experience the true taste of Italy with our handcrafted pizzas, made fresh daily with the finest ingredients.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#featured"
+                   onclick="document.querySelector('#featured').scrollIntoView({behavior:'smooth'}); return false;"
+                   class="bg-hero-gradient hover:bg-hero-gradient-hover rounded-md text-lg px-8 h-12 flex items-center justify-center text-white font-medium">
+                    Chef's Recommendations
+                </a>
+
+                <a href="#menu"
+                   onclick="document.querySelector('#menu').scrollIntoView({behavior:'smooth'}); return false;"
+                   class="rounded-md text-lg px-8 h-12 flex items-center justify-center border border-white/30 text-white backdrop-blur-sm hover:bg-white/20">
+                    View Menu
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlight Section -->
+    <section class="py-16 bg-muted/30">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Highlight 1 -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-warm p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover bg-[rgba(253,250,247,0.6)]">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-playfair font-semibold text-lg mb-2">Wood-Fired Oven</h3>
+                    <p class="text-sm text-muted-foreground">Authentic stone-baked perfection</p>
+                </div>
+
+                <!-- Highlight 2 -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-warm p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover bg-[rgba(253,250,247,0.6)]">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="font-playfair font-semibold text-lg mb-2">Fast Delivery</h3>
+                    <p class="text-sm text-muted-foreground">Hot and fresh to your door</p>
+                </div>
+
+                <!-- Highlight 3 -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-warm p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover bg-[rgba(253,250,247,0.6)]">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-playfair font-semibold text-lg mb-2">Premium Quality</h3>
+                    <p class="text-sm text-muted-foreground">Only the finest ingredients</p>
+                </div>
+
+                <!-- Highlight 4 -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-warm p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover bg-[rgba(253,250,247,0.6)]">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8m-4-4v4m-5-8h10a4 4 0 004-4V5H4v4a4 4 0 004 4z" />
+                        </svg>
+
+                    </div>
+                    <h3 class="font-playfair font-semibold text-lg mb-2">Award Winning</h3>
+                    <p class="text-sm text-muted-foreground">Recognized excellence since 1985</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section id="featured" class="py-16 container mx-auto px-4">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center rounded-full bg-primary text-white px-3 py-1 text-sm font-semibold mb-4">
+                Featured Selection
+            </div>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-4">Chef's Recommendations</h2>
+            <p class="text-muted-foreground max-w-2xl mx-auto">Handpicked favorites that showcase the best of our kitchen</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div th:each="pizza : ${featuredPizzas}">
+                <a th:href="@{'/pizza/' + ${pizza.id}}" class="block transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover">
+                    <div class="rounded-xl border bg-card shadow-warm overflow-hidden bg-[rgba(253,250,247,0.6)]">
+                        <div class="aspect-[4/3] bg-muted relative overflow-hidden">
+                            <img th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}" th:alt="${pizza.name}"
+                                 class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-playfair font-semibold text-xl mb-2" th:text="${pizza.name}">Pizza Name</h3>
+                            <p class="text-sm text-muted-foreground mb-4 line-clamp-2" th:text="${pizza.description}">
+                                Pizza description
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <div th:replace="~{fragments/components/pizza/pizza-tags :: pizza-tags(${pizza}, 'small')}"></div>
+                                <span class="text-2xl font-bold text-primary" th:text="'€' + ${pizza.basePrice}">€0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-16 bg-muted/30">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-4">Your Pizza Journey Starts Here</h2>
+                <p class="text-muted-foreground max-w-2xl mx-auto mb-8">
+                    Discover our authentic Italian pizzas, handcrafted with fresh ingredients and baked to perfection in our stone oven.
+                </p>
+
+                <!-- Pizza Tag Filters -->
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <a href="#"
+                       id="filter-all-btn"
+                       onclick="filterPizzas(null); return false;"
+                       class="tag-button inline-flex items-center rounded-full border font-semibold transition-colors px-4 py-2 text-sm">
+                        All Pizzas
+                    </a>
+
+                    <a th:each="tag : ${tags}"
+                       href="#"
+                       th:attr="onclick=|filterPizzas('${tag.name}'); return false;|,
+                data-tag=${tag.name}"
+                       th:text="${tag.name}"
+                       class="tag-button inline-flex items-center rounded-full border font-semibold transition-colors px-4 py-2 text-sm">
+                    </a>
+                </div>
+            </div>
+
+            <div id="pizza-cards-container"
+                 th:insert="~{fragments/components/pizza/pizza-grid :: pizza-grid(${allPizzas})}">
+            </div>
+        </div>
+    </section>
+
+    <!-- Opening Hours -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="h-10 w-10 text-primary">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-playfair font-bold mb-4 text-foreground">Opening Hours</h2>
+                    <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+                        We're here to serve you authentic Italian pizza every day of the week
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-12 max-w-3xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-warm border border-border p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover bg-[rgba(253,250,247,0.6)]">
+                        <h3 class="font-playfair font-bold text-xl mb-2 text-foreground">Monday - Thursday</h3>
+                        <p class="text-3xl font-bold text-primary mb-2">11:00 - 22:00</p>
+                        <p class="text-sm text-muted-foreground">Dine-in, Takeaway, and Delivery</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-warm border border-border p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover bg-[rgba(253,250,247,0.6)]">
+                        <h3 class="font-playfair font-bold text-xl mb-2 text-foreground">Friday - Sunday</h3>
+                        <p class="text-3xl font-bold text-primary mb-2">11:00 - 23:00</p>
+                        <p class="text-sm text-muted-foreground">Including late-night delivery</p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="#menu"
+                       onclick="document.querySelector('#menu').scrollIntoView({behavior:'smooth'}); return false;"
+                       class="bg-hero-gradient hover:bg-hero-gradient-hover rounded-md text-lg px-10 h-12 inline-flex items-center justify-center text-white font-medium">
+                        View Full Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout/footer :: footer}"></div>
+
+    <script>
+        async function filterPizzas(tag) {
+            try {
+                const btn = document.querySelector(`.tag-button[data-tag="${tag}"]`);
+                const allBtn = document.querySelector('#filter-all-btn');
+
+                if ((tag === null && allBtn?.classList.contains('active')) ||
+                    (tag !== null && btn?.classList.contains('active'))) {
+                    return;
+                }
+
+                document.querySelectorAll('.tag-button').forEach(b => b.classList.remove('active'));
+
+                if (tag === null) {
+                    allBtn?.classList.add('active');
+                } else {
+                    btn?.classList.add('active');
+                }
+
+                const url = tag ? `/filter?tag=${encodeURIComponent(tag)}` : "/filter";
+                const response = await fetch(url);
+                const html = await response.text();
+
+                document.getElementById("pizza-cards-container").innerHTML = html;
+
+                document.getElementById("menu").scrollIntoView({ behavior: "smooth" });
+
+            } catch (e) {
+                console.error("Error filtering pizzas:", e);
+            }
+        }
+    </script>
+
+    </body>
+</html>
