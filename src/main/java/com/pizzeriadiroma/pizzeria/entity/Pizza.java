@@ -5,7 +5,9 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,6 +24,9 @@ public class Pizza {
     @Size(min = 2, max = 50, message = "Pizza name must be between 2 and 50 characters.")
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
+    private String slug;
 
     @NotBlank(message = "Pizza description must not be blank.")
     @Size(max = 2000, message = "Description must be max 2000 characters.")
@@ -52,12 +57,16 @@ public class Pizza {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @OrderBy("name ASC")
     @JoinTable(
             name = "pizza_tags",
             joinColumns = @JoinColumn(name = "pizza_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    @OneToMany(mappedBy = "pizza", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PizzaIngredient> ingredients = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -67,13 +76,15 @@ public class Pizza {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getSlug() { return slug; }
+
+    public void setSlug(String slug) { this.slug = slug; }
 
     public String getDescription() {
         return description;
@@ -95,23 +106,21 @@ public class Pizza {
         return basePrice;
     }
 
-    public void setBasePrice(BigDecimal basePrice) {
-        this.basePrice = basePrice;
-    }
+    public void setBasePrice(BigDecimal basePrice) { this.basePrice = basePrice; }
 
-    public Boolean getIsAvailable() {
+    public Boolean isAvailable() {
         return isAvailable;
     }
 
-    public void setIsAvailable(Boolean isAvailable) {
+    public void setAvailable(Boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
 
-    public Boolean getIsFeatured() {
+    public Boolean isFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Boolean isFeatured) {
+    public void setFeatured(Boolean isFeatured) {
         this.isFeatured = isFeatured;
     }
 
@@ -131,11 +140,15 @@ public class Pizza {
         this.updatedAt = updatedAt;
     }
 
-    public Set<Tag> getTags() {
-        return tags;
-    }
+    public Set<Tag> getTags() { return tags; }
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+    public List<PizzaIngredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<PizzaIngredient> ingredients) { this.ingredients = ingredients; }
 }

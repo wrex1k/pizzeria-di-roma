@@ -1,10 +1,11 @@
 package com.pizzeriadiroma.pizzeria.service;
 
-import com.pizzeriadiroma.pizzeria.dto.PizzaDto;
 import com.pizzeriadiroma.pizzeria.entity.Pizza;
+import com.pizzeriadiroma.pizzeria.exception.PizzaNotFoundException;
 import com.pizzeriadiroma.pizzeria.repository.PizzaRepository;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.util.List;
 
 @Service
@@ -16,45 +17,36 @@ public class PizzaService {
         this.pizzaRepository = pizzaRepository;
     }
 
-    public List<PizzaDto> getFeaturedPizzas() {
-        return pizzaRepository.findFeaturedPizzas()
-                .stream()
-                .map(this::toDto)
-                .toList();
+    public List<Pizza> getFeaturedPizzas() {
+        return pizzaRepository.findFeaturedPizzas();
     }
 
-    public List<PizzaDto> getAllPizzas() {
-        return pizzaRepository.findAllAvailable()
-                .stream()
-                .map(this::toDto)
-                .toList();
+    public List<Pizza> getAllPizzas() {
+        return pizzaRepository.findAllAvailable();
     }
 
-    public List<PizzaDto> getPizzasByTag(String tagName) {
-        return pizzaRepository.findByTagName(tagName)
-                .stream()
-                .map(this::toDto)
-                .toList();
+    public List<Pizza> getPizzasByTag(String tagName) {
+        return pizzaRepository.findByTagName(tagName);
     }
 
-    private PizzaDto toDto(Pizza pizza) {
-        List<String> tagNames = pizza.getTags() != null
-                ? pizza.getTags().stream()
-                .map(tag -> tag.getName())
-                .sorted()
-                .toList()
-                : List.of();
-
-        return new PizzaDto(
-                pizza.getId(),
-                pizza.getName(),
-                pizza.getDescription(),
-                pizza.getImageUrl(),
-                pizza.getBasePrice(),
-                pizza.getIsAvailable(),
-                pizza.getIsFeatured(),
-                tagNames
-        );
+    public Pizza findById(Long id) {
+        return pizzaRepository.findById(id)
+                .orElseThrow(() -> new PizzaNotFoundException(id));
     }
 
+    public Pizza findBySlug(String slug) {
+        return pizzaRepository.findBySlug(slug)
+                .orElseThrow(() -> new PizzaNotFoundException(slug));
+    }
+
+    private String generateSlug(String name) {
+        if (name == null) return null;
+
+        String normalized = Normalizer.normalize(name, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+
+        return normalized.toLowerCase()
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("^-|-$", "");
+    }
 }

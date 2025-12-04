@@ -20,6 +20,9 @@ public class Tag {
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
+    @Column(nullable = false, length = 50)
+    private String emoji;
+
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private Set<Pizza> pizzas = new HashSet<>();
 
@@ -32,6 +35,10 @@ public class Tag {
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
+
+    public String getEmoji() {return emoji; }
+
+    public void setEmoji(String emoji) { this.emoji = emoji; }
 
     public Set<Pizza> getPizzas() { return pizzas; }
 

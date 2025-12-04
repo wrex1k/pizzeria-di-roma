@@ -39,6 +39,4 @@ public class HomeController {
 
         return "fragments/components/pizza/pizza-grid :: pizza-grid(pizzas=${pizzas})";
     }
-
-
 }

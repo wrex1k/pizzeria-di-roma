@@ -207,7 +207,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div th:each="pizza : ${featuredPizzas}">
-                <a th:href="@{'/pizza/' + ${pizza.id}}" class="block transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover">
+                <a th:href="@{'/pizza/' + ${pizza.slug}}" class="block transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover">
                     <div class="rounded-xl border bg-card shadow-warm overflow-hidden bg-[rgba(253,250,247,0.6)]">
                         <div class="aspect-[4/3] bg-muted relative overflow-hidden">
                             <img th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}" th:alt="${pizza.name}"
@@ -215,12 +215,10 @@
                         </div>
                         <div class="p-6">
                             <h3 class="font-playfair font-semibold text-xl mb-2" th:text="${pizza.name}">Pizza Name</h3>
-                            <p class="text-sm text-muted-foreground mb-4 line-clamp-2" th:text="${pizza.description}">
-                                Pizza description
-                            </p>
+                            <p class="text-sm text-muted-foreground mb-4 line-clamp-2" th:text="${pizza.description}">Pizza description</p>
                             <div class="flex items-center justify-between">
                                 <div th:replace="~{fragments/components/pizza/pizza-tags :: pizza-tags(${pizza}, 'small')}"></div>
-                                <span class="text-2xl font-bold text-primary" th:text="'€' + ${pizza.basePrice}">€0.00</span>
+                                <span class="text-2xl font-bold text-primary" th:text="'€' + ${pizza.basePrice}">Price</span>
                             </div>
                         </div>
                     </div>
@@ -243,7 +241,7 @@
                     <a href="#"
                        id="filter-all-btn"
                        onclick="filterPizzas(null); return false;"
-                       class="tag-button inline-flex items-center rounded-full border font-semibold transition-colors px-4 py-2 text-sm">
+                       class="tag-button inline-flex items-center rounded-full border-border font-semibold transition-colors px-4 py-2 text-sm">
                         All Pizzas
                     </a>
 
@@ -252,7 +250,7 @@
                        th:attr="onclick=|filterPizzas('${tag.name}'); return false;|,
                 data-tag=${tag.name}"
                        th:text="${tag.name}"
-                       class="tag-button inline-flex items-center rounded-full border font-semibold transition-colors px-4 py-2 text-sm">
+                       class="tag-button inline-flex items-center rounded-full border-border font-semibold transition-colors px-4 py-2 text-sm">
                     </a>
                 </div>
             </div>
@@ -343,6 +341,5 @@
             }
         }
     </script>
-
     </body>
 </html>

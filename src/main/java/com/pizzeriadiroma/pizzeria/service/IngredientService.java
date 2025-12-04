@@ -1,0 +1,34 @@
+package com.pizzeriadiroma.pizzeria.service;
+
+import com.pizzeriadiroma.pizzeria.entity.Ingredient;
+import com.pizzeriadiroma.pizzeria.entity.Pizza;
+import com.pizzeriadiroma.pizzeria.repository.IngredientRepository;
+import com.pizzeriadiroma.pizzeria.entity.PizzaIngredient;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class IngredientService {
+
+    private final IngredientRepository ingredientRepository;
+
+    public IngredientService(IngredientRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
+    }
+
+    public List<Ingredient> findExtraIngredientsForPizza(Pizza pizza) {
+
+        List<Ingredient> pizzaIngredients = pizza.getIngredients()
+                .stream()
+                .map(PizzaIngredient::getIngredient)
+                .toList();
+
+        List<Ingredient> extraIngredients = ingredientRepository.findAllByExtraTrueOrderByNameAsc();
+
+        extraIngredients.removeAll(pizzaIngredients);
+
+        return extraIngredients;
+
+    }
+}

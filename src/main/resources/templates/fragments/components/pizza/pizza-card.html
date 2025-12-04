@@ -1,6 +1,6 @@
 <!-- Pizzacard Fragment -->
 <div th:fragment="pizza-card(pizza)">
-    <a th:href="@{'/pizza/' + ${pizza.id}}"
+    <a th:href="@{'/pizza/' + ${pizza.slug}}"
        class="group block rounded-xl border border-border bg-white shadow-sm hover:shadow-lg transition overflow-hidden">
 
         <div class="aspect-[4/3] bg-muted overflow-hidden">

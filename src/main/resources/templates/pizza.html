@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pizza != null ? pizza.name + ' - Pizzeria di Roma' : 'Pizza Not Found'}">Pizza Detail - Pizzeria di Roma</title>
+
+    <meta name="description" th:content="${pizza != null ? pizza.description : 'Experience authentic Italian pizza delivered to your door'}">
+    <meta name="author" content="Pizzeria di Roma">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+
+    <!-- Google Fonts - Playfair Display & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        display: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        background: 'hsl(32, 65%, 95%)',
+                        foreground: 'hsl(222.2, 84%, 4.9%)',
+                        card: '#ffffff',
+                        'card-foreground': 'hsl(222.2, 84%, 4.9%)',
+                        primary: '#D32F2F',
+                        'primary-foreground': '#ffffff',
+                        'primary-hover': '#B71C1C',
+                        secondary: 'hsl(210, 40%, 96.1%)',
+                        'secondary-foreground': 'hsl(222.2, 47.4%, 11.2%)',
+                        muted: '#F5F5F5',
+                        'muted-foreground': 'hsl(215.4, 16.3%, 46.9%)',
+                        accent: '#FACC15',
+                        'accent-foreground': '#1F2937',
+                        border: 'hsl(25, 50%, 85%)',
+                        ring: '#D32F2F',
+                    },
+                    borderRadius: {
+                        'xl': '0.75rem',
+                        '2xl': '1rem',
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%);
+        }
+
+        .hero-gradient:hover {
+            background: linear-gradient(135deg, #B71C1C 0%, #C62828 100%);
+        }
+    </style>
+
+</head>
+
+<body class="min-h-screen flex flex-col bg-background font-montserrat">
+<!-- Navbar -->
+<div th:replace="~{fragments/layout/navbar :: navbar}"></div>
+
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-12 flex-1">
+    <!-- Pizza Detail -->
+    <div>
+        <!-- Breadcrumb Navigation -->
+        <nav class="flex items-center text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
+            <a th:href="@{'/#menu'}" class="hover:text-primary transition-smooth">Menu</a>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <span class="text-foreground font-medium" th:text="${pizza != null ? pizza.name : 'Pizza'}">Pizza</span>
+        </nav>
+
+        <!-- Grid Layout: Image + Details -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+
+            <!-- Image Section -->
+            <div class="relative">
+                <div class="aspect-square rounded-2xl overflow-hidden warm-shadow relative">
+
+                    <img th:if="${pizza != null and pizza.imageUrl != null}"
+                         th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}"
+                         th:alt="${pizza.name}"
+                         class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
+
+                    <div class="absolute top-3 left-3 flex flex-wrap gap-2 z-20">
+                        <div th:replace="~{fragments/components/pizza/pizza-tags :: pizza-tags(${pizza}, 'large')}"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Details Section -->
+            <div class="space-y-6">
+
+                <!-- Title and Description -->
+                <div>
+                    <h1 class="text-5xl font-display font-bold mb-3 text-foreground"
+                        th:text="${pizza != null ? pizza.name : 'Pizza'}"></h1>
+
+                    <p class="text-xl text-muted-foreground leading-relaxed"
+                       th:text="${pizza != null ? pizza.description : 'Delicious pizza made with fresh ingredients'}"></p>
+                </div>
+
+                <!-- Nutrition Quick Info (Static placeholder values) -->
+                <div class="flex items-center gap-6 text-sm flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-primary">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                        <span>450g</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 384 512" fill="currentColor" class="text-primary">
+                            <path d="M153.6 29.9l16-21.3C173.6 3.2 180 0 186.7 0C198.4 0 208 9.6 208 21.3V43.5c0 13.1 5.4 25.7 14.9 34.7L307.6 159C356.4 205.6 384 270.2 384 337.7C384 434 306 512 209.7 512H192C86 512 0 426 0 320v-3.8c0-48.8 19.4-95.6 53.9-130.1l3.5-3.5c4.2-4.2 10-6.6 16-6.6C85.9 176 96 186.1 96 198.6V288c0 35.3 28.7 64 64 64s64-28.7 64-64v-3.9c0-18-7.2-35.3-19.9-48l-38.6-38.6c-24-24-37.5-56.7-37.5-90.7c0-27.7 9-54.8 25.6-76.9z" />
+                        </svg>
+                        <span>750 kcal</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 640 512" fill="currentColor" class="text-primary">
+                            <path d="M96 64c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32V224v64V448c0 17.7-14.3 32-32 32H128c-17.7 0-32-14.3-32-32V384H64c-17.7 0-32-14.3-32-32V288c-17.7 0-32-14.3-32-32s14.3-32 32-32V160c0-17.7 14.3-32 32-32H96V64zm448 0v64h32c17.7 0 32 14.3 32 32v64c17.7 0 32 14.3 32 32s-14.3 32-32 32v64c0 17.7-14.3 32-32 32H544v64c0 17.7-14.3 32-32 32H480c-17.7 0-32-14.3-32-32V288 224 64c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32zM416 224v64H224V224H416z" />
+                        </svg>
+                        <span>28g Protein</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512" fill="currentColor" class="text-primary">
+                            <path d="M256 32C192 32 0 64 0 192c0 35.3 28.7 64 64 64V432c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V256c35.3 0 64-28.7 64-64C512 64 320 32 256 32z" />
+                        </svg>
+                        <span>95g Carbs</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 384 512" fill="currentColor" class="text-primary">
+                            <path d="M192 512C86 512 0 426 0 320C0 228.8 130.2 57.7 166.6 11.7C172.6 4.2 181.5 0 191.1 0h1.8c9.6 0 18.5 4.2 24.5 11.7C253.8 57.7 384 228.8 384 320c0 106-86 192-192 192zM96 336c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 61.9 50.1 112 112 112c8.8 0 16-7.2 16-16s-7.2-16-16-16c-44.2 0-80-35.8-80-80z" />
+                        </svg>
+                        <span>22g Fat</span>
+                    </div>
+                </div>
+
+                <div class="border-t border-border"></div>
+
+                <!-- Size Selection -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Select Size</h3>
+
+                    <div class="flex justify-between items-center gap-4">
+
+                        <th:block th:each="size : ${sizes}">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="size" th:value="${size.name}" class="peer hidden" onchange="recalcPrice()">
+
+                                <div class="p-3 px-8 rounded-xl transition-all border-2 border-transparent
+                                peer-checked:bg-primary peer-checked:border-primary
+                                bg-white/60 hover:border-primary/40 flex flex-col items-center">
+
+                                    <div class="font-semibold text-lg mb-1 group-has-[input:checked]:text-white"
+                                         th:text="${size.name}">Size</div>
+
+                                    <div class="text-primary font-semibold text-xl group-has-[input:checked]:text-white"
+                                         th:text="${'€' + #numbers.formatDecimal(pizza.basePrice + size.priceExtra, 1, 2)}">
+                                        Price
+                                    </div>
+                                </div>
+                            </label>
+                        </th:block>
+
+                    </div>
+                </div>
+
+                <!-- Quantity Selector -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Quantity</h3>
+
+                    <input type="number" name="quantity" value="1" min="1" oninput="recalcPrice()" class="w-24 text-center text-3xl font-bold text-primary
+                   bg-white/60 rounded-xl border border-border shadow-sm p-2
+                   focus:outline-none focus:ring-0 focus:border-primary" />
+                    </div>
+
+                <!-- Ingredients Selection -->
+                <div id="ingredientTagsContainer" class="flex flex-wrap gap-2 mb-3">
+                        <span th:each="ing : ${pizza.ingredients}"
+                              class="inline-flex items-center gap-1.5 rounded-full bg-primary/20 text-foreground font-medium text-sm px-4 py-2">
+                            <span th:text="${ing.ingredient.emoji}"></span>
+                            <span th:text="${ing.ingredient.name}"></span>
+                        </span>
+                </div>
+                <div class="relative inline-block" id="extraWrapper">
+                    <button onclick="toggleExtraIngredients()"
+                            class="inline-flex items-center gap-1 rounded-full bg-primary/10 hover:bg-primary/20 text-primary font-medium text-sm px-3 py-1.5 border border-dashed border-primary/40 transition-smooth">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Add Extra
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="extraIngredientsDropdown"
+                         class="hidden absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-border z-50 overflow-hidden">
+
+                        <div class="p-3 bg-accent/10 border-b border-border">
+                            <h4 class="font-semibold text-sm text-foreground">Extra Ingredients</h4>
+                            <p class="text-xs text-muted-foreground mt-0.5">+€1.50 each</p>
+                        </div>
+
+                        <div class="max-h-64 overflow-y-auto">
+
+                            <label th:each="ing : ${allIngredients}"
+                                   class="flex items-center justify-between p-3 hover:bg-muted cursor-pointer transition-smooth group">
+
+                                <div class="flex items-center gap-2">
+                                    <span class="text-lg" th:text="${ing.emoji}">🍕</span>
+                                    <span class="text-sm font-medium group-hover:text-primary transition-smooth"
+                                          th:text="${ing.name}">Ingredient Name</span>
+                                </div>
+
+                                <input type="checkbox"
+                                       class="w-5 h-5 rounded border-2 border-border text-primary focus:ring-primary focus:ring-offset-0"
+                                       th:value="${ing.id}"
+                                       th:attr="data-name=${ing.name},data-icon=${ing.emoji}">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="border-t border-border"></div>
+                <form th:action="@{/cart/add}" method="post" class="space-y-6">
+
+                    <input type="hidden" id="pizzaSlug" th:value="${pizza.slug}">
+                    <input type="hidden" name="size" id="sizeInput" value="small">
+                    <input type="hidden" name="quantity" id="quantityInput" value="1">
+                    <input type="hidden" name="ingredients" id="ingredientsInput">
+
+
+                    <!-- Total Price and Add to Cart -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-muted-foreground">Total Price</span>
+                            <span id="totalPrice" class="text-4xl font-bold text-primary" th:text="${pizza != null ? '€' + #numbers.formatDecimal(pizza.basePrice, 1, 2) : '€8.99'}">
+                                €8.99
+                            </span>
+                        </div>
+                        <button type="submit"
+                                class="w-full hero-gradient text-white text-lg py-4 px-8 rounded-lg font-semibold flex items-center justify-center gap-3 hover:shadow-lg transition-smooth">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="8" cy="21" r="1"></circle>
+                                <circle cx="19" cy="21" r="1"></circle>
+                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <div class="mb-6">
+                <h2 class="text-3xl font-display font-bold text-foreground mb-2">Add a Drink</h2>
+                <p class="text-muted-foreground">Complete your meal with a refreshing beverage</p>
+            </div>
+
+            <!-- Slider Wrapper - CENTER -->
+            <div class="relative flex justify-center">
+
+                <!-- Slider -->
+                <div id="drinksSlider" class="flex gap-6 transition-transform duration-500 ease-out">
+
+                    <div th:each="drink : ${allDrinks}"
+                         class="cursor-pointer flex-shrink-0 w-44">
+                        <div class="rounded-xl border border-border bg-white/70 backdrop-blur-sm
+                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300
+                        overflow-hidden flex flex-col h-full">
+
+                            <!-- Image -->
+                            <div class="aspect-[4/5] bg-white flex items-center justify-center p-3">
+                                <img th:src="@{'/img/drink_pictures/' + ${drink.imageUrl}}"
+                                     th:alt="${drink.name}"
+                                     class="w-full h-full object-contain rounded-xl">
+                            </div>
+
+                            <!-- Info -->
+                            <div class="p-3">
+                                <h4 class="text-center font-semibold text-foreground mb-1"
+                                    th:text="${drink.name}">Drink Name</h4>
+
+                                <p class="text-xs text-center text-muted-foreground mb-3"
+                                   th:text="${drink.volumeMl + ' ml'}">Volume</p>
+
+                                <div class="flex items-center justify-between">
+                            <span class="text-primary font-bold text-lg">
+                                €<span th:text="${#numbers.formatDecimal(drink.price,1,2)}">0.00</span>
+                            </span>
+
+                                    <button class="inline-flex items-center justify-center bg-primary text-white
+                                   hover:bg-primary-hover h-8 w-8 rounded-lg font-bold text-lg
+                                   transition-smooth shadow-sm hover:shadow-md">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments/layout/footer :: footer}"></div>
+
+<script th:inline="javascript">
+
+    console.log("SCRIPT STARTED");
+
+    // =======================
+    // GLOBAL PRICE FUNCTION
+    // =======================
+    function recalcPrice() {
+        console.log("recalcPrice CALLED");
+
+        const size = document.querySelector('input[name="size"]:checked')?.value ?? "SMALL";
+        const quantity = document.querySelector('input[name="quantity"]').value;
+        const hidden = document.getElementById("ingredientsInput").value;
+        const extras = hidden.length > 0 ? hidden.split(",") : [];
+        const slug = document.getElementById("pizzaSlug").value;
+
+        fetch("/pizza/calc-price", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: new URLSearchParams({
+                slug,
+                size,
+                quantity,
+                ingredients: extras.join(",")
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("totalPrice").innerText = "€" + data.price;
+            })
+            .catch(err => console.error("Price calc error:", err));
+    }
+
+    window.recalcPrice = recalcPrice;
+
+    function toggleExtraIngredients() {
+        document.getElementById("extraIngredientsDropdown").classList.toggle("hidden");
+    }
+
+    window.toggleExtraIngredients = toggleExtraIngredients;
+
+
+    // =======================
+    // DOM READY
+    // =======================
+
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM READY — attaching listeners");
+
+        // Extra ingredients checkboxes
+        document.querySelectorAll('#extraIngredientsDropdown input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener("change", () => {
+                const id = cb.value;
+                const name = cb.dataset.name;
+                const icon = cb.dataset.icon;
+                const container = document.getElementById("ingredientTagsContainer");
+                const hiddenInput = document.getElementById("ingredientsInput");
+
+                let selected = new Set(hiddenInput.value ? hiddenInput.value.split(",") : []);
+
+                if (cb.checked) {
+                    if (!document.getElementById("tag-" + id)) {
+                        const tag = document.createElement("span");
+                        tag.id = "tag-" + id;
+                        tag.className =
+                            "inline-flex items-center gap-1.5 rounded-full bg-primary/20 text-foreground font-medium text-sm px-4 py-2";
+                        tag.innerHTML = `<span>${icon}</span><span>${name}</span>`;
+                        container.appendChild(tag);
+                    }
+                    selected.add(id);
+                } else {
+                    const tag = document.getElementById("tag-" + id);
+                    if (tag) tag.remove();
+                    selected.delete(id);
+                }
+
+                hiddenInput.value = [...selected].join(",");
+
+                recalcPrice();
+            });
+        });
+
+        // INITIAL PRICE CALC
+        recalcPrice();
+    });
+
+</script>
+
+
+</body>
+</html>

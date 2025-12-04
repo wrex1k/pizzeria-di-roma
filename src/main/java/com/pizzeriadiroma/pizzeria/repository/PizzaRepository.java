@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PizzaRepository extends JpaRepository<Pizza, Long> {
@@ -20,5 +21,5 @@ public interface PizzaRepository extends JpaRepository<Pizza, Long> {
     @Query("SELECT p FROM Pizza p JOIN p.tags t WHERE t.name = :tagName")
     List<Pizza> findByTagName(@Param("tagName") String tagName);
 
+    Optional<Pizza> findBySlug(String slug);
 }
-
