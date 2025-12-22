@@ -29,11 +29,6 @@ public class PizzaService {
         return pizzaRepository.findByTagName(tagName);
     }
 
-    public Pizza findById(Long id) {
-        return pizzaRepository.findById(id)
-                .orElseThrow(() -> new PizzaNotFoundException(id));
-    }
-
     public Pizza findBySlug(String slug) {
         return pizzaRepository.findBySlug(slug)
                 .orElseThrow(() -> new PizzaNotFoundException(slug));
