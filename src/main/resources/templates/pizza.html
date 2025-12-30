@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,7 +94,7 @@
                 <div class="aspect-square rounded-2xl overflow-hidden warm-shadow relative">
 
                     <img th:if="${pizza != null and pizza.imageUrl != null}"
-                         th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}"
+                         th:src="@{'/images/pizza_pictures/' + ${pizza.imageUrl}}"
                          th:alt="${pizza.name}"
                          class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
 
@@ -248,23 +248,28 @@
                     <input type="hidden" name="ingredients" id="ingredientsInput">
 
 
-                    <!-- Total Price and Add to Cart -->
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-muted-foreground">Total Price</span>
-                            <span id="totalPrice" class="text-4xl font-bold text-primary" th:text="${pizza != null ? '€' + #numbers.formatDecimal(pizza.basePrice, 1, 2) : '€8.99'}">
-                                €8.99
-                            </span>
+                    <div sec:authorize="isAuthenticated()">
+                        <!-- Total Price and Add to Cart -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-muted-foreground">Total Price</span>
+                                <span id="totalPrice" class="text-4xl font-bold text-primary"
+                                      th:text="${pizza != null ? '€' + #numbers.formatDecimal(pizza.basePrice, 1, 2) : '€8.99'}">
+                                    €8.99
+                                </span>
+                            </div>
+                            <button type="submit"
+                                    class="w-full hero-gradient text-white text-lg py-4 px-8 rounded-lg font-semibold flex items-center justify-center gap-3 hover:shadow-lg transition-smooth"
+                                    th:disabled="${not #authorization.expression('isAuthenticated()')}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="8" cy="21" r="1"></circle>
+                                    <circle cx="19" cy="21" r="1"></circle>
+                                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                                </svg>
+                                <span th:text="${#authorization.expression('isAuthenticated()') ? 'Add to Cart' : 'Log in to add'}"></span>
+                            </button>
                         </div>
-                        <button type="submit"
-                                class="w-full hero-gradient text-white text-lg py-4 px-8 rounded-lg font-semibold flex items-center justify-center gap-3 hover:shadow-lg transition-smooth">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="8" cy="21" r="1"></circle>
-                                <circle cx="19" cy="21" r="1"></circle>
-                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                            </svg>
-                            Add to Cart
-                        </button>
                     </div>
                 </form>
             </div>
@@ -290,7 +295,7 @@
 
                             <!-- Image -->
                             <div class="aspect-[4/5] bg-white flex items-center justify-center p-3">
-                                <img th:src="@{'/img/drink_pictures/' + ${drink.imageUrl}}"
+                                <img th:src="@{'/images/drink_pictures/' + ${drink.imageUrl}}"
                                      th:alt="${drink.name}"
                                      class="w-full h-full object-contain rounded-xl">
                             </div>

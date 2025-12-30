@@ -113,7 +113,7 @@
     <!-- Hero Section -->
     <section class="relative h-[600px] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center"
-             th:style="|background-image: url(@{/img/default_pizza.jpg});|"></div>
+             th:style="|background-image: url(@{/images/default-pizza.jpg});|"></div>
         <div class="absolute inset-0 bg-[#D32F2F]/80"></div>
 
         <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto animate-fade-in">
@@ -210,7 +210,7 @@
                 <a th:href="@{'/pizza/' + ${pizza.slug}}" class="block transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover">
                     <div class="rounded-xl border bg-card shadow-warm overflow-hidden bg-[rgba(253,250,247,0.6)]">
                         <div class="aspect-[4/3] bg-muted relative overflow-hidden">
-                            <img th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}" th:alt="${pizza.name}"
+                            <img th:src="@{'/images/pizza_pictures/' + ${pizza.imageUrl}}" th:alt="${pizza.name}"
                                  class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
                         </div>
                         <div class="p-6">

@@ -32,11 +32,11 @@ public class HomeController {
     public String filter(@RequestParam(required = false) String tag, Model model) {
 
         if (tag == null || tag.isEmpty()) {
-            model.addAttribute("pizzas", pizzaService.getAllPizzas());
+            model.addAttribute("allPizzas", pizzaService.getAllPizzas());
         } else {
-            model.addAttribute("pizzas", pizzaService.getPizzasByTag(tag));
+            model.addAttribute("allPizzas", pizzaService.getPizzasByTag(tag));
         }
 
-        return "fragments/components/pizza/pizza-grid :: pizza-grid(pizzas=${pizzas})";
+        return "fragments/components/pizza/pizza-grid :: pizza-grid(allPizzas=${allPizzas})";
     }
 }
