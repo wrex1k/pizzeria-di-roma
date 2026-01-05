@@ -7,6 +7,8 @@
 
     <meta name="description" th:content="${pizza != null ? pizza.description : 'Experience authentic Italian pizza delivered to your door'}">
     <meta name="author" content="Pizzeria di Roma">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" th:href="@{/favicon.png}">
@@ -159,9 +161,11 @@
 
                     <div class="flex justify-between items-center gap-4">
 
-                        <th:block th:each="size : ${sizes}">
+                        <th:block th:each="size, iterStat : ${sizes}">
                             <label class="flex-1 cursor-pointer group">
-                                <input type="radio" name="size" th:value="${size.name}" class="peer hidden" onchange="recalcPrice()">
+                                <input type="radio" name="size" th:value="${size.name}" 
+                                       th:checked="${iterStat.index == 0}" 
+                                       class="peer hidden" onchange="recalcPrice()">
 
                                 <div class="p-3 px-8 rounded-xl transition-all border-2 border-transparent
                                 peer-checked:bg-primary peer-checked:border-primary
@@ -243,12 +247,11 @@
                 <form th:action="@{/cart/add}" method="post" class="space-y-6">
 
                     <input type="hidden" id="pizzaSlug" th:value="${pizza.slug}">
-                    <input type="hidden" name="size" id="sizeInput" value="small">
+                    <input type="hidden" name="size" id="sizeInput" value="Small">
                     <input type="hidden" name="quantity" id="quantityInput" value="1">
                     <input type="hidden" name="ingredients" id="ingredientsInput">
 
 
-                    <div sec:authorize="isAuthenticated()">
                         <!-- Total Price and Add to Cart -->
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
@@ -267,10 +270,9 @@
                                     <circle cx="19" cy="21" r="1"></circle>
                                     <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
                                 </svg>
-                                <span th:text="${#authorization.expression('isAuthenticated()') ? 'Add to Cart' : 'Log in to add'}"></span>
+                                <span th:text="${#authorization.expression('isAuthenticated()') ? 'Add to Cart' : 'Are you hungry? Log in'}"></span>
                             </button>
                         </div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -288,7 +290,7 @@
                 <div id="drinksSlider" class="flex gap-6 transition-transform duration-500 ease-out">
 
                     <div th:each="drink : ${allDrinks}"
-                         class="cursor-pointer flex-shrink-0 w-44">
+                         class="cursor-pointer flex-shrink-0 w-48">
                         <div class="rounded-xl border border-border bg-white/70 backdrop-blur-sm
                         hover:shadow-lg hover:-translate-y-1 transition-all duration-300
                         overflow-hidden flex flex-col h-full">
@@ -341,15 +343,23 @@
     function recalcPrice() {
         console.log("recalcPrice CALLED");
 
-        const size = document.querySelector('input[name="size"]:checked')?.value ?? "SMALL";
+        const size = document.querySelector('input[name="size"]:checked')?.value ?? "Small";
         const quantity = document.querySelector('input[name="quantity"]').value;
         const hidden = document.getElementById("ingredientsInput").value;
         const extras = hidden.length > 0 ? hidden.split(",") : [];
         const slug = document.getElementById("pizzaSlug").value;
 
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        const headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        };
+        headers[csrfHeader] = csrfToken;
+
         fetch("/pizza/calc-price", {
             method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            headers: headers,
             body: new URLSearchParams({
                 slug,
                 size,

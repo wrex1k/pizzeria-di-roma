@@ -1,0 +1,89 @@
+package com.pizzeriadiroma.pizzeria.config;
+
+import com.pizzeriadiroma.pizzeria.service.UserService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    private final UserService userService;
+
+    public SecurityConfig(@Lazy UserService userService) {
+        this.userService = userService;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder auth =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder());
+
+        return auth.build();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/",                       
+                                "/login",                
+                                "/register",               
+                                "/pizza/**",              
+                                "/images/**",
+                                "/css/**",
+                                "/js/**",
+                                "/favicon.png"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                "/cart/**",
+                                "/order/**",
+                                "/checkout/**",
+                                "/profile/**"
+                        ).authenticated()
+
+                        .anyRequest().permitAll()
+                )
+
+                .formLogin(login -> login
+                        .loginPage("/login")             
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error=true") 
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true") 
+                        .permitAll()
+                )
+
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/pizza/calc-price", "/pizza/nutrition")
+                );
+
+        return http.build();
+    }
+}
