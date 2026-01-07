@@ -2,7 +2,7 @@ package com.pizzeriadiroma.pizzeria.service;
 
 import com.pizzeriadiroma.pizzeria.entity.CompanyInfo;
 import com.pizzeriadiroma.pizzeria.repository.CompanyInfoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,13 +10,13 @@ public class CompanyInfoService {
 
     private final CompanyInfoRepository companyInfoRepository;
 
-    @Autowired
     public CompanyInfoService(CompanyInfoRepository companyInfoRepository) {
         this.companyInfoRepository = companyInfoRepository;
     }
 
     public CompanyInfo getCompanyInfo() {
-        return companyInfoRepository.findById(1).orElse(null);
+        return companyInfoRepository.findById(1)
+                .orElseThrow(() -> new EntityNotFoundException("CompanyInfo not found"));
     }
 
     public CompanyInfo saveCompanyInfo(CompanyInfo companyInfo) {

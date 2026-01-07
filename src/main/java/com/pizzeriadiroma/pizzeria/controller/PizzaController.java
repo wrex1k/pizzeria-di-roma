@@ -19,13 +19,17 @@ public class PizzaController {
     private final IngredientService ingredientService;
     private final PizzaSizeService pizzaSizeService;
     private final NutritionService nutritionService;
+    private final PriceCalculationService priceCalculationService;
+    private final CompanyInfoService companyInfoService;
 
-    public PizzaController(PizzaService pizzaService, DrinkService drinkService, IngredientService ingredientService, PizzaSizeService pizzaSizeService, NutritionService nutritionService) {
+    public PizzaController(PizzaService pizzaService, DrinkService drinkService, IngredientService ingredientService, PizzaSizeService pizzaSizeService, NutritionService nutritionService, PriceCalculationService priceCalculationService, CompanyInfoService companyInfoService) {
         this.pizzaService = pizzaService;
         this.drinkService = drinkService;
         this.ingredientService = ingredientService;
         this.pizzaSizeService = pizzaSizeService;
         this.nutritionService = nutritionService;
+        this.priceCalculationService = priceCalculationService;
+        this.companyInfoService = companyInfoService;
     }
 
     @GetMapping("/pizza/{slug}")
@@ -43,6 +47,8 @@ public class PizzaController {
 
         model.addAttribute("allIngredients", ingredientService.findExtraIngredientsForPizza(pizza));
         model.addAttribute("allDrinks", drinkService.getAllDrinks());
+        model.addAttribute("companyInfo", companyInfoService.getCompanyInfo());
+        model.addAttribute("extraIngredientPrice", priceCalculationService.getExtraIngredientPrice());
 
         return "pizza";
     }
@@ -56,28 +62,13 @@ public class PizzaController {
             @RequestParam(required = false) String ingredients
     ) {
         Pizza pizza = pizzaService.findBySlug(slug);
-        BigDecimal base = pizza.getBasePrice();
-
         PizzaSize selectedSize = pizzaSizeService.getByName(size);
 
         List<String> extraIds = (ingredients == null || ingredients.isBlank())
                 ? Collections.emptyList()
                 : Arrays.asList(ingredients.split(","));
 
-        BigDecimal extraPrice = BigDecimal.valueOf(extraIds.size())
-                .multiply(BigDecimal.valueOf(1.50))
-                .setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal priceForSize = base
-                .add(selectedSize.getPriceExtra())
-                .setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal perPizza = priceForSize.add(extraPrice)
-                .setScale(2, RoundingMode.HALF_UP);
-
-        BigDecimal total = perPizza
-                .multiply(BigDecimal.valueOf(quantity))
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = priceCalculationService.calculatePizzaTotal(pizza, selectedSize, quantity, extraIds);
 
         return new PriceResponse(total.toPlainString());
     }

@@ -7,6 +7,7 @@ import com.pizzeriadiroma.pizzeria.entity.PizzaIngredient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IngredientService {
@@ -30,5 +31,9 @@ public class IngredientService {
 
         return extraIngredients;
 
+    }
+    
+    public Optional<Ingredient> findById(Integer id) {
+        return ingredientRepository.findById(id);
     }
 }

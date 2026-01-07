@@ -71,6 +71,18 @@ public class CompanyInfo {
     @Column(name = "twitter_url", length = 100)
     private String twitterUrl;
 
+    @Column(name = "dph_rate", nullable = false, scale = 2)
+    private java.math.BigDecimal dphRate;
+
+    @Column(name = "free_delivery_from", nullable = false, scale = 2)
+    private java.math.BigDecimal freeDeliveryFrom;
+
+    @Column(name = "delivery_price", nullable = false, scale = 2)
+    private java.math.BigDecimal deliveryPrice;
+
+    @Column(name = "extra_ingredient_price", nullable = false, scale = 2)
+    private java.math.BigDecimal extraIngredientPrice;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -163,5 +175,37 @@ public class CompanyInfo {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public java.math.BigDecimal getDphRate() {
+        return dphRate;
+    }
+
+    public void setDphRate(java.math.BigDecimal dphRate) {
+        this.dphRate = dphRate;
+    }
+
+    public java.math.BigDecimal getFreeDeliveryFrom() {
+        return freeDeliveryFrom;
+    }
+
+    public void setFreeDeliveryFrom(java.math.BigDecimal freeDeliveryFrom) {
+        this.freeDeliveryFrom = freeDeliveryFrom;
+    }
+
+    public java.math.BigDecimal getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(java.math.BigDecimal deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
+    }
+
+    public java.math.BigDecimal getExtraIngredientPrice() {
+        return extraIngredientPrice;
+    }
+
+    public void setExtraIngredientPrice(java.math.BigDecimal extraIngredientPrice) {
+        this.extraIngredientPrice = extraIngredientPrice;
     }
 }
