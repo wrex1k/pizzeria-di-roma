@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -34,6 +37,10 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByEmail(email);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+    }
 
     public String validateAndRegister(RegisterRequest registerRequest) {
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
@@ -48,6 +55,7 @@ public class UserService implements UserDetailsService {
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
         user.setEmail(registerRequest.getEmail());
+        user.setPhone(registerRequest.getPhone());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
@@ -55,7 +63,36 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    /*public void save(User user) {
+    @Transactional
+    public void save(User user) {
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
-    }*/
+    }
+
+    public String changePassword(String email, String currentPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return "Current password is incorrect.";
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        save(user);
+
+        return null;
+    }
+
+    @Transactional
+    public String deleteUser(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return "Password is incorrect.";
+        }
+
+        userRepository.delete(user);
+        return null;
+    }
 }

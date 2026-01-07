@@ -39,13 +39,10 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
-    @Size(max = 30)
-    @Column(name = "phone", length = 30)
+    @NotBlank(message = "Phone number is required.")
+    @Pattern(regexp = "^\\+[0-9]{1,3}[\\s0-9]{7,15}$", message = "Enter a valid phone number (e.g., +421944025567 or +421 944 025 567)")
+    @Size(min = 9, max = 20, message = "Phone number must be 9-20 characters")
     private String phone;
-
-    @Size(max = 500)
-    @Column(name = "avatar_url", length = 500)
-    private String avatarUrl;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;
@@ -98,9 +95,6 @@ public class User implements UserDetails {
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
-
-    public String getAvatarUrl() { return avatarUrl; }
-    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
