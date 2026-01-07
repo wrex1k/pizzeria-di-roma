@@ -378,6 +378,26 @@
                                     class="text-xs text-red-600 mt-1"></p>
                             </div>
 
+                            <!-- Phone Field -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium leading-none" for="register-phone">Phone</label>
+                                <div class="relative">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
+                                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                    </svg>
+                                    <input type="tel" th:field="*{phone}" id="register-phone"
+                                           th:classappend="${#fields.hasErrors('phone')} ? 'border-red-500' : ''"
+                                           class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10"
+                                           placeholder="+421 900 123 456" required />
+                                </div>
+                                <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+                                   class="text-xs text-red-600 mt-1"></p>
+                            </div>
+
                             <!-- Password Field -->
                             <div class="space-y-2">
                                 <label class="text-sm font-medium leading-none" for="register-password">Password</label>

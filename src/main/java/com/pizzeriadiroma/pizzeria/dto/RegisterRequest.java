@@ -17,6 +17,11 @@ public class RegisterRequest {
     @Size(max = 255, message = "Email must not exceed 255 characters.")
     private String email;
 
+    @NotBlank(message = "Phone number is required.")
+    @Pattern(regexp = "^\\+[0-9]{1,3}[\\s0-9]{7,15}$", message = "Enter a valid phone number (e.g., +421944025567 or +421 944 025 567)")
+    @Size(min = 9, max = 20, message = "Phone number must be 9-20 characters")
+    private String phone;
+
     @NotBlank(message = "Password is required.")
     @Size(min = 8, message = "Password must be at least 8 characters long.")
     @Pattern(
@@ -53,6 +58,14 @@ public class RegisterRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {
