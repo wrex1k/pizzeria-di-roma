@@ -2,6 +2,7 @@ package com.pizzeriadiroma.pizzeria.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -22,26 +23,31 @@ public class UserAddress {
 
     @NotBlank(message = "Street is required")
     @Size(min = 3, max = 160, message = "Street must be between 3 and 160 characters")
+    @Pattern(regexp = "^[^\\d]+$", message = "Street cannot contain numbers")
     @Column(name = "street", nullable = false, length = 160)
     private String street;
 
     @NotBlank(message = "House number is required")
+    @Pattern(regexp = "\\d+", message = "House number must contain only digits")
     @Size(min = 1, max = 40, message = "House number must be between 1 and 40 characters")
     @Column(name = "house_number", nullable = false, length = 40)
     private String houseNumber;
 
     @NotBlank(message = "City is required")
     @Size(min = 2, max = 120, message = "City must be between 2 and 120 characters")
+    @Pattern(regexp = "^[^\\d]+$", message = "City cannot contain numbers")
     @Column(name = "city", nullable = false, length = 120)
     private String city;
 
     @NotBlank(message = "Postal code is required")
-    @Size(min = 3, max = 20, message = "Postal code must be between 3 and 20 characters")
-    @Column(name = "postal_code", nullable = false, length = 20)
+    @Pattern(regexp = "\\d+", message = "Postal code must contain only digits")
+    @Size(min = 3, max = 10, message = "Postal code must be between 3 and 10 characters")
+    @Column(name = "postal_code", nullable = false, length = 10)
     private String postalCode;
 
     @NotBlank(message = "Country is required")
     @Size(min = 2, max = 80, message = "Country must be between 2 and 80 characters")
+    @Pattern(regexp = "^[^\\d]+$", message = "Country cannot contain numbers")
     @Column(name = "country", nullable = false, length = 80)
     private String country;
 
