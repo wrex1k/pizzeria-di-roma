@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <!-- Character Encoding & Favicon -->
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+
+    <!-- Viewport & SEO Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Pizzeria di Roma</title>
+    <meta name="description"
+        content="Complete your order at Pizzeria di Roma. Secure checkout with multiple payment options.">
+    <meta name="author" content="Pizzeria di Roma">
+
+    <!-- Google Fonts - Playfair Display & Montserrat -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration & Theme -->
+    <script>
+        tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        border: 'hsl(30, 30%, 85%)',
+                        input: 'hsl(30, 30%, 90%)',
+                        ring: 'hsl(0, 70%, 51%)',
+                        background: 'hsl(32, 65%, 95%)',
+                        foreground: 'hsl(0, 0%, 11%)',
+                        primary: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(32, 65%, 95%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(30, 40%, 88%)',
+                            foreground: 'hsl(0, 0%, 45%)',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(45, 98%, 60%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                    },
+                    borderRadius: {
+                        lg: '0.75rem',
+                        md: 'calc(0.75rem - 2px)',
+                        sm: 'calc(0.75rem - 4px)',
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(10px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS & Utilities -->
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        body {
+            background-color: hsl(32, 65%, 95%);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #D32F2F 0%, #C62828 100%);
+        }
+
+        .hero-gradient:hover {
+            background: linear-gradient(135deg, #C62828 0%, #B71C1C 100%);
+        }
+
+        .transition-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .card-input {
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar Fragment -->
+        <div th:replace="~{fragments/layout/navbar :: navbar}"></div>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-8 flex-1">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
+                <a th:href="@{/}" class="hover:text-primary transition-smooth">Home</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"></path>
+                </svg>
+                <a th:href="@{/cart}" class="hover:text-primary transition-smooth">Cart</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"></path>
+                </svg>
+                <span class="font-medium text-foreground">Checkout</span>
+            </nav>
+
+            <h1 class="text-4xl font-display font-bold mb-2">Checkout</h1>
+            <p class="text-muted-foreground mb-8">Complete your order details below</p>
+
+            <form th:action="@{/checkout/process}" method="post" th:object="${checkoutForm}" 
+                x-data="{
+                    deliveryMethod: 'DELIVERY',
+                    paymentMethod: 'CARD',
+                    deliveryFeeAmount: 0,
+                    deliveryNotes: '',
+                    cardNumber: '',
+                    expiryDate: '',
+                    isProcessing: false,
+                    formatCardNumber() {
+                        let value = this.cardNumber.replace(/\D/g, '');
+                        let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+                        this.cardNumber = formatted;
+                    },
+                    formatExpiry() {
+                        let value = this.expiryDate.replace(/\D/g, '');
+                        if (value.length >= 2) {
+                            this.expiryDate = value.substring(0, 2) + '/' + value.substring(2, 4);
+                        } else {
+                            this.expiryDate = value;
+                        }
+                    }
+                }" 
+                x-init="deliveryFeeAmount = parseFloat('[[${deliveryFee}]]')"
+                class="space-y-6">
+                <!-- CSRF Token -->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left Column: Form Sections -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
+                            <h2 class="text-xl font-display font-bold mb-4 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-primary">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Personal Information
+                            </h2>
+
+                            <div class="space-y-4">
+                                <!-- Full Name -->
+                                <div>
+                                    <label for="fullName" class="block text-sm font-medium text-foreground mb-2">
+                                        Full Name <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="fullName" th:field="*{fullName}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="Enter your full name" required>
+                                    <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"
+                                        class="text-xs text-destructive mt-1"></p>
+                                </div>
+
+                                <!-- Email & Phone -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Email (readonly) -->
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-foreground mb-2">
+                                            Email Address <span class="text-destructive">*</span>
+                                        </label>
+                                        <input type="email" id="email" th:field="*{email}"
+                                            class="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground cursor-not-allowed"
+                                            placeholder="your.email@example.com" readonly required>
+                                        <p class="text-xs text-muted-foreground mt-1">Cannot be changed</p>
+                                    </div>
+
+                                    <!-- Phone -->
+                                    <div>
+                                        <label for="phone" class="block text-sm font-medium text-foreground mb-2">
+                                            Phone Number <span class="text-destructive">*</span>
+                                        </label>
+                                        <input type="tel" id="phone" th:field="*{phone}"
+                                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            placeholder="+421 900 000 000" required>
+                                        <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+                                            class="text-xs text-destructive mt-1"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
+                            <h2 class="text-xl font-display font-bold mb-4 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-primary">
+                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                Delivery Address
+                            </h2>
+
+                            <div class="space-y-4">
+                                <!-- No Addresses Warning -->
+                                <div th:if="${#lists.isEmpty(userAddresses)}"
+                                    class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                                    <div class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="text-amber-600 mt-0.5">
+                                            <path
+                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z">
+                                            </path>
+                                            <path d="M12 9v4"></path>
+                                            <path d="M12 17h.01"></path>
+                                        </svg>
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-amber-800 mb-1">No Delivery Addresses Found
+                                            </h4>
+                                            <p class="text-sm text-amber-700 mb-2">
+                                                You haven't added any delivery addresses yet. Please choose "Pickup" or
+                                                <a th:href="@{/profile}" class="underline font-medium">add an address to
+                                                    your profile</a>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Address Selection -->
+                                <div th:unless="${#lists.isEmpty(userAddresses)}">
+                                    <label for="addressId" class="block text-sm font-medium text-foreground mb-2">
+                                        Select Address <span class="text-destructive"
+                                            x-show="deliveryMethod === 'DELIVERY'">*</span>
+                                    </label>
+                                    <select id="addressId" th:field="*{addressId}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        :disabled="deliveryMethod === 'PICKUP'">
+                                        <option value="">Choose a delivery address</option>
+                                        <option th:each="address : ${userAddresses}" th:value="${address.id}"
+                                            th:text="${address.label != null ? address.label + ' - ' : ''} + ${address.street} + ' ' + ${address.houseNumber} + ', ' + ${address.city}">
+                                        </option>
+                                    </select>
+                                    <p th:if="${#fields.hasErrors('addressId')}" th:errors="*{addressId}"
+                                        class="text-xs text-destructive mt-1"></p>
+                                    <p x-show="deliveryMethod === 'PICKUP'" class="text-xs text-muted-foreground mt-1">
+                                        Not required for pickup orders
+                                    </p>
+                                </div>
+
+                                <!-- Delivery Instructions -->
+                                <div>
+                                    <label for="deliveryInstructions"
+                                        class="block text-sm font-medium text-foreground mb-2">
+                                        Delivery Instructions <span class="text-muted-foreground">(Optional)</span>
+                                    </label>
+                                    <textarea id="deliveryInstructions" th:field="*{deliveryInstructions}" rows="2"
+                                        maxlength="200"
+                                        class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                                        placeholder="e.g., Ring doorbell twice, leave at door..."
+                                        x-model="deliveryNotes"></textarea>
+                                    <p class="text-xs text-muted-foreground mt-1">
+                                        <span x-text="deliveryNotes.length">0</span>/200 characters
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
+                            <h2 class="text-xl font-display font-bold mb-4 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-primary">
+                                    <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                                    <path d="M15 18H9"></path>
+                                    <path
+                                        d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14">
+                                    </path>
+                                    <circle cx="17" cy="18" r="2"></circle>
+                                    <circle cx="7" cy="18" r="2"></circle>
+                                </svg>
+                                Delivery Method
+                            </h2>
+
+                            <div class="space-y-3">
+                                <!-- Delivery -->
+                                <label
+                                    class="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-smooth hover:border-primary hover:bg-primary/5"
+                                    :class="deliveryMethod === 'DELIVERY' ? 'border-primary bg-primary/5' : 'border-border'">
+                                    <input type="radio" name="deliveryMethod" value="DELIVERY"
+                                        th:field="*{deliveryMethod}" x-model="deliveryMethod" class="mt-1" required>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="font-semibold">🚚 Delivery</span>
+                                            <span class="text-sm font-semibold text-primary"
+                                                th:text="'€' + ${#numbers.formatDecimal(companyInfo.deliveryPrice, 1, 2)}">€4.90</span>
+                                        </div>
+                                        <p class="text-sm text-muted-foreground">Estimated: 30-45 minutes</p>
+                                    </div>
+                                </label>
+
+                                <!-- Pickup -->
+                                <label
+                                    class="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-smooth hover:border-primary hover:bg-primary/5"
+                                    :class="deliveryMethod === 'PICKUP' ? 'border-primary bg-primary/5' : 'border-border'">
+                                    <input type="radio" name="deliveryMethod" value="PICKUP"
+                                        th:field="*{deliveryMethod}" x-model="deliveryMethod" class="mt-1">
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="font-semibold">🏪 Pickup</span>
+                                            <span class="text-sm font-semibold text-green-600">No fee</span>
+                                        </div>
+                                        <p class="text-sm text-muted-foreground">Via Roma 123, Bratislava</p>
+                                        <p class="text-xs text-muted-foreground mt-1">Ready in 20-25 minutes</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
+                            <h2 class="text-xl font-display font-bold mb-4 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-primary">
+                                    <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                                    <line x1="2" x2="22" y1="10" y2="10"></line>
+                                </svg>
+                                Payment Method
+                            </h2>
+
+                            <div class="space-y-3 mb-4">
+                                <!-- Credit/Debit Card -->
+                                <label
+                                    class="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-smooth hover:border-primary hover:bg-primary/5"
+                                    :class="paymentMethod === 'CARD' ? 'border-primary bg-primary/5' : 'border-border'">
+                                    <input type="radio" name="paymentMethod" value="CARD" th:field="*{paymentMethod}"
+                                        x-model="paymentMethod" class="mt-1" required>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="font-semibold">💳 Credit / Debit Card</span>
+                                            <div class="flex gap-1">
+                                                <img src="https://img.icons8.com/color/24/visa.png" alt="Visa"
+                                                    class="h-5">
+                                                <img src="https://img.icons8.com/color/24/mastercard.png"
+                                                    alt="Mastercard" class="h-5">
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-muted-foreground">Pay securely with your card</p>
+                                    </div>
+                                </label>
+
+                                <!-- Cash on Delivery -->
+                                <label
+                                    class="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-smooth hover:border-primary hover:bg-primary/5"
+                                    :class="paymentMethod === 'CASH' ? 'border-primary bg-primary/5' : 'border-border'">
+                                    <input type="radio" name="paymentMethod" value="CASH" th:field="*{paymentMethod}"
+                                        x-model="paymentMethod" class="mt-1">
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="font-semibold">💵 Cash on Delivery</span>
+                                        </div>
+                                        <p class="text-sm text-muted-foreground">Pay with cash when your order arrives
+                                        </p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Card Details (Conditional) -->
+                            <div x-show="paymentMethod === 'CARD'" x-transition x-cloak
+                                class="space-y-4 pt-4 border-t border-border">
+                                <!-- Card Number -->
+                                <div>
+                                    <label for="cardNumber" class="block text-sm font-medium text-foreground mb-2">
+                                        Card Number <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="cardNumber" maxlength="19"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 card-input"
+                                        placeholder="1234 5678 9012 3456" x-model="cardNumber"
+                                        @input="formatCardNumber">
+                                </div>
+
+                                <!-- Cardholder Name -->
+                                <div>
+                                    <label for="cardholderName" class="block text-sm font-medium text-foreground mb-2">
+                                        Cardholder Name <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="cardholderName"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="JOHN DOE" style="text-transform: uppercase;">
+                                </div>
+
+                                <!-- Expiry & CVV -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="expiryDate" class="block text-sm font-medium text-foreground mb-2">
+                                            Expiry Date <span class="text-destructive">*</span>
+                                        </label>
+                                        <input type="text" id="expiryDate" maxlength="5"
+                                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            placeholder="MM/YY" x-model="expiryDate" @input="formatExpiry">
+                                    </div>
+                                    <div>
+                                        <label for="cvv" class="block text-sm font-medium text-foreground mb-2">
+                                            CVV <span class="text-destructive">*</span>
+                                        </label>
+                                        <input type="text" id="cvv" maxlength="4"
+                                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                            placeholder="123">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security Badge -->
+                            <div
+                                class="mt-4 pt-4 border-t border-border flex items-center gap-2 text-sm text-muted-foreground">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-green-600">
+                                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <span>Secure checkout powered by SSL encryption</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24 animate-fade-in">
+                            <h3 class="font-bold text-xl mb-4 font-display">Order Summary</h3>
+
+                            <!-- Cart Items List -->
+                            <div class="space-y-3 mb-4 max-h-64 overflow-y-auto">
+                                <div th:each="item : ${cartItems}"
+                                    class="flex gap-3 pb-3 border-b border-border last:border-0">
+                                    <!-- Pizza Image -->
+                                    <img th:if="${item.pizza != null}"
+                                        th:src="@{'/images/pizza_pictures/' + ${item.pizza.imageUrl}}"
+                                        th:alt="${item.pizza.name}" class="w-16 h-16 rounded-lg object-cover">
+                                    <!-- Drink Image -->
+                                    <img th:if="${item.drink != null}"
+                                        th:src="@{'/images/drink_pictures/' + ${item.drink.imageUrl}}"
+                                        th:alt="${item.drink.name}"
+                                        class="w-22 h-16 rounded-lg object-contain bg-white ml-2 mr-3.5">
+                                    <div class="flex-1 min-w-0">
+                                        <!-- Pizza Name -->
+                                        <p th:if="${item.pizza != null}" class="font-semibold text-sm truncate"
+                                            th:text="${item.pizza.name}">Pizza
+                                            Name
+                                        </p>
+                                        <!-- Drink Name -->
+                                        <p th:if="${item.drink != null}" class="font-semibold text-sm truncate"
+                                            th:text="${item.drink.name}">Drink
+                                            Name
+                                        </p>
+                                        <p class="text-xs text-muted-foreground">
+                                            <!-- Pizza: size × quantity -->
+                                            <span th:if="${item.pizza != null}">
+                                                <span th:text="${item.size}">Medium</span> × <span
+                                                    th:text="${item.quantity}">2</span>
+                                            </span>
+                                            <!-- Drink: volume × quantity -->
+                                            <span th:if="${item.drink != null}">
+                                                <span th:text="${item.drink.volumeMl}">330</span>ml × <span
+                                                    th:text="${item.quantity}">2</span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Price Breakdown -->
+                            <div class="space-y-2 mb-4 text-sm">
+                                <!-- Subtotal -->
+                                <div class="flex justify-between">
+                                    <span>Subtotal (incl. VAT)</span>
+                                    <span class="font-semibold">
+                                        €<span th:text="${#numbers.formatDecimal(cart.subtotal, 1, 2)}">32.97</span>
+                                    </span>
+                                </div>
+
+                                <!-- VAT Info (Recap only) -->
+                                <div class="flex justify-between text-xs text-muted-foreground">
+                                    <span>of which VAT (<span
+                                            th:text="${#numbers.formatDecimal(companyInfo.dphRate, 0, 0)}">20</span>%)</span>
+                                    <span>
+                                        €<span
+                                            th:text="${#numbers.formatDecimal(cart.subtotal - (cart.subtotal / (1 + companyInfo.dphRate / 100)), 1, 2)}">5.50</span>
+                                    </span>
+                                </div>
+
+                                <!-- Delivery Fee -->
+                                <div class="flex justify-between" x-show="deliveryMethod === 'DELIVERY'" x-cloak>
+                                    <span>Delivery Fee</span>
+                                    <span th:if="${deliveryFee == 0}" class="text-green-600 font-semibold">
+                                        FREE
+                                    </span>
+                                    <span th:unless="${deliveryFee == 0}">
+                                        €<span th:text="${#numbers.formatDecimal(deliveryFee, 1, 2)}">4.90</span>
+                                    </span>
+                                </div>
+
+                                <!-- Free Delivery Info -->
+                                <div class="flex justify-between text-xs text-muted-foreground"
+                                    x-show="deliveryMethod === 'DELIVERY'" x-cloak
+                                    th:if="${deliveryFee > 0 && cart.subtotal < companyInfo.freeDeliveryFrom}">
+                                    <span>Free delivery from</span>
+                                    <span>€<span
+                                            th:text="${#numbers.formatDecimal(companyInfo.freeDeliveryFrom, 1, 2)}">50.00</span></span>
+                                </div>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="pt-4 border-t-2 border-border mb-6">
+                                <div class="flex justify-between items-center text-lg font-bold">
+                                    <span>Total</span>
+                                    <span class="text-primary text-2xl">
+                                        €<span
+                                            x-text="(parseFloat([[${cart.subtotal}]]) + (deliveryMethod === 'DELIVERY' ? deliveryFeeAmount : 0)).toFixed(2)"
+                                            th:text="${#numbers.formatDecimal(cart.subtotal + deliveryFee, 1, 2)}">35.46</span>
+                                    </span>
+                                </div>
+                                <p class="text-xs text-muted-foreground mt-1">All prices include VAT</p>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit"
+                                class="w-full hero-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-smooth flex items-center justify-center gap-2"
+                                :disabled="isProcessing" :class="isProcessing ? 'opacity-50 cursor-not-allowed' : ''">
+                                <span x-show="!isProcessing">
+                                    Place Order · €<span
+                                        x-text="(parseFloat([[${cart.subtotal}]]) + (deliveryMethod === 'DELIVERY' ? deliveryFeeAmount : 0)).toFixed(2)"
+                                        th:text="${#numbers.formatDecimal(cart.subtotal + deliveryFee, 1, 2)}">35.46</span>
+                                </span>
+                                <span x-show="isProcessing" class="flex items-center gap-2">
+                                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                    Processing...
+                                </span>
+                            </button>
+
+                            <!-- Trust Indicators -->
+                            <div class="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                                <span class="flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="text-green-600">
+                                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                    Secure
+                                </span>
+                                <span>·</span>
+                                <span class="flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="text-green-600">
+                                        <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                                        <path d="m9 11 3 3L22 4"></path>
+                                    </svg>
+                                    SSL Encrypted
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/layout/footer :: footer}"></div>
+    </div>
+
+    <!-- Alpine.js Core Library -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.0/dist/cdn.min.js"></script>
+
+    <!-- Alpine.js Scripts -->
+    <script>
+        // Form submission handling
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    // Set processing state via Alpine
+                    const alpineData = Alpine.$data(form);
+                    if (alpineData) {
+                        alpineData.isProcessing = true;
+                    }
+
+                    // Validate payment method fields
+                    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                    if (paymentMethod && paymentMethod.value === 'CARD') {
+                        const cardNumber = document.getElementById('cardNumber');
+                        const cardholderName = document.getElementById('cardholderName');
+                        const expiryDate = document.getElementById('expiryDate');
+                        const cvv = document.getElementById('cvv');
+
+                        if (!cardNumber.value || !cardholderName.value || !expiryDate.value || !cvv.value) {
+                            e.preventDefault();
+                            alert('Please fill in all card details');
+                            if (alpineData) {
+                                alpineData.isProcessing = false;
+                            }
+                            return false;
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
