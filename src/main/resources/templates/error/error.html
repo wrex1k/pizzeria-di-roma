@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>404 – Pizza Not Found | Pizzeria di Roma</title>
+    <title th:text="${statusCode} + ' – ' + (${errorTitle} ?: 'Error') + ' | Pizzeria di Roma'">
+        Error | Pizzeria di Roma
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -44,14 +46,12 @@
     <div class="text-center max-w-md px-6">
         <img src="/images/sad-cat.gif" alt="Not found" class="mx-auto mb-6 rounded-2xl w-40">
 
-        <h1 class="text-6xl font-playfair font-bold text-primary mb-4">404</h1>
+        <h1 class="text-6xl font-playfair font-bold text-primary mb-4" th:text="${statusCode} ?: 500"></h1>
 
-        <h2 class="text-3xl font-playfair mb-4" th:text="${errorTitle} ?: 'Pizza Not Found'">Pizza Not Found</h2>
+        <h2 class="text-3xl font-playfair mb-4" th:text="${errorTitle} ?: 'Pizza Not Found'"></h2>
 
         <p class="text-muted-foreground mb-6"
-            th:text="${errorMessage} ?: 'Oops! This pizza seems to have been delivered to the wrong address.'">
-            Oops! This pizza seems to have been delivered to the wrong address.
-        </p>
+            th:text="${errorMessage} ?: 'Oops! This pizza seems to have been delivered to the wrong address.'"></p>
 
         <a href="/"
             class="inline-block bg-primary hover:bg-primary-hover text-white font-semibold px-6 py-3 rounded-xl transition-colors">

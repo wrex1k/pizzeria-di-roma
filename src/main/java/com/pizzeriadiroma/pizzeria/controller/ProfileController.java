@@ -5,6 +5,7 @@ import com.pizzeriadiroma.pizzeria.dto.UpdateProfileRequest;
 import com.pizzeriadiroma.pizzeria.entity.Order;
 import com.pizzeriadiroma.pizzeria.entity.User;
 import com.pizzeriadiroma.pizzeria.entity.UserAddress;
+import com.pizzeriadiroma.pizzeria.exception.ValidationException;
 import com.pizzeriadiroma.pizzeria.service.OrderService;
 import com.pizzeriadiroma.pizzeria.service.UserAddressService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -116,14 +117,14 @@ public class ProfileController {
             return "redirect:/profile";
         }
 
-        String error = userService.changePassword(principal.getName(), 
-                                                    changePasswordRequest.getCurrentPassword(),
-                                                    changePasswordRequest.getNewPassword());
-
-        if (error != null) {
-            redirectAttributes.addFlashAttribute("passwordError", error);
-        } else {
+        try {
+            userService.changePassword(
+                    principal.getName(),
+                    changePasswordRequest.getCurrentPassword(),
+                    changePasswordRequest.getNewPassword());
             redirectAttributes.addFlashAttribute("passwordSuccess", "Password changed successfully!");
+        } catch (ValidationException exception) {
+            redirectAttributes.addFlashAttribute("passwordError", exception.getMessage());
         }
 
         return "redirect:/profile";
@@ -136,16 +137,16 @@ public class ProfileController {
                                HttpServletResponse response,
                                RedirectAttributes redirectAttributes) {
 
-        String error = userService.deleteUser(principal.getName(), password);
-
-        if (error != null) {
-            redirectAttributes.addFlashAttribute("deleteError", error);
+        try {
+            userService.deleteUser(principal.getName(), password);
+        } catch (ValidationException exception) {
+            redirectAttributes.addFlashAttribute("deleteError", exception.getMessage());
             return "redirect:/profile";
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "Your account has been successfully deleted.");
@@ -163,7 +164,6 @@ public class ProfileController {
             User user = userService.findByEmail(principal.getName());
             model.addAttribute("user", user);
             
-            // Populate UpdateProfileRequest with user data
             UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
             updateProfileRequest.setFirstName(user.getFirstName());
             updateProfileRequest.setLastName(user.getLastName());

@@ -2,6 +2,8 @@ package com.pizzeriadiroma.pizzeria.service;
 
 import com.pizzeriadiroma.pizzeria.entity.User;
 import com.pizzeriadiroma.pizzeria.entity.UserAddress;
+import com.pizzeriadiroma.pizzeria.exception.AddressNotFoundException;
+import com.pizzeriadiroma.pizzeria.exception.ValidationException;
 import com.pizzeriadiroma.pizzeria.repository.UserAddressRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,6 @@ public class UserAddressService {
     public List<UserAddress> getAddressesByUser(User user) {
         return addressRepository.findByUserOrderByIsDefaultDescCreatedAtDesc(user);
     }
-    @Transactional(readOnly = true)
-    public Optional<UserAddress> getDefaultAddress(User user) {
-        return addressRepository.findByUserAndIsDefaultTrue(user);
-    }
 
     @Transactional(readOnly = true)
     public Optional<UserAddress> getAddressById(Long id) {
@@ -32,7 +30,7 @@ public class UserAddressService {
     }
 
     @Transactional
-    public UserAddress saveAddress(UserAddress address) {
+    public void saveAddress(UserAddress address) {
         long count = addressRepository.countByUser(address.getUser());
         if (count == 0) {
             address.setIsDefault(true);
@@ -42,13 +40,17 @@ public class UserAddressService {
             clearAllDefaultsForUser(address.getUser());
         }
 
-        return addressRepository.save(address);
+        addressRepository.save(address);
     }
 
     @Transactional
     public void setDefaultAddress(User user, UserAddress newDefaultAddress) {
-        if (!newDefaultAddress.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("Adresa nepatrí danému používateľovi");
+        if (newDefaultAddress.getUser() == null
+                || newDefaultAddress.getUser().getId() == null
+                || user == null
+                || user.getId() == null
+                || !newDefaultAddress.getUser().getId().equals(user.getId())) {
+            throw new ValidationException("You are not allowed to modify this address.");
         }
 
         clearAllDefaultsForUser(user);
@@ -60,7 +62,7 @@ public class UserAddressService {
     @Transactional
     public void setAsDefault(Long addressId, User user) {
         UserAddress address = addressRepository.findById(addressId)
-                .orElseThrow(() -> new IllegalArgumentException("Adresa s ID " + addressId + " neexistuje"));
+                .orElseThrow(() -> new AddressNotFoundException(addressId));
 
         setDefaultAddress(user, address);
     }

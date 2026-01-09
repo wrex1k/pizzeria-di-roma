@@ -85,6 +85,10 @@ public class Ingredient {
 
     public void setFatsPer100g(BigDecimal fatsPer100g) { this.fatsPer100g = fatsPer100g; }
 
+    public Boolean getExtra() { return extra; }
+
+    public void setExtra(Boolean extra) { this.extra = extra; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

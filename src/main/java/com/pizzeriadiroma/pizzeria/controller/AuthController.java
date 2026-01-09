@@ -1,6 +1,7 @@
 package com.pizzeriadiroma.pizzeria.controller;
 
 import com.pizzeriadiroma.pizzeria.dto.RegisterRequest;
+import com.pizzeriadiroma.pizzeria.exception.ValidationException;
 import com.pizzeriadiroma.pizzeria.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +35,23 @@ public class AuthController {
     @PostMapping("/register")
     public String register(
             @Valid @ModelAttribute("user") RegisterRequest registerRequest,
-            BindingResult bindingResult,
-            Model model
+            BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
             return "auth/index";
         }
 
-        String error = userService.validateAndRegister(registerRequest);
-        
-        if (error != null) {
-            if (error.contains("Passwords")) {
-                bindingResult.rejectValue("confirmPassword", "error.user", error);
-            } else if (error.contains("Email")) {
-                bindingResult.rejectValue("email", "error.user", error);
+        try {
+            userService.validateAndRegister(registerRequest);
+        } catch (ValidationException ex) {
+            String msg = ex.getMessage() == null ? "Validation error." : ex.getMessage();
+
+            if (msg.toLowerCase().contains("password")) {
+                bindingResult.rejectValue("confirmPassword", "error.user", msg);
+            } else if (msg.toLowerCase().contains("email")) {
+                bindingResult.rejectValue("email", "error.user", msg);
+            } else {
+                bindingResult.reject("error.user", msg);
             }
             return "auth/index";
         }

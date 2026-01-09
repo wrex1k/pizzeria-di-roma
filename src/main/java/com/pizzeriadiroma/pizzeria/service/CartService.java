@@ -6,6 +6,8 @@ import com.pizzeriadiroma.pizzeria.entity.Drink;
 import com.pizzeriadiroma.pizzeria.entity.Pizza;
 import com.pizzeriadiroma.pizzeria.entity.PizzaSize;
 import com.pizzeriadiroma.pizzeria.entity.User;
+import com.pizzeriadiroma.pizzeria.exception.ResourceNotFoundException;
+import com.pizzeriadiroma.pizzeria.exception.ValidationException;
 import com.pizzeriadiroma.pizzeria.repository.CartRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,10 +106,14 @@ public class CartService {
     public void removeItem(User user, Integer itemId) {
         Cart cart = getOrCreateCart(user);
 
-        cart.getItems().removeIf(item ->
+        boolean removed = cart.getItems().removeIf(item ->
                 item.getId().equals(itemId) &&
                         item.getCart().getUser().getId().equals(user.getId())
         );
+
+        if (!removed) {
+            throw new ResourceNotFoundException("Cart item not found: " + itemId);
+        }
 
         touchAndSave(cart);
     }
@@ -129,20 +135,23 @@ public class CartService {
 
     private void validatePositiveQuantity(Integer quantity) {
         if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be positive");
+            throw new ValidationException("Quantity must be positive");
         }
     }
 
     private void validateQuantityNotNull(Integer quantity) {
         if (quantity == null) {
-            throw new IllegalArgumentException("Quantity cannot be null");
+            throw new ValidationException("Quantity cannot be null");
         }
     }
 
     private PizzaSize requirePizzaSize(String size) {
+        if (size == null || size.isBlank()) {
+            throw new ValidationException("Pizza size is required");
+        }
         PizzaSize pizzaSize = pizzaSizeService.getByName(size);
         if (pizzaSize == null) {
-            throw new IllegalArgumentException("Invalid pizza size: " + size);
+            throw new ValidationException("Invalid pizza size: " + size);
         }
         return pizzaSize;
     }
@@ -172,12 +181,23 @@ public class CartService {
         }
 
         StringBuilder names = new StringBuilder();
-        for (String idStr : extraIngredients.split(",")) {
-            int id = Integer.parseInt(idStr.trim());
-            ingredientService.findById(id).ifPresent(ing -> {
-                if (!names.isEmpty()) names.append(", ");
-                names.append(ing.getName());
-            });
+
+        for (String part : extraIngredients.split(",")) {
+            String trimmed = part.trim();
+            if (trimmed.isEmpty()) continue;
+
+            int id;
+            try {
+                id = Integer.parseInt(trimmed);
+            } catch (NumberFormatException e) {
+                throw new ValidationException("Invalid ingredient id: " + trimmed);
+            }
+
+            var ingredient = ingredientService.findOptionalById(id)
+                    .orElseThrow(() -> new ValidationException("Ingredient not found: " + id));
+
+            if (!names.isEmpty()) names.append(", ");
+            names.append(ingredient.getName());
         }
 
         return names.isEmpty() ? null : names.toString();
@@ -235,15 +255,26 @@ public class CartService {
     }
 
     private CartItem findItemOrThrow(Cart cart, Integer itemId) {
+        if (itemId == null) {
+            throw new ValidationException("Cart item id is required");
+        }
+
         return cart.getItems().stream()
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Cart item not found: " + itemId));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found: " + itemId));
     }
 
     private void requireOwnership(User user, CartItem item) {
+        if (user == null || user.getId() == null) {
+            throw new ValidationException("User is required");
+        }
+        if (item.getCart() == null || item.getCart().getUser() == null || item.getCart().getUser().getId() == null) {
+            throw new ValidationException("Cart ownership data is missing");
+        }
+
         if (!item.getCart().getUser().getId().equals(user.getId())) {
-            throw new SecurityException("Item does not belong to user");
+            throw new ResourceNotFoundException("Cart item not found: " + item.getId());
         }
     }
 
@@ -253,6 +284,10 @@ public class CartService {
     }
 
     private BigDecimal money(BigDecimal value) {
+        if (value == null) {
+            throw new ValidationException("Money value cannot be null");
+        }
         return value.setScale(2, RoundingMode.HALF_UP);
     }
+
 }

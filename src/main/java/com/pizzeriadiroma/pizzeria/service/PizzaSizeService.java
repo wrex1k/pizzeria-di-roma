@@ -1,6 +1,7 @@
 package com.pizzeriadiroma.pizzeria.service;
 
 import com.pizzeriadiroma.pizzeria.entity.PizzaSize;
+import com.pizzeriadiroma.pizzeria.exception.PizzaSizeNotFoundException;
 import com.pizzeriadiroma.pizzeria.repository.PizzaSizeRepository;
     import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class PizzaSizeService {
 
     public PizzaSize getByName(String name) {
         return pizzaSizeRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Size not found: " + name));
+                .orElseThrow(() -> new PizzaSizeNotFoundException(name));
     }
 
     public List<PizzaSize> getAll() {

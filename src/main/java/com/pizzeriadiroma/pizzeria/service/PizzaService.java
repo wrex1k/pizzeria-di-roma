@@ -34,17 +34,7 @@ public class PizzaService {
     }
 
     public Pizza findById(Integer id) {
-        return pizzaRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new PizzaNotFoundException("Pizza with ID " + id + " not found"));
+        return pizzaRepository.findById(id)
+                .orElseThrow(() -> new PizzaNotFoundException(id));
     }
-
-    /*private String generateSlug(String name) {
-        if (name == null) return null;
-
-        return Normalizer.normalize(name, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
-                .toLowerCase()
-                .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-|-$", "");
-    }*/
 }

@@ -3,7 +3,6 @@ package com.pizzeriadiroma.pizzeria.service;
 import com.pizzeriadiroma.pizzeria.entity.Ingredient;
 import com.pizzeriadiroma.pizzeria.entity.Pizza;
 import com.pizzeriadiroma.pizzeria.repository.IngredientRepository;
-import com.pizzeriadiroma.pizzeria.entity.PizzaIngredient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +21,6 @@ public class IngredientService {
 
         List<Ingredient> pizzaIngredients = pizza.getIngredients()
                 .stream()
-                .map(PizzaIngredient::getIngredient)
                 .toList();
 
         List<Ingredient> extraIngredients = ingredientRepository.findAllByExtraTrueOrderByNameAsc();
@@ -32,8 +30,8 @@ public class IngredientService {
         return extraIngredients;
 
     }
-    
-    public Optional<Ingredient> findById(Integer id) {
+
+    public Optional<Ingredient> findOptionalById(Integer id) {
         return ingredientRepository.findById(id);
     }
 }
