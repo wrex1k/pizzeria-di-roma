@@ -3,6 +3,7 @@ package com.pizzeriadiroma.pizzeria.controller;
 import com.pizzeriadiroma.pizzeria.entity.Pizza;
 import com.pizzeriadiroma.pizzeria.entity.PizzaSize;
 import com.pizzeriadiroma.pizzeria.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class PizzaController {
     }
 
     @GetMapping("/pizza/{slug}")
-    public String pizzaDetail(@PathVariable String slug, Model model) {
+    public String pizzaDetail(@PathVariable String slug, HttpServletRequest request, Model model) {
 
         Pizza pizza = pizzaService.findBySlug(slug);
 
@@ -41,6 +42,7 @@ public class PizzaController {
         model.addAttribute("allDrinks", drinkService.getAllDrinks());
         model.addAttribute("companyInfo", companyInfoService.getCompanyInfo());
         model.addAttribute("extraIngredientPrice", priceCalculationService.getExtraIngredientPrice());
+        model.addAttribute("returnTo", request.getRequestURI());
 
         return "pizza";
     }
