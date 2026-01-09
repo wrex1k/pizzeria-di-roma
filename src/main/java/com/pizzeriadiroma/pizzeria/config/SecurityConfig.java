@@ -44,15 +44,17 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",                       
-                                "/login",                
-                                "/register",               
-                                "/pizza/**",              
+                                "/",
+                                "/login",
+                                "/register",
+                                "/pizza/**",
                                 "/images/**",
                                 "/css/**",
                                 "/js/**",
                                 "/favicon.png"
                         ).permitAll()
+
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .requestMatchers(
                                 "/cart/**",
@@ -61,7 +63,7 @@ public class SecurityConfig {
                                 "/profile/**"
                         ).authenticated()
 
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 .formLogin(login -> login
@@ -81,7 +83,7 @@ public class SecurityConfig {
                 )
 
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/pizza/calc-price", "/pizza/nutrition")
+                        .ignoringRequestMatchers("/pizza/calc-price")
                 );
 
         return http.build();

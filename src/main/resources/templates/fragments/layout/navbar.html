@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-center sm:justify-between h-16">
             <!-- Logo -->
-            <h1 class="site-title text-2xl font-display font-bold text-primary hidden sm:block">
+            <h1 class="site-title text-2xl font-display font-playfair font-bold text-primary hidden sm:block">
                 <a href="/">
                     Pizzeria di Roma
                 </a>
@@ -30,6 +30,25 @@
                             <span
                                 class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center"
                                 th:text="${cartCount != null ? cartCount : 0}"></span>
+                        </button>
+                    </a>
+
+                    <!-- Admin Button -->
+                    <a th:href="@{/admin/pizzas}" sec:authorize="hasRole('ADMIN')">
+                        <button
+                                type="button"
+                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10 relative"
+                                title="Admin Dashboard"
+                                aria-label="Admin Dashboard">
+
+                            <!-- Shield icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round"
+                                 class="h-5 w-5">
+                                <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
                         </button>
                     </a>
 
