@@ -21,17 +21,25 @@ public class PizzaSize {
     @Column(name = "price_extra", nullable = false, precision = 5, scale = 2)
     private BigDecimal priceExtra;
 
-    @Column(name = "ingredient_multiplier", nullable = false, precision = 5, scale = 2)
-    private BigDecimal ingredientMultiplier;
-
-    @Column(name = "calories_multiplier", nullable = false, precision = 5, scale = 2)
-    private BigDecimal caloriesMultiplier;
-
     @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     public PizzaSize() {}
 
@@ -47,15 +55,12 @@ public class PizzaSize {
     public BigDecimal getPriceExtra() { return priceExtra; }
     public void setPriceExtra(BigDecimal priceExtra) { this.priceExtra = priceExtra; }
 
-    public BigDecimal getIngredientMultiplier() { return ingredientMultiplier; }
-    public void setIngredientMultiplier(BigDecimal ingredientMultiplier) { this.ingredientMultiplier = ingredientMultiplier; }
-
-    public BigDecimal getCaloriesMultiplier() { return caloriesMultiplier; }
-    public void setCaloriesMultiplier(BigDecimal caloriesMultiplier) { this.caloriesMultiplier = caloriesMultiplier; }
-
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
