@@ -5,27 +5,27 @@ import jakarta.validation.constraints.*;
 
 public class CheckoutRequest {
 
-    @NotBlank(message = "Full name is required")
-    @Size(min = 3, max = 100, message = "Full name must be between 3 and 100 characters")
+    @NotBlank(message = "{validation.fullName.required}")
+    @Size(min = 3, max = 100, message = "{validation.fullName.size}")
     private String fullName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.invalid}")
     private String email;
 
-    @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\+[0-9]{1,3}[\\s0-9]{7,15}$", message = "Enter a valid phone number")
+    @NotBlank(message = "{validation.phone.required}")
+    @Pattern(regexp = "^\\+[0-9]{1,3}[\\s0-9]{7,15}$", message = "{validation.phone.invalid}")
     private String phone;
 
-    @Size(max = 200, message = "Delivery instructions must not exceed 200 characters")
+    @Size(max = 200, message = "{validation.deliveryInstructions.size}")
     private String deliveryInstructions;
 
     private Long addressId;
 
-    @NotNull(message = "Please select a delivery method")
+    @NotNull(message = "{validation.deliveryMethod.required}")
     private Order.DeliveryMethod deliveryMethod;
 
-    @NotNull(message = "Please select a payment method")
+    @NotNull(message = "{validation.paymentMethod.required}")
     private Order.PaymentMethod paymentMethod;
 
     public String getFullName() { return fullName; }

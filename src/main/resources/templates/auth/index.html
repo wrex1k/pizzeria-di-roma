@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Experience authentic Italian pizza delivered to your door. Fresh ingredients, traditional recipes, modern convenience.">
-    <meta name="keywords" content="pizza, italian food, delivery, authentic pizza, pizzeria, login, register">
-    <meta name="author" content="Pizzeria di Roma">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Sign In - Pizzeria di Roma</title>
+    <meta content="Experience authentic Italian pizza delivered to your door. Fresh ingredients, traditional recipes, modern convenience." name="description"
+          th:attr="content=#{meta.description}">
+    <meta content="pizza, italian food, delivery, authentic pizza, pizzeria, login, register" name="keywords"
+          th:attr="content=#{auth.meta.keywords}">
+    <meta content="Pizzeria di Roma" name="author" th:attr="content=#{meta.author}">
+
+    <title th:text="#{auth.pageTitle}">Sign In - Pizzeria di Roma</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+    <link rel="icon" th:href="@{/favicon.png}" type="image/png">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -76,24 +78,12 @@
                     },
                     keyframes: {
                         'scale-in': {
-                            '0%': {
-                                opacity: '0',
-                                transform: 'scale(0.9)'
-                            },
-                            '100%': {
-                                opacity: '1',
-                                transform: 'scale(1)'
-                            }
+                            '0%': {opacity: '0', transform: 'scale(0.9)'},
+                            '100%': {opacity: '1', transform: 'scale(1)'}
                         },
                         'fade-in': {
-                            '0%': {
-                                opacity: '0',
-                                transform: 'translateY(10px)'
-                            },
-                            '100%': {
-                                opacity: '1',
-                                transform: 'translateY(0)'
-                            }
+                            '0%': {opacity: '0', transform: 'translateY(10px)'},
+                            '100%': {opacity: '1', transform: 'translateY(0)'}
                         },
                     },
                     animation: {
@@ -109,7 +99,6 @@
     <style>
         body {
             background-color: hsl(32, 65%, 95%);
-            font-family: 'Montserrat', sans-serif;
         }
 
         .hero-gradient {
@@ -152,7 +141,6 @@
             box-shadow: 0 0 0 2px hsl(0, 70%, 51%);
         }
 
-        /* Scrollbar styling for register form */
         #register-content::-webkit-scrollbar {
             width: 6px;
         }
@@ -170,7 +158,6 @@
             background: hsl(0, 70%, 51%);
         }
 
-        /* Section headers styling */
         #register-content h3 {
             border-bottom: 1px solid hsl(30, 30%, 85%);
             padding-bottom: 0.5rem;
@@ -179,395 +166,400 @@
     </style>
 </head>
 
-<body>
-    <section class="min-h-screen flex items-center justify-center p-4 relative"
-        style="background-image: url('/images/default-pizza.jpg'); background-size: cover; background-position: center;">
-        <div class="absolute inset-0 bg-foreground/60 backdrop-blur-sm"></div>
+<body class="font-sans">
+<section class="min-h-screen flex items-center justify-center p-4 relative"
+         style="background-image: url('/images/default-pizza.jpg'); background-size: cover; background-position: center;">
+    <div class="absolute inset-0 bg-foreground/60 backdrop-blur-sm"></div>
 
-        <!-- Back to Home Button -->
-        <a th:href="@{/}"
-            class="absolute top-8 left-8 z-10 inline-flex items-center text-white hover:text-accent transition-smooth">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="h-5 w-5 mr-2">
-                <path d="m12 19-7-7 7-7"></path>
-                <path d="M19 12H5"></path>
-            </svg>
-            Back to Home
-        </a>
+    <!-- Back to Home Button -->
+    <a class="absolute top-8 left-8 z-10 inline-flex items-center text-white hover:text-accent transition-smooth"
+       th:href="@{/}"
+       th:text="#{auth.backToHome}">
+        Back to Home
+    </a>
 
-        <!-- Auth Card -->
-        <div
-            class="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-md relative z-10 animate-scale-in">
-            <!-- Card Header -->
-            <div class="flex flex-col space-y-1.5 p-6 text-center">
-                <h1 class="text-3xl font-display font-bold text-primary mb-2">Pizzeria di Roma</h1>
-                <p class="text-sm text-muted-foreground">Join us for authentic Italian pizza</p>
+    <!-- Auth Card -->
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-md relative z-10 animate-scale-in">
+        <!-- Card Header -->
+        <div class="flex flex-col space-y-1.5 p-6 text-center">
+            <h1 class="text-3xl font-display font-bold text-primary mb-2" th:text="#{brand.name}">Pizzeria di Roma</h1>
+            <p class="text-sm text-muted-foreground" th:text="#{auth.card.subtitle}">Join us for authentic Italian
+                pizza</p>
+        </div>
+
+        <!-- Card Content -->
+        <div class="p-6 pt-0">
+            <!-- Alert Messages -->
+            <div class="mb-4 p-3 rounded-md bg-red-50 border border-red-200 text-red-800 text-sm"
+                 th:if="${param.error}">
+                <p th:text="#{auth.alert.invalidCredentials}">Invalid email or password. Please try again.</p>
             </div>
 
-            <!-- Card Content -->
-            <div class="p-6 pt-0">
-                <!-- Alert Messages -->
-                <div th:if="${param.error}"
-                    class="mb-4 p-3 rounded-md bg-red-50 border border-red-200 text-red-800 text-sm">
-                    <p>Invalid email or password. Please try again.</p>
+            <div class="mb-4 p-3 rounded-md bg-green-50 border border-green-200 text-green-800 text-sm"
+                 th:if="${param.register}">
+                <p th:text="#{auth.alert.registerSuccess}">Registration successful! Please login.</p>
+            </div>
+
+            <div class="mb-4 p-3 rounded-md bg-blue-50 border border-blue-200 text-blue-800 text-sm"
+                 th:if="${param.logout}">
+                <p th:text="#{auth.alert.logoutSuccess}">You have been logged out successfully.</p>
+            </div>
+
+            <!-- Tabs Container -->
+            <div class="w-full">
+                <!-- Tab Buttons -->
+                <div class="h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full grid-cols-2 mb-6"
+                     role="tablist">
+                    <button class="tab-button-active inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-smooth" id="login-tab" onclick="showTab('login')"
+                            th:text="#{auth.tab.login}"
+                            type="button">
+                        Login
+                    </button>
+                    <button class="tab-button-inactive inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-smooth" id="register-tab" onclick="showTab('register')"
+                            th:text="#{auth.tab.register}"
+                            type="button">
+                        Register
+                    </button>
                 </div>
 
-                <div th:if="${param.register}"
-                    class="mb-4 p-3 rounded-md bg-green-50 border border-green-200 text-green-800 text-sm">
-                    <p>Registration successful! Please login.</p>
-                </div>
+                <!-- Login Tab Content -->
+                <div class="animate-fade-in" id="login-content">
+                    <form class="space-y-4" method="post" th:action="@{/login}">
+                        <!-- CSRF Token -->
+                        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
 
-                <div th:if="${param.logout}"
-                    class="mb-4 p-3 rounded-md bg-blue-50 border border-blue-200 text-blue-800 text-sm">
-                    <p>You have been logged out successfully.</p>
-                </div>
-
-                <!-- Tabs Container -->
-                <div class="w-full">
-                    <!-- Tab Buttons -->
-                    <div role="tablist"
-                        class="h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground grid w-full grid-cols-2 mb-6">
-                        <button type="button" onclick="showTab('login')" id="login-tab"
-                            class="tab-button-active inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-smooth">
-                            Login
-                        </button>
-                        <button type="button" onclick="showTab('register')" id="register-tab"
-                            class="tab-button-inactive inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-smooth">
-                            Register
-                        </button>
-                    </div>
-
-                    <!-- Login Tab Content -->
-                    <div id="login-content" class="animate-fade-in">
-                        <form th:action="@{/login}" method="post" class="space-y-4">
-                            <!-- CSRF Token -->
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                            <!-- Email Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="login-email">Email</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                                    </svg>
-                                    <input type="email" name="email" id="login-email"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10"
-                                        placeholder="your@email.com" required />
-                                </div>
+                        <!-- Email Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="login-email"
+                                   th:text="#{auth.field.email}">Email</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <rect height="16" rx="2" width="20" x="2" y="4"></rect>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10" id="login-email" name="email"
+                                       placeholder="your@email.com"
+                                       th:attr="placeholder=#{auth.placeholder.email}"
+                                       type="text"/>
                             </div>
+                        </div>
 
-                            <!-- Password Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="login-password">Password</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        <!-- Password Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="login-password"
+                                   th:text="#{auth.field.password}">Password</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10" id="login-password" name="password"
+                                       placeholder="••••••••"
+                                       th:attr="placeholder=#{auth.placeholder.password}"
+                                       type="password"/>
+                                <button class="show-password-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" onclick="togglePassword('login-password', 'login-eye-icon')"
+                                        th:attr="aria-label=#{auth.aria.togglePassword}"
+                                        type="button">
+                                    <svg class="h-4 w-4" fill="none" height="24"
+                                         id="login-eye-icon" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                         stroke-width="2" viewBox="0 0 24 24" width="24"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
                                     </svg>
-                                    <input type="password" name="password" id="login-password"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10"
-                                        placeholder="••••••••" required />
-                                    <button type="button" onclick="togglePassword('login-password', 'login-eye-icon')"
-                                        class="show-password-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                                        <svg id="login-eye-icon" xmlns="http://www.w3.org/2000/svg" width="24"
-                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="h-4 w-4">
-                                            <path
-                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
-                                            </path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Remember Me & Forgot Password -->
-                            <div class="flex  justify-end">
-                                <!--<div class="flex items-center space-x-2">
-                                <input type="checkbox" name="remember-me" id="remember"
-                                       class="h-4 w-4 rounded border-primary text-primary focus:ring-primary">
-                                <label for="remember" class="text-sm font-medium leading-none">Remember me</label>
-                            </div>-->
-                                <button type="button" class="text-primary text-sm hover:underline transition-smooth">
-                                    Forgot password?
                                 </button>
                             </div>
+                        </div>
 
-                            <!-- Submit Button -->
-                            <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-11 rounded-md px-8 w-full hero-gradient text-white">
-                                Sign In
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="flex justify-end">
+                            <button class="text-primary text-sm hover:underline transition-smooth" th:text="#{auth.forgotPassword}"
+                                    type="button">
+                                Forgot password?
                             </button>
-                        </form>
-                    </div>
+                        </div>
 
-                    <!-- Register Tab Content -->
-                    <div id="register-content" class="tab-content-hidden animate-fade-in">
-                        <form th:action="@{/register}" th:object="${user}" method="post" class="space-y-4">
-                            <!-- CSRF Token -->
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <!-- Submit Button -->
+                        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-11 rounded-md px-8 w-full hero-gradient text-white"
+                                th:text="#{auth.btn.signIn}"
+                                type="submit">
+                            Sign In
+                        </button>
+                    </form>
+                </div>
 
-                            <!-- First Name Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="register-firstname">First
-                                    Name</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                    <input type="text" th:field="*{firstName}" id="register-firstname"
-                                        th:classappend="${#fields.hasErrors('firstName')} ? 'border-red-500' : ''"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10"
-                                        placeholder="John" required />
-                                </div>
-                                <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
-                                    class="text-xs text-red-600 mt-1"></p>
+                <!-- Register Tab Content -->
+                <div class="tab-content-hidden animate-fade-in" id="register-content">
+                    <form class="space-y-4" method="post" th:action="@{/register}" th:object="${user}">
+                        <!-- CSRF Token -->
+                        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
+                        <!-- First Name Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="register-firstname"
+                                   th:text="#{auth.field.firstName}">First Name</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10" id="register-firstname" placeholder="John"
+                                       th:attr="placeholder=#{auth.placeholder.firstName}"
+                                       th:classappend="${#fields.hasErrors('firstName')} ? 'border-red-500' : ''"
+                                       th:field="*{firstName}"
+                                       type="text"/>
                             </div>
+                            <p class="text-xs text-red-600 mt-1" th:errors="*{firstName}"
+                               th:if="${#fields.hasErrors('firstName')}"></p>
+                        </div>
 
-                            <!-- Last Name Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="register-lastname">Last
-                                    Name</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                    <input type="text" th:field="*{lastName}" id="register-lastname"
-                                        th:classappend="${#fields.hasErrors('lastName')} ? 'border-red-500' : ''"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10"
-                                        placeholder="Doe" required />
-                                </div>
-                                <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
-                                    class="text-xs text-red-600 mt-1"></p>
+                        <!-- Last Name Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="register-lastname"
+                                   th:text="#{auth.field.lastName}">Last Name</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10" id="register-lastname" placeholder="Doe"
+                                       th:attr="placeholder=#{auth.placeholder.lastName}"
+                                       th:classappend="${#fields.hasErrors('lastName')} ? 'border-red-500' : ''"
+                                       th:field="*{lastName}"
+                                       type="text"/>
                             </div>
+                            <p class="text-xs text-red-600 mt-1" th:errors="*{lastName}"
+                               th:if="${#fields.hasErrors('lastName')}"></p>
+                        </div>
 
-                            <!-- Email Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="register-email">Email</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                                    </svg>
-                                    <input type="email" th:field="*{email}" id="register-email"
-                                        th:classappend="${#fields.hasErrors('email')} ? 'border-red-500' : ''"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10"
-                                        placeholder="your@email.com" required />
-                                </div>
-                                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
-                                    class="text-xs text-red-600 mt-1"></p>
+                        <!-- Email Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="register-email"
+                                   th:text="#{auth.field.email}">Email</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <rect height="16" rx="2" width="20" x="2" y="4"></rect>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10" id="register-email" placeholder="your@email.com"
+                                       th:attr="placeholder=#{auth.placeholder.email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'border-red-500' : ''"
+                                       th:field="*{email}"
+                                       type="text"/>
                             </div>
+                            <p class="text-xs text-red-600 mt-1" th:errors="*{email}"
+                               th:if="${#fields.hasErrors('email')}"></p>
+                        </div>
 
-                            <!-- Phone Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="register-phone">Phone</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round"
-                                         class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                                    </svg>
-                                    <input type="tel" th:field="*{phone}" id="register-phone"
-                                           th:classappend="${#fields.hasErrors('phone')} ? 'border-red-500' : ''"
-                                           class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10"
-                                           placeholder="+421 900 123 456" required />
-                                </div>
-                                <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
-                                   class="text-xs text-red-600 mt-1"></p>
+                        <!-- Phone Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="register-phone"
+                                   th:text="#{auth.field.phone}">Phone</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <rect height="16" rx="2" width="20" x="2" y="4"></rect>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10" id="register-phone" placeholder="+421 900 123 456"
+                                       th:attr="placeholder=#{auth.placeholder.phone}"
+                                       th:classappend="${#fields.hasErrors('phone')} ? 'border-red-500' : ''"
+                                       th:field="*{phone}"
+                                       type="text"/>
                             </div>
+                            <p class="text-xs text-red-600 mt-1" th:errors="*{phone}"
+                               th:if="${#fields.hasErrors('phone')}"></p>
+                        </div>
 
-                            <!-- Password Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="register-password">Password</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                    </svg>
-                                    <input type="password" th:field="*{password}" id="register-password"
-                                        th:classappend="${#fields.hasErrors('password')} ? 'border-red-500' : ''"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10"
-                                        placeholder="Min. 8 characters" required />
-                                    <button type="button"
+                        <!-- Password Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="register-password"
+                                   th:text="#{auth.field.password}">Password</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10" id="register-password" placeholder="Min. 8 characters"
+                                       th:attr="placeholder=#{auth.placeholder.passwordHint}"
+                                       th:classappend="${#fields.hasErrors('password')} ? 'border-red-500' : ''"
+                                       th:field="*{password}"
+                                       type="password"/>
+                                <button class="show-password-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                                         onclick="togglePassword('register-password', 'register-eye-icon')"
-                                        class="show-password-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                                        <svg id="register-eye-icon" xmlns="http://www.w3.org/2000/svg" width="24"
-                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="h-4 w-4">
-                                            <path
-                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
-                                            </path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                                    class="text-xs text-red-600 mt-1"></p>
-                            </div>
-
-                            <!-- Confirm Password Field -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium leading-none" for="register-confirm-password">Confirm
-                                    Password</label>
-                                <div class="relative">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4">
-                                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        th:attr="aria-label=#{auth.aria.togglePassword}"
+                                        type="button">
+                                    <svg class="h-4 w-4" fill="none" height="24"
+                                         id="register-eye-icon" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                         stroke-width="2" viewBox="0 0 24 24" width="24"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
                                     </svg>
-                                    <input type="password" th:field="*{confirmPassword}" id="register-confirm-password"
-                                        th:classappend="${#fields.hasErrors('confirmPassword')} ? 'border-red-500' : ''"
-                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10"
-                                        placeholder="Repeat password" />
-                                    <button type="button"
+                                </button>
+                            </div>
+                            <p class="text-xs text-red-600 mt-1" th:errors="*{password}"
+                               th:if="${#fields.hasErrors('password')}"></p>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none" for="register-confirm-password"
+                                   th:text="#{auth.field.confirmPassword}">Confirm Password</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" fill="none" height="24" stroke="currentColor"
+                                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                     width="24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10" id="register-confirm-password" placeholder="Repeat password"
+                                       th:attr="placeholder=#{auth.placeholder.confirmPassword}"
+                                       th:classappend="${#fields.hasErrors('confirmPassword')} ? 'border-red-500' : ''"
+                                       th:field="*{confirmPassword}"
+                                       type="password"/>
+                                <button class="show-password-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                                         onclick="togglePassword('register-confirm-password', 'register-confirm-eye-icon')"
-                                        class="show-password-btn absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                                        <svg id="register-confirm-eye-icon" xmlns="http://www.w3.org/2000/svg"
-                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="h-4 w-4">
-                                            <path
-                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
-                                            </path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
-                                    class="text-xs text-red-600 mt-1"></p>
+                                        th:attr="aria-label=#{auth.aria.togglePassword}"
+                                        type="button">
+                                    <svg class="h-4 w-4" fill="none"
+                                         height="24" id="register-confirm-eye-icon" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                         stroke-width="2" viewBox="0 0 24 24" width="24"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
                             </div>
+                            <p class="text-xs text-red-600 mt-1" th:errors="*{confirmPassword}"
+                               th:if="${#fields.hasErrors('confirmPassword')}"></p>
+                        </div>
 
-                            <!-- Terms & Conditions / Privacy Policy -->
-                            <div class="flex items-start space-x-2 pt-2">
-                                <input type="checkbox" th:field="*{termsAccepted}" id="register-terms"
-                                    th:classappend="${#fields.hasErrors('termsAccepted')} ? 'border-red-500' : ''"
-                                    class="mt-1 h-4 w-4 rounded border-primary text-primary focus:ring-primary">
-                                <label for="register-terms" class="text-sm leading-relaxed">
-                                    I agree to the <a href="/terms"
-                                        class="text-primary hover:underline font-medium">Terms &
-                                        Conditions</a>
-                                    and <a href="/privacy" class="text-primary hover:underline font-medium">Privacy
-                                        Policy</a>
-                                </label>
-                            </div>
-                            <p th:if="${#fields.hasErrors('termsAccepted')}" th:errors="*{termsAccepted}"
-                                class="text-xs text-red-600 mt-1"></p>
+                        <!-- Terms & Conditions / Privacy Policy -->
+                        <div class="flex items-start space-x-2 pt-2">
+                            <input class="mt-1 h-4 w-4 rounded border-primary text-primary focus:ring-primary" id="register-terms" th:classappend="${#fields.hasErrors('termsAccepted')} ? 'border-red-500' : ''"
+                                   th:field="*{termsAccepted}"
+                                   type="checkbox">
+                            <label class="text-sm leading-relaxed" for="register-terms">
+                                <span th:text="#{auth.terms.prefix}">I agree to the</span>
+                                <a class="text-primary hover:underline font-medium" href="/terms"
+                                   th:text="#{auth.terms.terms}">Terms & Conditions</a>
+                                <span th:text="#{auth.terms.and}">and</span>
+                                <a class="text-primary hover:underline font-medium" href="/privacy"
+                                   th:text="#{auth.terms.privacy}">Privacy Policy</a>
+                            </label>
+                        </div>
+                        <p class="text-xs text-red-600 mt-1" th:errors="*{termsAccepted}"
+                           th:if="${#fields.hasErrors('termsAccepted')}"></p>
 
-                            <!-- Submit Button -->
-                            <button type="submit"
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-11 rounded-md px-8 w-full hero-gradient text-white">
-                                Create Account
+                        <!-- Submit Button -->
+                        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-11 rounded-md px-8 w-full hero-gradient text-white"
+                                th:text="#{auth.btn.createAccount}"
+                                type="submit">
+                            Create Account
+                        </button>
+
+                        <p class="text-xs text-center text-muted-foreground pt-1">
+                            <span th:text="#{auth.alreadyHaveAccount}">Already have an account?</span>
+                            <button class="text-primary hover:underline font-medium" onclick="showTab('login')"
+                                    th:text="#{auth.signInHere}"
+                                    type="button">
+                                Sign in here
                             </button>
-
-                            <p class="text-xs text-center text-muted-foreground pt-1">
-                                Already have an account? <button type="button" onclick="showTab('login')"
-                                    class="text-primary hover:underline font-medium">Sign in here</button>
-                            </p>
-                        </form>
-                    </div>
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- JavaScript for Tab Switching and Password Toggle -->
-    <script>
-        function showTab(tabName) {
-            const loginTab = document.getElementById('login-tab');
-            const registerTab = document.getElementById('register-tab');
-            const loginContent = document.getElementById('login-content');
-            const registerContent = document.getElementById('register-content');
+<!-- JavaScript for Tab Switching and Password Toggle -->
+<script>
+    function showTab(tabName) {
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginContent = document.getElementById('login-content');
+        const registerContent = document.getElementById('register-content');
 
-            if (tabName === 'login') {
-                loginTab.classList.remove('tab-button-inactive');
-                loginTab.classList.add('tab-button-active');
-                registerTab.classList.remove('tab-button-active');
-                registerTab.classList.add('tab-button-inactive');
+        if (tabName === 'login') {
+            loginTab.classList.remove('tab-button-inactive');
+            loginTab.classList.add('tab-button-active');
+            registerTab.classList.remove('tab-button-active');
+            registerTab.classList.add('tab-button-inactive');
 
-                loginContent.classList.remove('tab-content-hidden');
-                registerContent.classList.add('tab-content-hidden');
+            loginContent.classList.remove('tab-content-hidden');
+            registerContent.classList.add('tab-content-hidden');
 
-                // Change URL to /login
-                window.history.pushState({}, '', '/login');
-            } else {
-                registerTab.classList.remove('tab-button-inactive');
-                registerTab.classList.add('tab-button-active');
-                loginTab.classList.remove('tab-button-active');
-                loginTab.classList.add('tab-button-inactive');
+            window.history.pushState({}, '', '/login');
+        } else {
+            registerTab.classList.remove('tab-button-inactive');
+            registerTab.classList.add('tab-button-active');
+            loginTab.classList.remove('tab-button-active');
+            loginTab.classList.add('tab-button-inactive');
 
-                registerContent.classList.remove('tab-content-hidden');
-                loginContent.classList.add('tab-content-hidden');
+            registerContent.classList.remove('tab-content-hidden');
+            loginContent.classList.add('tab-content-hidden');
 
-                // Change URL to /register
-                window.history.pushState({}, '', '/register');
-            }
+            window.history.pushState({}, '', '/register');
         }
+    }
 
-        function togglePassword(inputId, iconId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
 
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.innerHTML = `
-                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
-                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
-                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
-                    <line x1="2" x2="22" y1="2" y2="22"></line>
-                `;
-            } else {
-                input.type = 'password';
-                icon.innerHTML = `
-                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                `;
-            }
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.innerHTML = `
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                <line x1="2" x2="22" y1="2" y2="22"></line>
+            `;
+        } else {
+            input.type = 'password';
+            icon.innerHTML = `
+                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            `;
         }
+    }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentPath = window.location.pathname;
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPath = window.location.pathname;
 
-            // Check if there are validation errors in the register form
-            const hasRegisterErrors = document.querySelector('#register-content .text-red-600') !== null;
+        const hasRegisterErrors = document.querySelector('#register-content .text-red-600') !== null;
 
-            // Show register tab if URL is /register or has errors or has ?tab=register
-            if (currentPath.includes('/register') || hasRegisterErrors || urlParams.get('tab') === 'register') {
-                showTab('register');
-            } else {
-                // Default to login tab for /login or any other case
-                showTab('login');
-            }
-        });
-    </script>
+        if (currentPath.includes('/register') || hasRegisterErrors || urlParams.get('tab') === 'register') {
+            showTab('register');
+        } else {
+            showTab('login');
+        }
+    });
+</script>
 </body>
 
 </html>

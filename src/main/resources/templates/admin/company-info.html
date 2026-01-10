@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="sk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title th:text="#{admin.companyInfo.pageTitle}">Company Info - Admin</title>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        display: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        background: 'hsl(32, 65%, 95%)',
+                        foreground: 'hsl(222.2, 84%, 4.9%)',
+                        card: '#ffffff',
+                        primary: '#D32F2F',
+                        'primary-foreground': '#ffffff',
+                        border: 'hsl(25, 50%, 85%)',
+                        ring: '#D32F2F',
+                        muted: '#F5F5F5',
+                        'muted-foreground': 'hsl(215.4, 16.3%, 46.9%)',
+                        input: 'hsl(30, 30%, 90%)',
+                    },
+                    borderRadius: {'xl': '0.75rem', '2xl': '1rem'},
+                    boxShadow: {warm: '0 10px 30px rgba(0,0,0,0.06)'}
+                },
+            },
+        }
+    </script>
+
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%);
+        }
+
+        .hero-gradient:hover {
+            background: linear-gradient(135deg, #B71C1C 0%, #C62828 100%);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-background font-montserrat text-foreground flex">
+<div th:replace="~{fragments/components/admin/sidebar :: adminSidebar('company-info')}"></div>
+
+<main class="flex-1 overflow-y-auto px-4 py-10 ml-64">
+
+    <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800" th:if="${success}">
+        <div class="flex items-center gap-2">
+            <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                 stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+            <span th:text="${success}">Saved</span>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 pl-10">
+        <div>
+            <h1 class="text-4xl font-display font-bold" th:text="#{admin.companyInfo.title}">Company Info</h1>
+            <p class="text-sm text-muted-foreground mt-1" th:text="#{admin.companyInfo.subtitle}">Manage company
+                info</p>
+        </div>
+    </div>
+
+    <section class="bg-white rounded-2xl border border-border shadow-warm overflow-hidden">
+        <div class="p-6 border-b border-border bg-white/40">
+            <h2 class="text-xl font-semibold" th:text="#{admin.companyInfo.editTitle}">Edit</h2>
+            <p class="text-xs text-muted-foreground" th:text="#{admin.companyInfo.editSubtitle}">Uprav a ulož</p>
+        </div>
+
+        <form class="p-6"
+              method="post"
+              th:action="@{/admin/company-info}"
+              th:object="${companyInfoRequest}">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Left -->
+                <div class="space-y-5">
+                    <div class="rounded-2xl border border-border bg-white/70 p-5 space-y-5">
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold" for="name" th:text="#{admin.companyInfo.name}">Company
+                                name</label>
+                            <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="name"
+                                   th:field="*{name}"/>
+                            <p class="text-xs text-red-600" th:errors="*{name}"
+                               th:if="${#fields.hasErrors('name')}"></p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold" for="description"
+                                   th:text="#{admin.companyInfo.description}">Description</label>
+                            <textarea class="w-full resize-none rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="description" rows="5"
+                                      th:field="*{description}"></textarea>
+                            <p class="text-xs text-red-600" th:errors="*{description}"
+                               th:if="${#fields.hasErrors('description')}"></p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-border bg-white/70 p-5 space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold" for="phone" th:text="#{admin.companyInfo.phone}">Phone</label>
+                                <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="phone"
+                                       placeholder="+421 905 123 456"
+                                       th:field="*{phone}"/>
+                                <p class="text-xs text-red-600" th:errors="*{phone}"
+                                   th:if="${#fields.hasErrors('phone')}"></p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold" for="email" th:text="#{admin.companyInfo.email}">Email</label>
+                                <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="email"
+                                       placeholder="info@pizzeriadiroma.it"
+                                       th:field="*{email}"/>
+                                <p class="text-xs text-red-600" th:errors="*{email}"
+                                   th:if="${#fields.hasErrors('email')}"></p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold" for="address" th:text="#{admin.companyInfo.address}">Address</label>
+                            <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="address"
+                                   th:field="*{address}"/>
+                            <p class="text-xs text-red-600" th:errors="*{address}"
+                               th:if="${#fields.hasErrors('address')}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right -->
+                <div class="space-y-5">
+                    <div class="rounded-2xl border border-border bg-white/70 p-5 space-y-4">
+                        <p class="text-sm font-bold" th:text="#{admin.companyInfo.socialLinks}">Social links</p>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold" for="facebookUrl"
+                                   th:text="#{admin.companyInfo.facebookUrl}">Facebook URL</label>
+                            <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="facebookUrl"
+                                   th:field="*{facebookUrl}"/>
+                            <p class="text-xs text-red-600" th:errors="*{facebookUrl}"
+                               th:if="${#fields.hasErrors('facebookUrl')}"></p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold" for="instagramUrl"
+                                   th:text="#{admin.companyInfo.instagramUrl}">Instagram URL</label>
+                            <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="instagramUrl"
+                                   th:field="*{instagramUrl}"/>
+                            <p class="text-xs text-red-600" th:errors="*{instagramUrl}"
+                               th:if="${#fields.hasErrors('instagramUrl')}"></p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold" for="twitterUrl"
+                                   th:text="#{admin.companyInfo.twitterUrl}">Twitter/X URL</label>
+                            <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="twitterUrl"
+                                   th:field="*{twitterUrl}"/>
+                            <p class="text-xs text-red-600" th:errors="*{twitterUrl}"
+                               th:if="${#fields.hasErrors('twitterUrl')}"></p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-border bg-white/70 p-5 space-y-4">
+                        <p class="text-sm font-bold" th:text="#{admin.companyInfo.pricingSettings}">Pricing settings</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold" for="dphRate"
+                                       th:text="#{admin.companyInfo.vatRate}">DPH (%)</label>
+                                <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="dphRate" step="0.01" th:field="*{dphRate}"
+                                       type="number"/>
+                                <p class="text-xs text-red-600" th:errors="*{dphRate}"
+                                   th:if="${#fields.hasErrors('dphRate')}"></p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold" for="deliveryPrice"
+                                       th:text="#{admin.companyInfo.deliveryPrice}">Delivery price (€)</label>
+                                <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="deliveryPrice" step="0.01" th:field="*{deliveryPrice}"
+                                       type="number"/>
+                                <p class="text-xs text-red-600" th:errors="*{deliveryPrice}"
+                                   th:if="${#fields.hasErrors('deliveryPrice')}"></p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold" for="freeDeliveryFrom"
+                                       th:text="#{admin.companyInfo.freeDeliveryFrom}">Free delivery from (€)</label>
+                                <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="freeDeliveryFrom" step="0.01"
+                                       th:field="*{freeDeliveryFrom}"
+                                       type="number"/>
+                                <p class="text-xs text-red-600" th:errors="*{freeDeliveryFrom}"
+                                   th:if="${#fields.hasErrors('freeDeliveryFrom')}"></p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-sm font-semibold" for="extraIngredientPrice"
+                                       th:text="#{admin.companyInfo.extraIngredientPrice}">Extra ingredient (€)</label>
+                                <input class="w-full rounded-xl border border-border bg-white/80 px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-ring/30" id="extraIngredientPrice" step="0.01"
+                                       th:field="*{extraIngredientPrice}"
+                                       type="number"/>
+                                <p class="text-xs text-red-600" th:errors="*{extraIngredientPrice}"
+                                   th:if="${#fields.hasErrors('extraIngredientPrice')}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button class="hero-gradient text-white px-5 py-3 rounded-xl font-semibold shadow-warm" th:text="#{common.save}"
+                        type="submit">
+                    Save
+                </button>
+            </div>
+        </form>
+    </section>
+
+</main>
+</body>
+</html>

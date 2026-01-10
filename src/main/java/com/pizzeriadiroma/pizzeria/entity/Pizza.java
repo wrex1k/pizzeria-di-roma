@@ -2,6 +2,7 @@ package com.pizzeriadiroma.pizzeria.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,30 +18,35 @@ public class Pizza {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Pizza name must not be blank.")
-    @Size(min = 2, max = 50, message = "Pizza name must be between 2 and 50 characters.")
+    @NotBlank(message = "{validation.pizzaName.required}")
+    @Size(min = 2, max = 50, message = "{validation.pizzaName.size}")
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false, unique = true, updatable = false)
     private String slug;
 
-    @NotBlank(message = "Pizza description must not be blank.")
-    @Size(max = 2000, message = "Description must be max 2000 characters.")
+    @NotBlank(message = "{validation.description.required}")
+    @Size(max = 2000, message = "{validation.description.size.max}")
     @Column(nullable = false)
-    private String description;
+    private String description_en;
 
-    @Size(max = 500, message = "Image URL must not exceed 500 characters.")
+    @NotBlank(message = "{validation.description.required}")
+    @Size(max = 2000, message = "{validation.description.size.max}")
+    @Column(nullable = false)
+    private String description_sk;
+
+    @Size(max = 500, message = "{validation.imageUrl.size}")
     @Column(name = "image_url")
     private String imageUrl;
 
-    @NotNull(message = "Base price cannot be null.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "Base price must be greater than or equal to 0.")
-    @Digits(integer = 8, fraction = 2, message = "Base price must have up to 8 digits and 2 decimals.")
+    @NotNull(message = "{validation.basePrice.required}")
+    @DecimalMin(value = "0.00", inclusive = true, message = "{validation.basePrice.decimalMin}")
+    @Digits(integer = 8, fraction = 2, message = "{validation.basePrice.digits}")
     @Column(name = "base_price", nullable = false)
     private BigDecimal basePrice;
 
-    @NotNull(message = "Availability flag cannot be null.")
+    @NotNull(message = "{validation.availability.required}")
     @Column(name = "is_available", nullable = false)
     private Boolean isAvailable = true;
 
@@ -114,11 +120,23 @@ public class Pizza {
     }
 
     public String getDescription() {
-        return description;
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if ("sk".equals(locale.getLanguage())) {
+            return description_sk;
+        }
+
+        return description_en;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if ("sk".equals(locale.getLanguage())) {
+            this.description_sk = description;
+        } else {
+            this.description_en = description;
+        }
     }
 
     public String getImageUrl() {

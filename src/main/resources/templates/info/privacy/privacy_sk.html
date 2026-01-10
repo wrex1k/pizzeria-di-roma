@@ -1,0 +1,79 @@
+<main class="container mx-auto px-4 py-8 max-w-4xl min-h-screen bg-background text-foreground font-sans"
+    th:fragment="content">
+
+    <h1 class="text-4xl font-display font-bold mb-4">
+        Zásady ochrany osobných údajov
+    </h1>
+    <p class="text-sm text-muted-foreground mb-8">
+        Naposledy aktualizované: 5. november 2025
+    </p>
+
+    <div class="space-y-8">
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-display font-semibold mb-3">1. Úvod</h2>
+            <p>
+                Ochrana vášho súkromia je pre nás dôležitá. Tento dokument vysvetľuje,
+                ako zhromažďujeme, používame a chránime vaše osobné údaje.
+            </p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-display font-semibold mb-3">2. Aké údaje zhromažďujeme</h2>
+
+            <h3 class="font-semibold mt-4 mb-2">2.1 Osobné údaje</h3>
+            <ul class="list-disc list-inside text-muted-foreground space-y-2">
+                <li>Meno, email, telefón</li>
+                <li>Doručovacia adresa</li>
+                <li>Prihlasovacie údaje</li>
+                <li>História objednávok</li>
+            </ul>
+
+            <h3 class="font-semibold mt-6 mb-2">2.2 Automaticky zbierané údaje</h3>
+            <ul class="list-disc list-inside text-muted-foreground space-y-2">
+                <li>IP adresa a prehliadač</li>
+                <li>Údaje o zariadení</li>
+                <li>Cookies</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-display font-semibold mb-3">3. Použitie údajov</h2>
+            <ul class="list-disc list-inside text-muted-foreground space-y-2">
+                <li>Spracovanie objednávok</li>
+                <li>Správa používateľského účtu</li>
+                <li>Zákaznícka podpora</li>
+                <li>Plnenie zákonných povinností</li>
+            </ul>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-display font-semibold mb-3">4. Bezpečnosť údajov</h2>
+            <p>
+                Používame technické a organizačné opatrenia na ochranu vašich údajov.
+            </p>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-display font-semibold mb-3">5. Vaše práva</h2>
+            <ul class="list-disc list-inside text-muted-foreground space-y-2">
+                <li>Prístup k údajom</li>
+                <li>Oprava alebo vymazanie</li>
+                <li>Odvolanie súhlasu</li>
+            </ul>
+        </section>
+
+        <div class="bg-secondary p-6 rounded-lg border-l-4 border-primary">
+            <p class="text-sm">
+                Používaním služby súhlasíte s týmito zásadami.
+            </p>
+        </div>
+
+        <div class="text-center">
+            <a class="text-primary underline font-medium" th:href="@{/terms}">
+                Zobraziť obchodné podmienky →
+            </a>
+        </div>
+
+    </div>
+</main>

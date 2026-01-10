@@ -15,8 +15,8 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Tag name must not be blank.")
-    @Size(min = 2, max = 50, message = "Pizza name must be between 2 and 50 characters.")
+    @NotBlank(message = "{validation.tagName.required}")
+    @Size(min = 2, max = 50, message = "{validation.tagName.size}")
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 

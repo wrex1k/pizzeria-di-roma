@@ -22,8 +22,8 @@
                 <div th:replace="~{fragments/components/pizza/pizza-tags :: pizza-tags(${pizza}, 'small')}"></div>
 
                 <span class="text-2xl font-bold text-primary"
-                      th:text="'from €' + ${pizza.basePrice}">
-                    €0.00
+                      th:text="#{home.price.from(${#numbers.formatDecimal(pizza.basePrice, 1, 2)})}">
+                      od €0.00
                 </span>
             </div>
         </div>

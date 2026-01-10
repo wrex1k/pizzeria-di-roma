@@ -39,7 +39,7 @@ CREATE TABLE users (
                        phone VARCHAR(20) NOT NULL,
                        password VARCHAR(255) NOT NULL,
 
-                       role VARCHAR(10) NOT NULL DEFAULT 'USER',     -- <<<<<< JPA expects THIS
+                       role VARCHAR(10) NOT NULL DEFAULT 'USER',
                        status VARCHAR(10) NOT NULL DEFAULT 'ACTIVE',
 
                        hired_at DATETIME NULL,
@@ -130,8 +130,9 @@ CREATE TABLE pizza_sizes (
                              name VARCHAR(255) NOT NULL,
                              size_label VARCHAR(255) NOT NULL,
                              price_extra DECIMAL(5,2) NOT NULL,
-                             description TEXT NULL,
-
+                             description_en TEXT NULL,
+                             description_sk TEXT NUll,
+                             description_it TEXT NULL,
                              created_at DATETIME NOT NULL,
                              updated_at DATETIME NOT NULL,
 

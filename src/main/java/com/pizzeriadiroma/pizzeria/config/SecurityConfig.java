@@ -51,10 +51,15 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/css/**",
                                 "/js/**",
-                                "/favicon.png"
+                                "/favicon.png",
+                                "/error",
+                                "/terms",
+                                "/privacy"
                         ).permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers("/kitchen/**").hasAnyRole("COOK", "ADMIN")
 
                         .requestMatchers(
                                 "/cart/**",

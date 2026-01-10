@@ -1,28 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <!-- Character Encoding & Favicon -->
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+    <link rel="icon" th:href="@{/favicon.png}" type="image/png">
 
     <!-- Viewport & SEO Meta Tags -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmed - Pizzeria di Roma</title>
-    <meta name="description" content="Your order has been confirmed at Pizzeria di Roma.">
-    <meta name="author" content="Pizzeria di Roma">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title th:text="#{orderConfirmed.pageTitle}">
+        Order Confirmed - Pizzeria di Roma
+    </title>
+    <meta name="description" th:content="#{orderConfirmed.meta.description}">
+    <meta name="author" th:content="#{meta.author}">
 
-    <!-- Google Fonts - Playfair Display & Montserrat -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind Configuration & Theme -->
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             darkMode: ['class'],
@@ -30,24 +32,13 @@
                 extend: {
                     fontFamily: {
                         display: ['Playfair Display', 'serif'],
-                        playfair: ['Playfair Display', 'serif'],
                         sans: ['Montserrat', 'sans-serif'],
                     },
                     colors: {
                         border: 'hsl(30, 30%, 85%)',
-                        input: 'hsl(30, 30%, 90%)',
-                        ring: 'hsl(0, 70%, 51%)',
                         background: 'hsl(32, 65%, 95%)',
                         foreground: 'hsl(0, 0%, 11%)',
                         primary: {
-                            DEFAULT: 'hsl(0, 70%, 51%)',
-                            foreground: 'hsl(0, 0%, 100%)',
-                        },
-                        secondary: {
-                            DEFAULT: 'hsl(32, 65%, 95%)',
-                            foreground: 'hsl(0, 0%, 11%)',
-                        },
-                        destructive: {
                             DEFAULT: 'hsl(0, 70%, 51%)',
                             foreground: 'hsl(0, 0%, 100%)',
                         },
@@ -55,40 +46,22 @@
                             DEFAULT: 'hsl(30, 40%, 88%)',
                             foreground: 'hsl(0, 0%, 45%)',
                         },
-                        accent: {
-                            DEFAULT: 'hsl(45, 98%, 60%)',
-                            foreground: 'hsl(0, 0%, 11%)',
-                        },
-                        popover: {
-                            DEFAULT: 'hsl(0, 0%, 100%)',
-                            foreground: 'hsl(0, 0%, 11%)',
-                        },
-                        card: {
-                            DEFAULT: 'hsl(0, 0%, 100%)',
-                            foreground: 'hsl(0, 0%, 11%)',
-                        },
-                    },
-                    borderRadius: {
-                        lg: '0.75rem',
-                        md: 'calc(0.75rem - 2px)',
-                        sm: 'calc(0.75rem - 4px)',
                     },
                 }
             }
         }
     </script>
-    <!-- Custom CSS & Animations -->
+
+    <!-- Custom CSS -->
     <style>
         body {
             background-color: hsl(32, 65%, 95%);
-            font-family: 'Montserrat', sans-serif;
         }
 
         .hero-gradient {
             background: linear-gradient(135deg, #D32F2F 0%, #C62828 100%);
         }
 
-        /* Checkmark SVG Animation */
         @keyframes checkmark {
             0% {
                 stroke-dashoffset: 100;
@@ -105,7 +78,6 @@
             animation: checkmark 0.5s ease-in-out 0.3s forwards;
         }
 
-        /* Fade In Up Animation */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -124,131 +96,162 @@
     </style>
 </head>
 
-<body>
-    <div class="min-h-screen flex flex-col">
-        <!-- Navbar Fragment -->
-        <div th:replace="~{fragments/layout/navbar :: navbar}"></div>
+<body class="font-sans">
+<div class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <div th:replace="~{fragments/layout/navbar :: navbar}"></div>
 
-        <!-- Main Content -->
-        <div class="container mx-auto px-4 py-12 flex-1">
-            <div class="max-w-2xl mx-auto">
-                <!-- Success Icon -->
-                <div class="text-center mb-8">
-                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 mb-4">
-                        <svg class="w-16 h-16 text-green-600" viewBox="0 0 100 100" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="8" fill="none" />
-                            <path class="checkmark" d="M30 50 L45 65 L70 35" stroke="currentColor" stroke-width="8"
-                                stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                        </svg>
-                    </div>
-                    <h1 class="text-4xl font-display font-bold mb-2 fade-in-up">Order Confirmed!</h1>
-                    <p class="text-lg text-muted-foreground fade-in-up" style="animation-delay: 0.1s;">Thank you for
-                        your order</p>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12 flex-1">
+        <div class="max-w-2xl mx-auto">
+
+            <!-- Success Icon -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 mb-4">
+                    <svg class="w-16 h-16 text-green-600" fill="none" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="8"/>
+                        <path class="checkmark" d="M30 50 L45 65 L70 35"
+                              stroke="currentColor" stroke-linecap="round"
+                              stroke-linejoin="round" stroke-width="8"/>
+                    </svg>
                 </div>
 
-                <!-- Order Details Card -->
-                <div class="bg-white rounded-xl shadow-sm p-8 mb-6 fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="text-center mb-6 pb-6 border-b border-border">
-                        <p class="text-sm text-muted-foreground mb-2">Order Number</p>
-                        <p class="text-2xl font-bold text-primary font-mono" th:text="${orderNumber}">
-                            ORD-20260108123456-ABC123</p>
-                    </div>
+                <h1 class="text-4xl font-display font-bold mb-2 fade-in-up"
+                    th:text="#{orderConfirmed.title}">
+                    Order Confirmed!
+                </h1>
 
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="text-green-600 mt-0.5">
-                                <path d="M20 6 9 17l-5-5"></path>
-                            </svg>
-                            <div>
-                                <p class="font-semibold">Order Received</p>
-                                <p class="text-sm text-muted-foreground">We've received your order and will start
-                                    preparing it soon</p>
-                            </div>
-                        </div>
+                <p class="text-lg text-muted-foreground fade-in-up"
+                   style="animation-delay: 0.1s;"
+                   th:text="#{orderConfirmed.subtitle}">
+                    Thank you for your order
+                </p>
+            </div>
 
-                        <div class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="text-muted-foreground mt-0.5">
-                                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
-                                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
-                                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
-                                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
-                            </svg>
-                            <div>
-                                <p class="font-semibold">Order Confirmation</p>
-                                <p class="text-sm text-muted-foreground">An email confirmation has been sent to your
-                                    email address</p>
-                            </div>
-                        </div>
+            <!-- Order Details -->
+            <div class="bg-white rounded-xl shadow-sm p-8 mb-6 fade-in-up"
+                 style="animation-delay: 0.2s;">
 
-                        <div class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="text-muted-foreground mt-0.5">
-                                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
-                                <path d="M15 18H9"></path>
-                                <path
-                                    d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14">
-                                </path>
-                                <circle cx="17" cy="18" r="2"></circle>
-                                <circle cx="7" cy="18" r="2"></circle>
-                            </svg>
-                            <div>
-                                <p class="font-semibold">Estimated Time</p>
-                                <p class="text-sm text-muted-foreground">Your order will be ready in approximately
-                                    30-45 minutes</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 fade-in-up" style="animation-delay: 0.3s;">
-                    <a th:href="@{/profile}"
-                        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        View My Orders
-                    </a>
-
-                    <a th:href="@{/}"
-                        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold hero-gradient text-white hover:opacity-90 transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                        Back to Home
-                    </a>
-                </div>
-
-                <!-- Additional Info -->
-                <div class="mt-8 p-6 bg-blue-50 rounded-lg text-center fade-in-up" style="animation-delay: 0.4s;">
-                    <p class="text-sm text-blue-900">
-                        <strong>Need help?</strong>
-                        Contact us at
-                        <a th:href="'tel:' + ${companyInfo.phone}" class="underline hover:no-underline"
-                            th:text="${companyInfo.phone}">+421 944 025 567</a>
-                        or
-                        <a th:href="'mailto:' + ${companyInfo.email}" class="underline hover:no-underline"
-                            th:text="${companyInfo.email}">info@pizzeriadiroma.sk</a>
+                <div class="text-center mb-6 pb-6 border-b border-border">
+                    <p class="text-sm text-muted-foreground mb-2"
+                       th:text="#{orderConfirmed.orderNumber.label}">
+                        Order Number
+                    </p>
+                    <p class="text-2xl font-bold text-primary font-mono"
+                       th:text="${orderNumber}">
+                        ORD-XXXX
                     </p>
                 </div>
+
+                <div class="space-y-4">
+
+                    <!-- Received -->
+                    <div class="flex items-start gap-3">
+                        <svg class="text-green-600 mt-0.5" fill="none" height="20"
+                             stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                             stroke-width="2" width="20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 6 9 17l-5-5"></path>
+                        </svg>
+                        <div>
+                            <p class="font-semibold"
+                               th:text="#{orderConfirmed.status.received.title}">
+                                Order Received
+                            </p>
+                            <p class="text-sm text-muted-foreground"
+                               th:text="#{orderConfirmed.status.received.desc}">
+                                We've received your order
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="flex items-start gap-3">
+                        <svg class="text-muted-foreground mt-0.5" fill="none" height="20"
+                             stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                             stroke-width="2" width="20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <rect height="9" rx="1" width="7" x="3" y="3"></rect>
+                            <rect height="5" rx="1" width="7" x="14" y="3"></rect>
+                            <rect height="9" rx="1" width="7" x="14" y="12"></rect>
+                            <rect height="5" rx="1" width="7" x="3" y="16"></rect>
+                        </svg>
+                        <div>
+                            <p class="font-semibold"
+                               th:text="#{orderConfirmed.status.email.title}">
+                                Order Confirmation
+                            </p>
+                            <p class="text-sm text-muted-foreground"
+                               th:text="#{orderConfirmed.status.email.desc}">
+                                Email sent
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Time -->
+                    <div class="flex items-start gap-3">
+                        <svg class="text-muted-foreground mt-0.5" fill="none" height="20"
+                             stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                             stroke-width="2" width="20"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                            <path d="M15 18H9"></path>
+                            <circle cx="17" cy="18" r="2"></circle>
+                            <circle cx="7" cy="18" r="2"></circle>
+                        </svg>
+                        <div>
+                            <p class="font-semibold"
+                               th:text="#{orderConfirmed.status.time.title}">
+                                Estimated Time
+                            </p>
+                            <p class="text-sm text-muted-foreground"
+                               th:text="#{orderConfirmed.status.time.desc}">
+                                30–45 minutes
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 fade-in-up"
+                 style="animation-delay: 0.3s;">
+
+                <a class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
+                   th:href="@{/profile}"
+                   th:text="#{orderConfirmed.btn.viewOrders}">
+                    View My Orders
+                </a>
+
+                <a class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold hero-gradient text-white hover:opacity-90 transition-all"
+                   th:href="@{/}"
+                   th:text="#{orderConfirmed.btn.backHome}">
+                    Back to Home
+                </a>
+            </div>
+
+            <!-- Help -->
+            <div class="mt-8 p-6 bg-blue-50 rounded-lg text-center fade-in-up"
+                 style="animation-delay: 0.4s;">
+                <p class="text-sm text-blue-900">
+                    <strong th:text="#{orderConfirmed.help.textStart}">Need help?</strong>
+                    <span th:text="#{orderConfirmed.help.contact}">Contact us at</span>
+                    <a class="underline hover:no-underline"
+                       th:href="'tel:' + ${companyInfo.phone}"
+                       th:text="${companyInfo.phone}">+421...</a>
+                    <span th:text="#{orderConfirmed.help.or}">or</span>
+                    <a class="underline hover:no-underline"
+                       th:href="'mailto:' + ${companyInfo.email}"
+                       th:text="${companyInfo.email}">info@...</a>
+                </p>
             </div>
         </div>
-
-        <!-- Footer Fragment -->
-        <div th:replace="~{fragments/layout/footer :: footer}"></div>
     </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout/footer :: footer}"></div>
+</div>
 </body>
 
 </html>

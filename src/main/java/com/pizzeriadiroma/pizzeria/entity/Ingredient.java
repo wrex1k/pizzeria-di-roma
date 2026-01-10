@@ -14,8 +14,8 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Ingredient name cannot be blank.")
-    @Size(max = 200, message = "Ingredient name must be max 200 characters.")
+    @NotBlank(message = "{validation.ingredientName.required}")
+    @Size(max = 200, message = "{validation.ingredientName.size}")
     @Column(nullable = false, unique = true)
     private String name;
 

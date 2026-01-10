@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title th:text="${statusCode} + ' – ' + (${errorTitle} ?: 'Error') + ' | Pizzeria di Roma'">
+    <title th:text="${statusCode} + ' – ' + (${errorTitle} ?: #{error.title.fallback}) + ' | ' + #{brand.name}">
         Error | Pizzeria di Roma
     </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="@/favicon.png" rel="icon" type="image/png">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@400;600;700&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@400;600;700&display=swap"
+            rel="stylesheet">
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,21 +43,29 @@
 
 <body class="min-h-screen flex items-center justify-center bg-background font-montserrat text-foreground">
 
-    <div class="text-center max-w-md px-6">
-        <img src="/images/sad-cat.gif" alt="Not found" class="mx-auto mb-6 rounded-2xl w-40">
+<div class="text-center max-w-md px-6">
+    <img alt="Not found"
+         class="mx-auto mb-6 rounded-2xl w-40"
+         src="/images/sad-cat.gif"
+         th:attr="alt=#{error.imageAlt}">
 
-        <h1 class="text-6xl font-playfair font-bold text-primary mb-4" th:text="${statusCode} ?: 500"></h1>
+    <h1 class="text-6xl font-playfair font-bold text-primary mb-4" th:text="${statusCode} ?: 500"></h1>
 
-        <h2 class="text-3xl font-playfair mb-4" th:text="${errorTitle} ?: 'Pizza Not Found'"></h2>
+    <h2 class="text-3xl font-playfair mb-4" th:text="${errorTitle} ?: #{error.heading.fallback}">
+        Pizza Not Found
+    </h2>
 
-        <p class="text-muted-foreground mb-6"
-            th:text="${errorMessage} ?: 'Oops! This pizza seems to have been delivered to the wrong address.'"></p>
+    <p class="text-muted-foreground mb-6"
+       th:text="${errorMessage} ?: #{error.message.fallback}">
+        Oops! This pizza seems to have been delivered to the wrong address.
+    </p>
 
-        <a href="/"
-            class="inline-block bg-primary hover:bg-primary-hover text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-            Back to Menu
-        </a>
-    </div>
+    <a class="inline-block bg-primary hover:bg-primary-hover text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+       href="/"
+       th:text="#{error.btn.backToMenu}">
+        Back to Menu
+    </a>
+</div>
 
 </body>
 

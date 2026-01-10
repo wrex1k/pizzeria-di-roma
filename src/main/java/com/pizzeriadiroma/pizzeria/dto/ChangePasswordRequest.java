@@ -6,18 +6,18 @@ import jakarta.validation.constraints.Size;
 
 public class ChangePasswordRequest {
 
-    @NotBlank(message = "Current password is required.")
+    @NotBlank(message = "{validation.confirmPassword.current.required}")
     private String currentPassword;
 
-    @NotBlank(message = "New password is required.")
-    @Size(min = 8, message = "Password must be at least 8 characters long.")
+    @NotBlank(message = "{validation.password.required}")
+    @Size(min = 8, message = "{validation.password.size}")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).+$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+            message = "{validation.password.pattern}"
     )
     private String newPassword;
 
-    @NotBlank(message = "Please confirm your new password.")
+    @NotBlank(message = "{validation.confirmPassword.new.required}")
     private String confirmPassword;
 
     public String getCurrentPassword() {
