@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PizzaRepository extends JpaRepository<Pizza, Long> {
+public interface PizzaRepository extends JpaRepository<Pizza, Integer> {
 
     @Query("SELECT p FROM Pizza p WHERE p.isAvailable = true AND p.isFeatured = true")
     List<Pizza> findFeaturedPizzas();

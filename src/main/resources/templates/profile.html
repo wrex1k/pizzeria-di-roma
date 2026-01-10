@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User Profile - Manage your account and view order history">
+    <meta name="author" content="Pizzeria di Roma">
+
+    <title>My Profile - Pizzeria di Roma</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        border: 'hsl(30, 30%, 85%)',
+                        input: 'hsl(30, 30%, 90%)',
+                        ring: 'hsl(0, 70%, 51%)',
+                        background: 'hsl(32, 65%, 95%)',
+                        foreground: 'hsl(0, 0%, 11%)',
+                        primary: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(32, 65%, 95%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(30, 40%, 88%)',
+                            foreground: 'hsl(0, 0%, 45%)',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(45, 98%, 60%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                    },
+                    borderRadius: {
+                        lg: '0.75rem',
+                        md: 'calc(0.75rem - 2px)',
+                        sm: 'calc(0.75rem - 4px)',
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(10px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: hsl(32, 65%, 95%);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, hsl(0, 70%, 51%) 0%, hsl(0, 60%, 40%) 100%);
+        }
+
+        .hero-gradient:hover {
+            background: linear-gradient(135deg, hsl(0, 70%, 45%) 0%, hsl(0, 60%, 35%) 100%);
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-enter {
+            animation: modal-fade-in 0.2s ease-out;
+        }
+
+        @keyframes modal-fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-background">
+    <!-- Navbar -->
+    <div th:replace="~{fragments/layout/navbar :: navbar}"></div>
+
+    <!-- Profile Container -->
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
+            <a th:href="@{/}" class="hover:text-primary transition-smooth">Home</a>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6"></path>
+            </svg>
+            <span class="font-medium text-foreground">Profile</span>
+        </nav>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Column: Forms -->
+            <div class="lg:col-span-2 space-y-8">
+
+                <!-- Profile Overview -->
+                <div class="rounded-xl hero-gradient text-white shadow-xl p-6 animate-fade-in relative overflow-hidden">
+                    <div class="relative z-10 flex items-center justify-between">
+                        <!-- Profile Info -->
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-white/80">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <h1 class="text-2xl font-display font-bold text-white"
+                                th:text="${user.firstName + ' ' + user.lastName}">John Doe
+                            </h1>
+                        </div>
+
+                        <!-- Member Since -->
+                        <div class="flex items-center gap-2 text-right">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-white/70">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <div>
+                                <p class="text-xs text-white/70">Member Since</p>
+                                <p class="text-sm font-semibold text-white"
+                                    th:text="${#temporals.format(user.createdAt, 'MMM dd, yyyy')}">Jan 15, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-md p-6 animate-fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-display font-bold text-foreground flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-primary">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Personal Information
+                        </h2>
+                        <button id="editProfileBtn"
+                            class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+
+                    <form id="profileForm" th:action="@{/profile/update}" th:object="${updateProfileRequest}" method="post">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- First Name -->
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-foreground mb-2">
+                                    First Name <span class="text-destructive">*</span>
+                                </label>
+                                <input type="text" id="firstName" th:field="*{firstName}"
+                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 read-only:cursor-not-allowed read-only:opacity-80 read-only:bg-muted/30"
+                                    readonly>
+                                <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-destructive text-sm mt-1"></div>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-foreground mb-2">
+                                    Last Name <span class="text-destructive">*</span>
+                                </label>
+                                <input type="text" id="lastName" th:field="*{lastName}"
+                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 read-only:cursor-not-allowed read-only:opacity-80 read-only:bg-muted/30"
+                                    readonly>
+                                <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-destructive text-sm mt-1"></div>
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-foreground mb-2">
+                                    Email Address
+                                </label>
+                                <input type="email" id="email" th:field="*{email}"
+                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 read-only:cursor-not-allowed read-only:opacity-80 read-only:bg-muted/30"
+                                    readonly>
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-foreground mb-2">
+                                    Phone Number <span class="text-destructive">*</span>
+                                </label>
+                                <input type="tel" id="phone" th:field="*{phone}"
+                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 read-only:cursor-not-allowed read-only:opacity-80 read-only:bg-muted/30"
+                                    readonly>
+                                    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-destructive text-sm mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Save/Cancel Buttons (Hidden by default) -->
+                        <div id="formActions" class="hidden mt-6 flex gap-3">
+                            <button type="submit" id="saveProfileBtn"
+                                class="flex-1 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 hero-gradient">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Save Changes
+                            </button>
+                            <button type="button" id="cancelEditBtn"
+                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Success Message -->
+                    <div th:if="${successMessage}"
+                        class="mt-4 rounded-md border border-green-500 bg-green-500/10 p-4 animate-fade-in">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-green-700">
+                                <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                                <path d="m9 11 3 3L22 4"></path>
+                            </svg>
+                            <span class="text-green-700 font-medium" th:text="${successMessage}">Profile updated
+                                successfully!</span>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${errorMessage}"
+                        class="mt-4 rounded-md border border-destructive bg-destructive/10 p-4 animate-fade-in">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-destructive">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" x2="12" y1="8" y2="12"></line>
+                                <line x1="12" x2="12.01" y1="16" y2="16"></line>
+                            </svg>
+                            <span class="text-destructive font-medium" th:text="${errorMessage}">An error
+                                occurred.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-md p-6 animate-fade-in">
+                    <h2 class="text-2xl font-display font-bold text-foreground mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-primary">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Change Password
+                    </h2>
+
+                    <form th:action="@{/profile/change-password}" method="post" id="passwordForm">
+                        <div class="space-y-4">
+                            <!-- Current Password -->
+                            <div>
+                                <label for="currentPassword" class="block text-sm font-medium text-foreground mb-2">
+                                    Current Password <span class="text-destructive">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="password" id="currentPassword" name="currentPassword"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        required>
+                                    <button type="button"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                        onclick="togglePassword('currentPassword')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- New Password -->
+                            <div>
+                                <label for="newPassword" class="block text-sm font-medium text-foreground mb-2">
+                                    New Password <span class="text-destructive">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="password" id="newPassword" name="newPassword"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        minlength="8" required>
+                                    <button type="button"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                        onclick="togglePassword('newPassword')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-muted-foreground flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 16v-4"></path>
+                                        <path d="M12 8h.01"></path>
+                                    </svg>
+                                    Password must be at least 8 characters long, contain one number and one special
+                                    character
+                                </p>
+                            </div>
+
+                            <!-- Confirm New Password -->
+                            <div>
+                                <label for="confirmPassword" class="block text-sm font-medium text-foreground mb-2">
+                                    Confirm New Password <span class="text-destructive">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="password" id="confirmPassword" name="confirmPassword"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        minlength="8" required>
+                                    <button type="button"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                        onclick="togglePassword('confirmPassword')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Password Strength Indicator -->
+                            <div id="passwordStrength" class="hidden">
+                                <div class="text-sm font-medium text-foreground mb-2">Password Strength</div>
+                                <div class="flex gap-1 mb-1">
+                                    <div class="h-2 flex-1 rounded bg-muted" id="strength1"></div>
+                                    <div class="h-2 flex-1 rounded bg-muted" id="strength2"></div>
+                                    <div class="h-2 flex-1 rounded bg-muted" id="strength3"></div>
+                                    <div class="h-2 flex-1 rounded bg-muted" id="strength4"></div>
+                                </div>
+                                <p id="strengthText" class="text-xs text-muted-foreground"></p>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="mt-6 w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 hero-gradient">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z">
+                                </path>
+                                <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                            </svg>
+                            Update Password
+                        </button>
+                    </form>
+
+                    <!-- Password Change Messages -->
+                    <div th:if="${passwordSuccess}"
+                        class="mt-4 rounded-md border border-green-500 bg-green-500/10 p-4 animate-fade-in">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-green-700">
+                                <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                                <path d="m9 11 3 3L22 4"></path>
+                            </svg>
+                            <span class="text-green-700 font-medium" th:text="${passwordSuccess}">Password changed
+                                successfully!</span>
+                        </div>
+                    </div>
+                    <div th:if="${passwordError}"
+                        class="mt-4 rounded-md border border-destructive bg-destructive/10 p-4 animate-fade-in">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-destructive">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" x2="12" y1="8" y2="12"></line>
+                                <line x1="12" x2="12.01" y1="16" y2="16"></line>
+                            </svg>
+                            <span class="text-destructive font-medium" th:text="${passwordError}">Failed to change
+                                password.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Addresses -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-md p-6 animate-fade-in">
+                    <h2 class="text-2xl font-display font-bold text-foreground mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-primary">
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Addresses
+                    </h2>
+
+                    <!-- Address Success Message -->
+                    <div th:if="${addressSuccess}"
+                        class="mb-4 rounded-md border border-green-500 bg-green-500/10 p-4 animate-fade-in">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-green-700">
+                                <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                                <path d="m9 11 3 3L22 4"></path>
+                            </svg>
+                            <span class="text-green-700 font-medium" th:text="${addressSuccess}">Address updated!</span>
+                        </div>
+                    </div>
+
+                    <!-- Existing Addresses -->
+                    <div class="space-y-3 mb-6" th:if="${not #lists.isEmpty(addresses)}">
+                        <div th:each="address : ${addresses}" class="border rounded-lg p-4 relative">
+                            <div th:if="${address.isDefault}" class="absolute top-3 right-3">
+                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold bg-primary/10 text-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Primary
+                                </span>
+                            </div>
+                            <div class="mb-2">
+                                <p class="font-semibold text-foreground" th:text="${address.label}">Home</p>
+                                <p class="text-sm text-muted-foreground" th:text="${address.street + ' ' + address.houseNumber}">123 Main St</p>
+                                <p class="text-sm text-muted-foreground" th:text="${address.postalCode + ' ' + address.city + ', ' + address.country}">10001 New York, USA</p>
+                            </div>
+                            <div class="flex items-center gap-3 mt-3">
+                                <form th:action="@{'/profile/address/' + ${address.id} + '/set-default'}" method="post" th:if="${!address.isDefault}" class="inline">
+                                    <button type="submit" class="text-xs text-primary hover:text-primary/80 transition-colors font-medium">
+                                        Set as Primary
+                                    </button>
+                                </form>
+                                <button type="button" th:onclick="'confirmDeleteAddress(' + ${address.id} + ', \'' + ${address.id} + '\')'"
+                                    class="text-xs text-destructive hover:text-destructive/80 transition-colors font-medium">
+                                    Delete
+                                </button>
+                                <form th:id="'deleteForm-' + ${address.id}" th:action="@{'/profile/address/' + ${address.id} + '/delete'}" method="post" class="hidden">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add New Address Form -->
+                    <div class="border-t pt-6">
+                        <h3 class="text-lg font-display font-semibold text-foreground mb-4">Add New Address</h3>
+                        <form th:action="@{/profile/address/add}" th:object="${newAddress}" method="post">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label for="label" class="block text-sm font-medium text-foreground mb-2">
+                                        Label (e.g., Home, Work)
+                                    </label>
+                                    <input type="text" id="label" th:field="*{label}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="Home">
+                                </div>
+                                <div>
+                                    <label for="street" class="block text-sm font-medium text-foreground mb-2">
+                                        Street <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="street" th:field="*{street}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="Main Street">
+                                    <div th:if="${#fields.hasErrors('street')}" th:errors="*{street}" class="text-destructive text-sm mt-1"></div>
+                                </div>
+                                <div>
+                                    <label for="houseNumber" class="block text-sm font-medium text-foreground mb-2">
+                                        House Number <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="houseNumber" th:field="*{houseNumber}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="123">
+                                    <div th:if="${#fields.hasErrors('houseNumber')}" th:errors="*{houseNumber}" class="text-destructive text-sm mt-1"></div>
+                                </div>
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-foreground mb-2">
+                                        City <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="city" th:field="*{city}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="New York">
+                                    <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="text-destructive text-sm mt-1"></div>
+                                </div>
+                                <div>
+                                    <label for="postalCode" class="block text-sm font-medium text-foreground mb-2">
+                                        Postal Code <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="postalCode" th:field="*{postalCode}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="10001">
+                                    <div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="text-destructive text-sm mt-1"></div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="country" class="block text-sm font-medium text-foreground mb-2">
+                                        Country <span class="text-destructive">*</span>
+                                    </label>
+                                    <input type="text" id="country" th:field="*{country}"
+                                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                        placeholder="USA">
+                                    <div th:if="${#fields.hasErrors('country')}" th:errors="*{country}" class="text-destructive text-sm mt-1"></div>
+                                </div>
+                            </div>
+                            <button type="submit"
+                                class="mt-4 w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 hero-gradient">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5v14"></path>
+                                </svg>
+                                Add Address
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Order History -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-md p-6 animate-fade-in">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-display font-bold text-foreground flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-primary">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" x2="8" y1="13" y2="13"></line>
+                                <line x1="16" x2="8" y1="17" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Order History
+                        </h2>
+                    </div>
+
+                    <!-- Orders Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full" th:if="${not #lists.isEmpty(orders)}">
+                            <thead class="bg-muted/50 border-b-2 border-border">
+                                <tr>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Order ID
+                                    </th>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Date
+                                    </th>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Items
+                                    </th>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Total
+                                    </th>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th
+                                        class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                <th:block th:each="order : ${orders}">
+                                    <tr class="hover:bg-muted/30 transition-colors">
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <span class="text-sm font-medium text-foreground" th:text="'#' + ${order.id}">
+                                                #12345
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-foreground"
+                                                th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}">
+                                                Jan 15, 2024
+                                            </span>
+                                            <br>
+                                            <span class="text-xs text-muted-foreground"
+                                                th:text="${#temporals.format(order.createdAt, 'HH:mm')}">
+                                                14:30
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4">
+                                            <span class="text-sm text-foreground" th:text="${#lists.size(order.items)} + ' item(s)'">
+                                                3 item(s)
+                                                </span>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <span class="text-sm font-semibold text-foreground">
+                                                €<span
+                                                    th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}">45.99</span>
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full" th:classappend="${order.status.name() == 'DELIVERED' ? 'bg-green-600' : (order.status.name() == 'PENDING' ? 'bg-orange-500' : (order.status.name() == 'PREPARING' ? 'bg-blue-600' : (order.status.name() == 'OUT_FOR_DELIVERY' ? 'bg-purple-600' : (order.status.name() == 'CANCELLED' ? 'bg-red-600' : 'bg-gray-500'))))}">
+                                                </span>
+                                                <span class="text-sm font-semibold" th:classappend="${order.status.name() == 'DELIVERED' ? 'text-green-700' : (order.status.name() == 'PENDING' ? 'text-orange-600' : (order.status.name() == 'PREPARING' ? 'text-blue-700' : (order.status.name() == 'OUT_FOR_DELIVERY' ? 'text-purple-700' : (order.status.name() == 'CANCELLED' ? 'text-red-700' : 'text-gray-600'))))}"
+                                                    th:text="${order.status}">Delivered</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-center">
+                                            <button type="button" th:onclick="'toggleOrderDetails(\'order-' + ${order.id} + '\')'"
+                                                class="inline-flex items-center justify-center text-primary hover:text-primary/80 transition-colors"
+                                                title="View Details">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Order Details Row -->
+                                    <tr th:id="'order-' + ${order.id}" class="hidden bg-muted/20">
+                                        <td colspan="6" class="px-4 py-4">
+                                            <div class="space-y-4">
+                                                <h4 class="font-display font-bold text-foreground mb-3 flex items-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="text-primary">
+                                                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                                    </svg>
+                                                    Order Details
+                                                </h4>
+                                                <div class="grid md:grid-cols-2 gap-4">
+                                                    <!-- Order Items -->
+                                                    <div class="bg-card rounded-lg border p-4">
+                                                        <p class="text-sm font-semibold text-foreground mb-3">Items Ordered</p>
+                                                        <div class="space-y-2">
+                                                            <div th:each="item : ${order.items}" class="flex justify-between text-sm">
+                                                                <span class="text-muted-foreground" th:text="${item.quantity} + 'x ' + ${item.itemName}">1x Pizza</span>
+                                                                <span class="text-foreground font-medium">€<span th:text="${#numbers.formatDecimal(item.totalPrice, 1, 2)}">12.99</span></span>
+                                                            </div>
+                                                            <div class="flex justify-between text-sm pt-2 border-t">
+                                                                <span class="text-foreground font-semibold">Subtotal</span>
+                                                                <span class="text-foreground font-semibold">€<span th:text="${#numbers.formatDecimal(order.subtotalAmount, 1, 2)}">27.98</span></span>
+                                                            </div>
+                                                            <div th:if="${order.deliveryMethod.name() == 'DELIVERY'}" class="flex justify-between text-sm">
+                                                                <span class="text-muted-foreground">Delivery Fee</span>
+                                                                <span class="text-foreground">€<span th:text="${#numbers.formatDecimal(order.deliveryFeeAmount, 1, 2)}">4.52</span></span>
+                                                            </div>
+                                                            <div th:if="${order.discountAmount > 0}" class="flex justify-between text-sm">
+                                                                <span class="text-muted-foreground">Discount</span>
+                                                                <span class="text-green-600">-€<span th:text="${#numbers.formatDecimal(order.discountAmount, 1, 2)}">5.00</span></span>
+                                                            </div>
+                                                            <div class="flex justify-between text-sm pt-2 border-t">
+                                                                <span class="text-foreground font-bold">Total</span>
+                                                                <span class="text-foreground font-bold">€<span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}">32.50</span></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Delivery Info -->
+                                                    <div class="bg-card rounded-lg border p-4">
+                                                        <p class="text-sm font-semibold text-foreground mb-3">
+                                                            <span th:if="${order.deliveryMethod.name() == 'DELIVERY'}">Delivery Information</span>
+                                                            <span th:if="${order.deliveryMethod.name() == 'PICKUP'}">Pickup Information</span>
+                                                        </p>
+                                                        <div class="space-y-2 text-sm">
+                                                            <div th:if="${order.deliveryMethod.name() == 'DELIVERY'}">
+                                                                <p class="text-muted-foreground">Address</p>
+                                                                <p class="text-foreground" th:text="${order.fullDeliveryAddress}">123 Main Street</p>
+                                                            </div>
+                                                            <div>
+                                                                <p class="text-muted-foreground">Contact</p>
+                                                                <p class="text-foreground" th:text="${order.customerPhone}">+1 234 567 8900</p>
+                                                            </div>
+                                                            <div>
+                                                                <p class="text-muted-foreground">Order Number</p>
+                                                                <p class="text-foreground font-mono" th:text="${order.orderNumber}">ORD-2024-001</p>
+                                                            </div>
+                                                            <div>
+                                                                <p class="text-muted-foreground">Payment Method</p>
+                                                                <p class="text-foreground" th:text="${order.paymentMethod}">Cash</p>
+                                                            </div>
+                                                            <div th:if="${order.deliveryInstructions != null and !#strings.isEmpty(order.deliveryInstructions)}">
+                                                                <p class="text-muted-foreground">Notes</p>
+                                                                <p class="text-foreground italic" th:text="${order.deliveryInstructions}">Ring the doorbell twice</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                            </tbody>
+                        </table>
+
+                        <!-- Empty State -->
+                        <div th:if="${#lists.isEmpty(orders)}" class="text-center py-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="mx-auto mb-4 text-muted-foreground opacity-50">
+                                <circle cx="8" cy="21" r="1"></circle>
+                                <circle cx="19" cy="21" r="1"></circle>
+                                <path
+                                    d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12">
+                                </path>
+                            </svg>
+                            <h3 class="text-xl font-display font-bold text-foreground mb-2">No Orders Yet</h3>
+                            <p class="text-muted-foreground mb-6">You haven't placed any orders yet. Start shopping!</p>
+                            <a th:href="@{/}"
+                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 hero-gradient">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                Browse Menu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Additional Info -->
+            <div class="space-y-8">
+
+                <!-- Order Statistics -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-md p-6 animate-fade-in">
+                    <h2 class="text-xl font-display font-bold text-foreground mb-4 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-primary">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        Order Statistics
+                    </h2>
+
+                    <div class="space-y-4">
+                        <!-- Total Orders -->
+                        <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-blue-500/10 p-2 rounded-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="text-blue-600">
+                                        <circle cx="8" cy="21" r="1"></circle>
+                                        <circle cx="19" cy="21" r="1"></circle>
+                                        <path
+                                            d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-muted-foreground">Total Orders</p>
+                                    <p class="font-semibold text-foreground" th:text="${totalOrders}">
+                                        0
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Spent -->
+                        <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-emerald-600/10 p-2 rounded-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="text-emerald-600">
+                                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-muted-foreground">Total Spent</p>
+                                    <p class="font-semibold text-foreground">
+                                        €<span
+                                            th:text="${#numbers.formatDecimal(totalSpent, 1, 2)}">0.00</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Average Order Value -->
+                        <div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-accent/20 p-2 rounded-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="text-accent-foreground">
+                                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-muted-foreground">Avg. Order Value</p>
+                                    <p class="font-semibold text-foreground">
+                                        €<span
+                                            th:text="${#numbers.formatDecimal(averageOrderValue, 1, 2)}">0.00</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div
+                    class="rounded-xl border-2 border-destructive/30 bg-card text-card-foreground shadow-md p-6 animate-fade-in">
+                    <h2 class="text-xl font-display font-bold text-destructive mb-3 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                        Danger Zone
+                    </h2>
+                    <p class="text-sm text-muted-foreground mb-4">
+                        Once you delete your account, there is no going back. All your data, order history, and loyalty
+                        points will be permanently deleted.
+                    </p>
+                    <button onclick="confirmDeleteAccount()"
+                        class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                        Delete My Account
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout/footer :: footer}"></div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="modal-backdrop fixed inset-0" onclick="closeDeleteModal()"></div>
+        <div class="relative z-10 w-full max-w-md modal-enter">
+            <div class="rounded-xl border bg-card shadow-lg p-6">
+                <div class="text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive/10 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-destructive">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-display font-bold text-foreground mb-2">Delete Account</h3>
+                    <p class="text-muted-foreground mb-6">
+                        Are you absolutely sure? This action cannot be undone. All your data will be permanently
+                        deleted.
+                    </p>
+
+                    <form th:action="@{/profile/delete}" method="post" id="deleteAccountForm">
+                        <div class="mb-4 text-left">
+                            <label for="deleteConfirmPassword" class="block text-sm font-medium text-foreground mb-2">
+                                Enter your password to confirm:
+                            </label>
+                            <input type="password" id="deleteConfirmPassword" name="password"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                required>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="button" onclick="closeDeleteModal()"
+                                class="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2">
+                                Yes, Delete
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Address Confirmation Modal -->
+    <div id="deleteAddressModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="modal-backdrop fixed inset-0" onclick="closeDeleteAddressModal()"></div>
+        <div class="relative z-10 w-full max-w-md modal-enter">
+            <div class="rounded-xl border bg-card shadow-lg p-6">
+                <div class="text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive/10 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-destructive">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-display font-bold text-foreground mb-2">Delete Address</h3>
+                    <p class="text-muted-foreground mb-6">
+                        Are you sure you want to delete this address? This action cannot be undone.
+                    </p>
+
+                    <div class="flex gap-3">
+                        <button type="button" onclick="closeDeleteAddressModal()"
+                            class="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                            Cancel
+                        </button>
+                        <button type="button" onclick="submitDeleteAddress()"
+                            class="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2">
+                            Yes, Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script th:inline="javascript">
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
+        // Profile form edit mode
+        const editBtn = document.getElementById('editProfileBtn');
+        const cancelBtn = document.getElementById('cancelEditBtn');
+        const formActions = document.getElementById('formActions');
+        const profileForm = document.getElementById('profileForm');
+        const formInputs = profileForm.querySelectorAll('input, textarea');
+
+        editBtn?.addEventListener('click', () => {
+            formInputs.forEach(input => {
+                if (input.id !== 'email') {
+                    input.removeAttribute('readonly');
+                }
+            });
+            formActions.classList.remove('hidden');
+        });
+
+        cancelBtn?.addEventListener('click', () => {
+            formInputs.forEach(input => input.setAttribute('readonly', 'readonly'));
+            formActions.classList.add('hidden');
+            profileForm.reset();
+        });
+
+        const newPasswordInput = document.getElementById('newPassword');
+        const strengthDiv = document.getElementById('passwordStrength');
+        const strengthBars = [
+            document.getElementById('strength1'),
+            document.getElementById('strength2'),
+            document.getElementById('strength3'),
+            document.getElementById('strength4')
+        ];
+        const strengthText = document.getElementById('strengthText');
+
+        newPasswordInput?.addEventListener('input', (e) => {
+            const password = e.target.value;
+
+            if (password.length === 0) {
+                strengthDiv.classList.add('hidden');
+                return;
+            }
+
+            strengthDiv.classList.remove('hidden');
+
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            // Reset bars
+            strengthBars.forEach(bar => {
+                bar.classList.remove('bg-destructive', 'bg-orange-500', 'bg-accent', 'bg-green-600');
+                bar.classList.add('bg-muted');
+            });
+
+            // Set strength color
+            const colors = ['bg-destructive', 'bg-orange-500', 'bg-accent', 'bg-green-600'];
+            const texts = ['Weak', 'Fair', 'Good', 'Strong'];
+
+            for (let i = 0; i < strength; i++) {
+                strengthBars[i].classList.remove('bg-muted');
+                strengthBars[i].classList.add(colors[strength - 1]);
+            }
+
+            strengthText.textContent = texts[strength - 1] || 'Very Weak';
+        });
+
+        // Delete account modal
+        function confirmDeleteAccount() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('deleteConfirmPassword').value = '';
+        }
+
+        // Delete address modal
+        let currentDeleteFormId = null;
+        
+        function confirmDeleteAddress(addressId, formId) {
+            const modal = document.getElementById('deleteAddressModal');
+            currentDeleteFormId = 'deleteForm-' + addressId;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteAddressModal() {
+            const modal = document.getElementById('deleteAddressModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            currentDeleteFormId = null;
+        }
+
+        function submitDeleteAddress() {
+            if (currentDeleteFormId) {
+                document.getElementById(currentDeleteFormId).submit();
+            }
+        }
+
+        // Toggle order details
+        function toggleOrderDetails(orderId) {
+            const detailsRow = document.getElementById(orderId);
+            if (detailsRow) {
+                detailsRow.classList.toggle('hidden');
+            }
+        }
+
+        // Auto-hide success/error messages after 5 seconds
+        setTimeout(() => {
+            // Only hide message divs, not the danger zone section
+            document.querySelectorAll('div[class*="border-green-500"]:not(.rounded-xl), div[class*="border-destructive"]:not(.rounded-xl)').forEach(el => {
+                if (el.classList.contains('animate-fade-in') && (el.querySelector('span') || el.textContent.trim())) {
+                    el.style.transition = 'opacity 0.5s';
+                    el.style.opacity = '0';
+                    setTimeout(() => el.remove(), 500);
+                }
+            });
+        }, 5000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Profile page loaded');
+        });
+    </script>
+
+</body>
+
+</html>

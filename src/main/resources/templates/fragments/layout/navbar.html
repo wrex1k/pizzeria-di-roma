@@ -1,65 +1,117 @@
-
 <!-- Navbar Fragment -->
-<nav th:fragment="navbar" class="sticky top-0 z-50 bg-background border-b border-border backdrop-blur-sm">
+<nav th:fragment="navbar" class="sticky top-0 z-50 bg-background border-b border-border backdrop-blur-sm"
+    xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-center sm:justify-between h-16">
-        <!-- Logo -->
-            <a th:href="@{/}" class="site-title text-2xl font-playfair font-bold text-primary hidden sm:block">
-                <h1>Pizzeria di Roma</h1>
-            </a>
-
+            <!-- Logo -->
+            <h1 class="site-title text-2xl font-display font-playfair font-bold text-primary hidden sm:block">
+                <a href="/">
+                    Pizzeria di Roma
+                </a>
+            </h1>
 
             <!-- Right Side Icons -->
             <div class="flex items-center gap-6">
                 <!-- Cart & Profile Group -->
                 <div class="flex items-center space-x-4">
                     <!-- Cart Button -->
-                    <a th:href="@{/cart}">
+                    <a th:href="@{/cart}" sec:authorize="isAuthenticated()">
                         <button
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10 relative">
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10 relative">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                 stroke-linejoin="round" class="lucide lucide-shopping-cart h-5 w-5">
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-shopping-cart h-5 w-5">
                                 <circle cx="8" cy="21" r="1"></circle>
                                 <circle cx="19" cy="21" r="1"></circle>
                                 <path
-                                        d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12">
+                                    d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12">
                                 </path>
                             </svg>
                             <span
-                                    class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                                    th:text="${cartCount != null ? cartCount : 0}"></span>
+                                class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                                th:text="${cartCount != null ? cartCount : 0}"></span>
                         </button>
                     </a>
 
-                    <!-- User Button -->
-                    <a th:href="@{/auth}">
+                    <!-- Admin Button -->
+                    <a th:href="@{/admin/pizzas}" sec:authorize="hasRole('ADMIN')">
                         <button
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                 stroke-linejoin="round" class="lucide lucide-user h-5 w-5">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
+                                type="button"
+                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10 relative"
+                                title="Admin Dashboard"
+                                aria-label="Admin Dashboard">
+
+                            <!-- Shield icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round"
+                                 class="h-5 w-5">
+                                <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z"/>
+                                <path d="M9 12l2 2 4-4"/>
                             </svg>
                         </button>
                     </a>
+
+                    <!-- Profile Button -->
+                    <a th:href="@{/profile}" sec:authorize="isAuthenticated()">
+                        <button
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10 relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-user h-5 w-5">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span class="absolute top-0 right-0 bg-green-500 rounded-full h-3 w-3"></span>
+                        </button>
+                    </a>
+
+                    <!-- Login Button -->
+                    <a th:href="@{/login    }" sec:authorize="!isAuthenticated()">
+                        <button
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10 relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-log-in h-5 w-5">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                <polyline points="10 17 15 12 10 7"></polyline>
+                                <line x1="15" y1="12" x2="3" y2="12"></line>
+                            </svg>
+                        </button>
+                    </a>
+
+                    <!-- Logout Button -->
+                    <form th:action="@{/logout}" sec:authorize="isAuthenticated()" method="post" class="m-0">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit"
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all duration-700 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-log-out h-5 w-5">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Language Switcher -->
-                <div class="flex items-center gap-2 pl-6 border-l border-border">
-                    <a class="text-sm font-semibold text-foreground hover:text-primary hover:bg-accent/20 px-2 py-1 rounded transition-colors"
-                       title="English">
-                        EN
-                    </a>
-                    <a class="text-sm font-semibold text-foreground hover:text-primary hover:bg-accent/20 px-2 py-1 rounded transition-colors"
-                       title="Slovenčina">
-                        SK
-                    </a>
-                    <a class="text-sm font-semibold text-foreground hover:text-primary hover:bg-accent/20 px-2 py-1 rounded transition-colors"
-                       title="Italiano">
-                        IT
-                    </a>
+                <!-- Language Selector -->
+                <div class="group flex items-center gap-2 pl-6 border-l border-border">
+                    <!-- Languages (visible) -->
+                    <button
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10">EN</button>
+
+                    <!-- Languages (invisible) -->
+                    <div
+                        class="flex items-center gap-2 max-w-0 overflow-hidden opacity-0 group-hover:max-w-xs group-hover:opacity-100 transition-all duration-700 ease-in-out">
+                        <button
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10"
+                            title="Slovenčina">SK</button>
+                        <button
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-foreground hover:bg-accent/20 hover:text-accent-foreground h-10 w-10"
+                            title="Italiano">IT</button>
+                    </div>
                 </div>
             </div>
         </div>

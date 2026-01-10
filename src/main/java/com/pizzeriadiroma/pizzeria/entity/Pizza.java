@@ -5,16 +5,13 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "pizzas")
 public class Pizza {
-    public Pizza() {
-    }
+
+    public Pizza() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +22,7 @@ public class Pizza {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     private String slug;
 
     @NotBlank(message = "Pizza description must not be blank.")
@@ -47,44 +44,74 @@ public class Pizza {
     @Column(name = "is_available", nullable = false)
     private Boolean isAvailable = true;
 
-    @Column(name = "is_featured")
+    @Column(name = "is_featured", nullable = false)
     private Boolean isFeatured = false;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @OrderBy("name ASC")
     @JoinTable(
             name = "pizza_tags",
             joinColumns = @JoinColumn(name = "pizza_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @OrderBy("name ASC")
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "pizza", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PizzaIngredient> ingredients = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pizza_ingredients",
+            joinColumns = @JoinColumn(name = "pizza_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    @OrderBy("name ASC")
+    private Set<Ingredient> ingredients = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "pizza_available_sizes",
+            joinColumns = @JoinColumn(name = "pizza_id"),
+            inverseJoinColumns = @JoinColumn(name = "size_id")
+    )
+    @OrderBy("priceExtra ASC")
+    private List<PizzaSize> sizes = new ArrayList<>();
+
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
-
-    public String getName() { return name; }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getSlug() { return slug; }
+    public String getSlug() {
+        return slug;
+    }
 
-    public void setSlug(String slug) { this.slug = slug; }
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
     public String getDescription() {
         return description;
@@ -106,9 +133,11 @@ public class Pizza {
         return basePrice;
     }
 
-    public void setBasePrice(BigDecimal basePrice) { this.basePrice = basePrice; }
+    public void setBasePrice(BigDecimal basePrice) {
+        this.basePrice = basePrice;
+    }
 
-    public Boolean isAvailable() {
+    public Boolean getAvailable() {
         return isAvailable;
     }
 
@@ -116,7 +145,7 @@ public class Pizza {
         this.isAvailable = isAvailable;
     }
 
-    public Boolean isFeatured() {
+    public Boolean getFeatured() {
         return isFeatured;
     }
 
@@ -128,27 +157,27 @@ public class Pizza {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public Set<Tag> getTags() {
+        return tags;
     }
 
-    public Set<Tag> getTags() { return tags; }
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public List<PizzaSize> getSizes() {
+        return sizes;
+    }
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    public List<PizzaIngredient> getIngredients() {
-        return ingredients;
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
-
-    public void setIngredients(List<PizzaIngredient> ingredients) { this.ingredients = ingredients; }
 }

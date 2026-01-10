@@ -113,7 +113,7 @@
     <!-- Hero Section -->
     <section class="relative h-[600px] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center"
-             th:style="|background-image: url(@{/img/default_pizza.jpg});|"></div>
+             th:style="|background-image: url(@{/images/default-pizza.jpg});|"></div>
         <div class="absolute inset-0 bg-[#D32F2F]/80"></div>
 
         <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto animate-fade-in">
@@ -210,7 +210,7 @@
                 <a th:href="@{'/pizza/' + ${pizza.slug}}" class="block transition-all duration-300 hover:-translate-y-1 hover:shadow-warm-hover">
                     <div class="rounded-xl border bg-card shadow-warm overflow-hidden bg-[rgba(253,250,247,0.6)]">
                         <div class="aspect-[4/3] bg-muted relative overflow-hidden">
-                            <img th:src="@{'/img/pizza_pictures/' + ${pizza.imageUrl}}" th:alt="${pizza.name}"
+                            <img th:src="@{'/images/pizza_pictures/' + ${pizza.imageUrl}}" th:alt="${pizza.name}"
                                  class="w-full h-full object-cover hover:scale-105 transition-all duration-500">
                         </div>
                         <div class="p-6">
@@ -218,7 +218,7 @@
                             <p class="text-sm text-muted-foreground mb-4 line-clamp-2" th:text="${pizza.description}">Pizza description</p>
                             <div class="flex items-center justify-between">
                                 <div th:replace="~{fragments/components/pizza/pizza-tags :: pizza-tags(${pizza}, 'small')}"></div>
-                                <span class="text-2xl font-bold text-primary" th:text="'€' + ${pizza.basePrice}">Price</span>
+                                <span class="text-2xl font-bold text-primary" th:text="'from €' + ${pizza.basePrice}">Price</span>
                             </div>
                         </div>
                     </div>
@@ -241,7 +241,7 @@
                     <a href="#"
                        id="filter-all-btn"
                        onclick="filterPizzas(null); return false;"
-                       class="tag-button inline-flex items-center rounded-full border-border font-semibold transition-colors px-4 py-2 text-sm">
+                       class="tag-button active inline-flex items-center rounded-full border-border font-semibold transition-colors px-4 py-2 text-sm">
                         All Pizzas
                     </a>
 

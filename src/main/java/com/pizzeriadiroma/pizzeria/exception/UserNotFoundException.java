@@ -1,0 +1,8 @@
+package com.pizzeriadiroma.pizzeria.exception;
+
+public class UserNotFoundException extends ResourceNotFoundException {
+
+    public UserNotFoundException(String email) {
+        super("User not found with email: " + email);
+    }
+}

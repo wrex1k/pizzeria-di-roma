@@ -1,6 +1,7 @@
 package com.pizzeriadiroma.pizzeria.service;
 
 import com.pizzeriadiroma.pizzeria.entity.Drink;
+import com.pizzeriadiroma.pizzeria.exception.DrinkNotFoundException;
 import com.pizzeriadiroma.pizzeria.repository.DrinkRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,10 @@ public class DrinkService {
 
     public List<Drink> getAllDrinks() {
         return drinkRepository.findAllAvailable();
+    }
+
+    public Drink findById(Long id) {
+        return drinkRepository.findById(id)
+                .orElseThrow(() -> new DrinkNotFoundException(id));
     }
 }

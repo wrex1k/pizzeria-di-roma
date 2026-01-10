@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzeria di Roma - Authentic Italian Pizza</title>
+    <meta name="description"
+        content="Experience authentic Italian pizza delivered to your door. Fresh ingredients, traditional recipes, modern convenience.">
+    <meta name="author" content="Pizzeria di Roma">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        border: 'hsl(30, 30%, 85%)',
+                        input: 'hsl(30, 30%, 90%)',
+                        ring: 'hsl(0, 70%, 51%)',
+                        background: 'hsl(32, 65%, 95%)',
+                        foreground: 'hsl(0, 0%, 11%)',
+                        primary: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(32, 65%, 95%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(30, 40%, 88%)',
+                            foreground: 'hsl(0, 0%, 45%)',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(45, 98%, 60%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                    },
+                    borderRadius: {
+                        lg: '0.75rem',
+                        md: 'calc(0.75rem - 2px)',
+                        sm: 'calc(0.75rem - 4px)',
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(10px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: hsl(32, 65%, 95%);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #D32F2F 0%, #C62828 100%);
+        }
+
+        .hero-gradient:hover {
+            background: linear-gradient(135deg, #C62828 0%, #B71C1C 100%);
+        }
+
+        .transition-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar Fragment -->
+        <div th:replace="~{fragments/layout/navbar :: navbar}"></div>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-8 flex-1">
+            <!-- Breadcrumb Navigation -->
+            <nav class="flex items-center text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
+                <a th:href="@{'/'}" class="hover:text-primary transition-smooth">Home</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+                <span class="text-foreground font-medium">Cart</span>
+            </nav>
+
+            <h1 class="text-4xl font-display font-bold mb-2">Your Cart</h1>
+            <p class="text-muted-foreground mb-8">Review your order details and complete your purchase</p>
+
+            <!-- Empty Cart State -->
+            <div th:if="${cart == null or cart.items.isEmpty()}" class="text-center py-16 animate-fade-in">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-shopping-bag h-24 w-24 mx-auto text-muted-foreground mb-4">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                    <path d="M3 6h18"></path>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <h2 class="text-2xl font-display font-bold mb-2">Your cart is empty</h2>
+                <p class="text-muted-foreground mb-6">Your cart is hungry for some delicious pizza! 🍕</p>
+                <a th:href="@{/}">
+                    <button
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8 hero-gradient">
+                        Browse Menu
+                    </button>
+                </a>
+            </div>
+
+            <!-- Cart with Items -->
+            <div th:if="${cart != null and !cart.items.isEmpty()}" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cart Items -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div th:each="item : ${cart.items}" class="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
+                        <div class="flex gap-4">
+                            <!-- Item Image (Pizza or Drink) -->
+                            <img th:if="${item.pizza != null}"
+                                th:src="@{'/images/pizza_pictures/' + ${item.pizza.imageUrl}}"
+                                th:alt="${item.pizza.name}" class="w-24 h-24 rounded-lg object-cover" />
+                            <img th:if="${item.drink != null}"
+                                th:src="@{'/images/drink_pictures/' + ${item.drink.imageUrl}}"
+                                th:alt="${item.drink.name}" class="w-24 h-24 rounded-lg object-cover" />
+
+                            <!-- Item Info -->
+                            <div class="flex-1">
+                                <!-- Pizza Info -->
+                                <div th:if="${item.pizza != null}">
+                                    <h3 class="font-semibold text-lg" th:text="${item.pizza.name}">Pizza Name</h3>
+                                    <p class="text-sm text-gray-600" th:text="${item.pizzaSize?.name}">Size</p>
+                                    <p th:if="${item.extraIngredients != null and !item.extraIngredients.isEmpty()}"
+                                        class="text-xs text-gray-500 mt-1">
+                                        Extra: <span th:text="${item.extraIngredients}">extras</span>
+                                    </p>
+                                </div>
+                                <!-- Drink Info -->
+                                <div th:if="${item.drink != null}">
+                                    <h3 class="font-semibold text-lg" th:text="${item.drink.name}">Drink Name</h3>
+                                    <p class="text-sm text-gray-600" th:text="${item.drink.volumeMl + ' ml'}">Volume</p>
+                                </div>
+                                <p class="text-lg font-bold text-red-600 mt-2">
+                                    €<span th:text="${#numbers.formatDecimal(item.totalPrice, 1, 2)}">0.00</span>
+                                </p>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex flex-col justify-between items-end">
+                                <!-- Remove Button -->
+                                <form th:action="@{/cart/remove/{id}(id=${item.id})}" method="post" class="inline">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit"
+                                        class="p-2 hover:bg-red-50 rounded-lg text-red-600 transition-smooth">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-trash h-5 w-5">
+                                            <path d="M3 6h18"></path>
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+
+                                <!-- Quantity Controls -->
+                                <div class="flex items-center gap-2">
+                                    <form th:action="@{/cart/update/{id}(id=${item.id})}" method="post" class="inline">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
+                                        <input type="hidden" name="quantity" th:value="${item.quantity - 1}" />
+                                        <button type="submit"
+                                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-lg font-bold transition-smooth"
+                                            th:disabled="${item.quantity <= 1}">
+                                            -
+                                        </button>
+                                    </form>
+                                    <span class="inline-block text-center font-semibold"
+                                        th:text="${item.quantity}">1</span>
+                                    <form th:action="@{/cart/update/{id}(id=${item.id})}" method="post" class="inline"
+                                        th:if="${item.quantity < 9999}">
+                                        <input type="hidden" th:name="${_csrf.parameterName}"
+                                            th:value="${_csrf.token}" />
+                                        <input type="hidden" name="quantity" th:value="${item.quantity + 1}" />
+                                        <button type="submit"
+                                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-8 h-8 rounded-lg font-bold transition-smooth">
+                                            +
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+                        <h3 class="font-bold text-xl mb-4 font-display">Order Summary</h3>
+                        <div class="space-y-3">
+                            <!-- Subtotal -->
+                            <div class="flex justify-between text-gray-700">
+                                <span>Subtotal</span>
+                                <span class="font-semibold">
+                                    €<span th:text="${#numbers.formatDecimal(cart.subtotal, 1, 2)}">0.00</span>
+                                </span>
+                            </div>
+
+                            <!-- Delivery Fee -->
+                            <div class="flex justify-between text-gray-700">
+                                <span>Delivery Fee</span>
+                                <span class="font-semibold" th:if="${deliveryFee > 0}">
+                                    €<span th:text="${#numbers.formatDecimal(deliveryFee, 1, 2)}">0.00</span>
+                                </span>
+                                <span class="font-semibold text-green-600" th:if="${deliveryFee == 0}">
+                                    FREE
+                                </span>
+                            </div>
+
+                            <!-- Free Delivery Info -->
+                            <div class="flex justify-between text-xs text-muted-foreground" th:if="${deliveryFee > 0 && cart.subtotal < companyInfo.freeDeliveryFrom}">
+                                <span>Free delivery from</span>
+                                <span>€<span th:text="${#numbers.formatDecimal(companyInfo.freeDeliveryFrom, 1, 2)}">50.00</span></span>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-3"></div>
+
+                            <!-- Total -->
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>Total</span>
+                                <span class="text-red-600">
+                                    €<span th:text="${#numbers.formatDecimal(cart.subtotal + deliveryFee, 1, 2)}">0.00</span>
+                                </span>
+                            </div>
+                            <p class="text-xs text-muted-foreground mt-1 text-center">Prices include <span th:text="${#numbers.formatDecimal(companyInfo.dphRate, 0, 0)}">20</span>% VAT</p>
+                        </div>
+
+                        <!-- Checkout Button -->
+                        <a th:href="@{/checkout}">
+                            <button
+                                class="w-full mt-6 hero-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-smooth">
+                                Proceed to Checkout
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Fragment -->
+        <div th:replace="~{fragments/layout/footer :: footer}"></div>
+    </div>
+</body>
+
+</html>
