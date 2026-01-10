@@ -1,19 +1,19 @@
 <!--/*@thymesVar id="pizzaForm" type="com.pizzeriadiroma.pizzeria.dto.AddPizzaRequest"*/-->
 
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pizza != null ? pizza.name + ' - Pizzeria di Roma' : 'Pizza Not Found'}">Pizza Detail - Pizzeria
+    <title th:text="${pizza != null ? pizza.name + ' - Pizzeria di Roma' : #{pizzaDetail.notFoundTitle}}">Pizza Detail - Pizzeria
         di Roma</title>
 
     <meta name="description"
-        th:content="${pizza != null ? pizza.description : 'Experience authentic Italian pizza delivered to your door'}">
+        th:content="${pizza != null ? pizza.description : #{pizzaDetail.meta.fallbackDescription}}">
     <meta name="author" content="Pizzeria di Roma">
-    <meta name="_csrf" th:content="${_csrf.token}" />
-    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}" />
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : ''}" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" th:href="@{/favicon.png}">
@@ -87,12 +87,12 @@
         <div>
             <!-- Breadcrumb Navigation -->
             <nav class="flex items-center text-sm text-muted-foreground mb-8" aria-label="Breadcrumb">
-                <a th:href="@{'/#menu'}" class="hover:text-primary transition-smooth">Menu</a>
+                <a th:href="@{'/#menu'}" class="hover:text-primary transition-smooth" th:text="#{pizzaDetail.breadcrumb.menu}">Menu</a>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-2">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
-                <span class="text-foreground font-medium" th:text="${pizza != null ? pizza.name : 'Pizza'}">Pizza</span>
+                <span class="text-foreground font-medium" th:text="${pizza != null ? pizza.name : #{pizzaDetail.breadcrumb.pizzaFallback}}">Pizza</span>
             </nav>
 
             <!-- Grid Layout: Image + Details -->
@@ -123,20 +123,20 @@
                             th:text="${pizza != null ? pizza.name : 'Pizza'}"></h1>
 
                         <p class="text-xl text-muted-foreground leading-relaxed"
-                            th:text="${pizza != null ? pizza.description : 'Delicious pizza made with fresh ingredients'}">
+                            th:text="${pizza != null ? pizza.description : #{pizzaDetail.descriptionFallback}}">
                         </p>
                     </div>
 
                     <div class="border-t border-border"></div>
 
-                    <form th:action="@{/cart/add-pizza}" method="post" class="space-y-6">
-                        <input type="hidden" name="pizzaId" th:value="${pizza.id}">
-                        <input type="hidden" id="pizzaSlug" th:value="${pizza.slug}">
-                        <input type="hidden" name="ingredients" id="ingredientsInput">
+                    <div class="space-y-6">
+                        <input type="hidden" id="pizzaId" th:value="${pizza != null ? pizza.id : ''}">
+                        <input type="hidden" id="pizzaSlug" th:value="${pizza != null ? pizza.slug : ''}">
+                        <input type="hidden" id="ingredientsInput">
 
                         <!-- Size Selection -->
                         <div>
-                            <h3 class="font-semibold text-lg mb-4">Select Size</h3>
+                            <h3 class="font-semibold text-lg mb-4" th:text="#{pizzaDetail.size.title}">Select Size</h3>
 
                             <div class="flex justify-between items-center gap-4">
 
@@ -154,7 +154,7 @@
                                                 th:text="${size.name}">Size</div>
 
                                             <div class="text-primary font-semibold text-xl group-has-[input:checked]:text-white"
-                                                th:text="${'€' + #numbers.formatDecimal(pizza.basePrice + size.priceExtra, 1, 2)}">
+                                                th:text="${pizza != null ? '€' + #numbers.formatDecimal(pizza.basePrice + size.priceExtra, 1, 2) : '€0.00'}">
                                                 Price
                                             </div>
                                         </div>
@@ -165,18 +165,18 @@
 
                         <!-- Quantity Selector -->
                         <div>
-                            <h3 class="font-semibold text-lg mb-4">Quantity</h3>
+                            <h3 class="font-semibold text-lg mb-4" th:text="#{pizzaDetail.quantity.title}">Quantity</h3>
 
-                            <input id="quantity" type="number" name="quantity" value="1" min="1" max="9999"
+                            <input id="quantity" type="number" name="quantity" value="1"
                                 oninput="resizeInput(this); recalcPrice()"
                                 class="text-center text-3xl font-bold text-primary bg-white/60 rounded-xl border border-border shadow-sm p-2 mb-4 focus:outline-none focus:ring-0 focus:border-primary"
                                 style="min-width: 4ch;">
                             <div>
                                 <!-- Extra Ingredients Selection -->
-                                <h3 class="font-semibold text-lg mb-4">Extra Ingredients</h3>
+                                <h3 class="font-semibold text-lg mb-4" th:text="#{pizzaDetail.extras.title}">Extra Ingredients</h3>
 
                                 <div id="ingredientTagsContainer" class="flex flex-wrap gap-2 mb-3">
-                                    <span th:each="ing : ${pizza.ingredients}"
+                                    <span th:each="ing : ${pizza != null ? pizza.ingredients : {}}"
                                         class="inline-flex items-center gap-1.5 rounded-full bg-primary/20 text-foreground font-medium text-sm px-4 py-2">
                                         <span th:text="${ing.emoji}"></span>
                                         <span th:text="${ing.name}"></span>
@@ -193,7 +193,7 @@
                                             <line x1="12" y1="8" x2="12" y2="16"></line>
                                             <line x1="8" y1="12" x2="16" y2="12"></line>
                                         </svg>
-                                        Add Extra
+                                        <span th:text="#{pizzaDetail.extras.addExtra}">Add Extra</span>
                                     </button>
 
                                     <!-- Dropdown Menu -->
@@ -201,9 +201,9 @@
                                         class="hidden absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-border z-50 overflow-hidden">
 
                                         <div class="p-3 bg-accent/10 border-b border-border">
-                                            <h4 class="font-semibold text-sm text-foreground">Extra Ingredients</h4>
+                                            <h4 class="font-semibold text-sm text-foreground" th:text="#{pizzaDetail.extras.dropdownTitle}">Extra Ingredients</h4>
                                             <p class="text-xs text-muted-foreground mt-0.5" 
-                                               th:text="${'+€' + #numbers.formatDecimal(extraIngredientPrice, 1, 2) + ' each'}">+€1.50 each</p>
+                                               th:text="#{pizzaDetail.extras.priceEach(${#numbers.formatDecimal(extraIngredientPrice, 1, 2)})}">+€1.50 each</p>
                                         </div>
 
                                         <div class="max-h-64 overflow-y-auto">
@@ -231,14 +231,18 @@
                             <!-- Total Price and Add to Cart -->
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-muted-foreground">Total Price</span>
+                                    <span class="text-muted-foreground" th:text="#{pizzaDetail.totalPrice}">Total Price</span>
                                     <span id="totalPrice" class="text-4xl font-bold text-primary"
                                         th:text="${pizza != null ? '€' + #numbers.formatDecimal(pizza.basePrice, 1, 2) : '€8.99'}">
                                         €8.99
                                     </span>
                                 </div>
-                                <form th:if="${#authorization.expression('isAuthenticated()')}" action="/cart/add-pizza"
+                                <form sec:authorize="isAuthenticated()" th:action="@{/cart/add-pizza}"
                                     method="post">
+                                    <input type="hidden" name="pizzaId" th:value="${pizza != null ? pizza.id : ''}">
+                                    <input type="hidden" name="ingredients" id="formIngredientsInput">
+                                    <input type="hidden" name="size" id="formSizeInput">
+                                    <input type="hidden" name="quantity" id="formQuantityInput">
                                     <button type="submit"
                                         class="w-full hero-gradient text-white text-lg py-4 px-8 rounded-lg font-semibold flex items-center justify-center gap-3 hover:shadow-lg transition-smooth">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -250,10 +254,10 @@
                                                 d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12">
                                             </path>
                                         </svg>
-                                        <span>Add to Cart</span>
+                                        <span th:text="#{pizzaDetail.cta.addToCart}">Add to Cart</span>
                                     </button>
                                 </form>
-                                <a th:if="${!#authorization.expression('isAuthenticated()')}" href="/login"
+                                <a sec:authorize="!isAuthenticated()" th:href="@{/login}"
                                     class="w-full hero-gradient text-white text-lg py-4 px-8 rounded-lg font-semibold flex items-center justify-center gap-3 hover:shadow-lg transition-smooth">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -264,11 +268,11 @@
                                             d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12">
                                         </path>
                                     </svg>
-                                    <span>Are you hungry? Log in</span>
+                                    <span th:text="#{pizzaDetail.cta.loginToOrder}">Are you hungry? Log in</span>
                                 </a>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -278,8 +282,8 @@
     <div class="w-full bg-background mb-16">
         <div class="container mx-auto px-4">
             <div class="mb-8">
-                <h2 class="text-3xl font-display font-bold text-foreground mb-2">Add a Drink</h2>
-                <p class="text-muted-foreground">Complete your meal with a refreshing beverage</p>
+                <h2 class="text-3xl font-display font-bold text-foreground mb-2" th:text="#{pizzaDetail.drinks.title}">Add a Drink</h2>
+                <p class="text-muted-foreground" th:text="#{pizzaDetail.drinks.subtitle}">Complete your meal with a refreshing beverage</p>
             </div>
 
             <!-- Drinks Scrollable Container -->
@@ -304,14 +308,14 @@
                                         Drink Name</h4>
 
                                     <p class="text-xs text-center text-muted-foreground mb-auto"
-                                        th:text="${drink.volumeMl + ' ml'}">Volume</p>
+                                        th:text="#{pizzaDetail.drinks.volume(${drink.volumeMl})}">Volume</p>
 
                                     <div class="flex items-center justify-between mt-3">
                                         <span class="text-primary font-bold text-lg">
                                             €<span th:text="${#numbers.formatDecimal(drink.price,1,2)}">0.00</span>
                                         </span>
 
-                                        <form th:if="${#authorization.expression('isAuthenticated()')}"
+                                        <form sec:authorize="isAuthenticated()"
                                             th:action="@{/cart/add-drink}" method="post" class="inline-block">
                                             <input type="hidden" name="drinkId" th:value="${drink.id}">
                                             <input type="hidden" name="quantity" value="1">
@@ -339,7 +343,7 @@
                             <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
                     </button>
-                    <input type="range" id="drinksSlider" min="0" max="100" value="0"
+                    <input type="range" id="drinksSlider" value="0"
                         class="drinks-slider flex-1 appearance-none cursor-grab active:cursor-grabbing">
                     <button type="button" id="sliderRight"
                         class="text-primary hover:text-primary-hover transition-colors flex-shrink-0">
@@ -456,14 +460,29 @@
         function recalcPrice() {
             const size = document.querySelector('input[name="size"]:checked')?.value ?? "Small";
             const quantity = document.querySelector('input[name="quantity"]').value;
-            const extras = document.getElementById("ingredientsInput").value.split(",").filter(x => x);
+            const extras = document.getElementById("ingredientsInput").value ? document.getElementById("ingredientsInput").value.split(",").filter(x => x) : [];
             const slug = document.getElementById("pizzaSlug").value;
-            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+            const csrfMeta = document.querySelector('meta[name="_csrf"]');
+            const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+            const csrfToken = csrfMeta ? csrfMeta.content : '';
+            const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.content : '';
+            
+            // Update form hidden inputs
+            const formSizeInput = document.getElementById("formSizeInput");
+            const formQuantityInput = document.getElementById("formQuantityInput");
+            const formIngredientsInput = document.getElementById("formIngredientsInput");
+            if (formSizeInput) formSizeInput.value = size;
+            if (formQuantityInput) formQuantityInput.value = quantity;
+            if (formIngredientsInput) formIngredientsInput.value = extras.join(",");
+
+            const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+            if (csrfHeader && csrfToken) {
+                headers[csrfHeader] = csrfToken;
+            }
 
             fetch("/pizza/calc-price", {
                 method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded", [csrfHeader]: csrfToken },
+                headers: headers,
                 body: new URLSearchParams({ slug, size, quantity, ingredients: extras.join(",") })
             })
                 .then(res => res.json())

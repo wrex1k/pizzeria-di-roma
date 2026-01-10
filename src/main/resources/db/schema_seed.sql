@@ -3208,7 +3208,8 @@ CREATE TABLE `pizzas` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
-  `description` varchar(2000) NOT NULL,
+  `description_en` varchar(2000) NOT NULL,
+  `description_sk` varchar(2000) NOT NULL,
   `image_url` varchar(500) DEFAULT NULL,
   `base_price` decimal(10,2) NOT NULL,
   `is_available` tinyint(1) NOT NULL DEFAULT 1,
@@ -3218,15 +3219,15 @@ CREATE TABLE `pizzas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `pizzas` (`id`, `name`, `slug`, `description`, `image_url`, `base_price`, `is_available`, `is_featured`, `created_at`, `updated_at`) VALUES
-(1, 'Margherita Classica', 'margherita-classica', 'Pizza with tomato sauce, mozzarella and dried basil for a true Italian flavor', 'margherita-classica.webp', 10.90, 1, 1, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(2, 'Capricciosa', 'capricciosa', 'Pizza with tomato sauce, ham, artichokes, black olives and mushrooms', 'capricciosa.webp', 11.40, 1, 0, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(3, 'Carbonara', 'carbonara', 'Pizza with creamy base, pancetta, egg, parmesan and black pepper', 'carbonara-pizza.webp', 11.70, 1, 0, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(4, 'Delicatezza Rustica', 'delicatezza-rustica', 'Pizza with tomato base, prosciutto, rucola, sun-dried tomatoes and olives', 'delicatezza-rustica.webp', 12.40, 1, 1, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(5, 'Diavola Piccante', 'diavola-piccante', 'Pizza with tomato sauce, mozzarella, pepperoni and chili for a spicy kick', 'diavola-piccante.webp', 11.90, 1, 1, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(6, 'Funghi', 'funghi', 'Pizza with tomato sauce, mozzarella and mushrooms in a classic style', 'funghi.webp', 10.80, 1, 0, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(7, 'Funghi al Panna', 'funghi-al-panna', 'Pizza with creamy base, pecorino cheese and spinach for a smooth taste', 'funghi-al-panna.webp', 11.20, 1, 0, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(8, 'Gluten-Free Primavera', 'gluten-free-primavera', 'Pizza with tomato sauce, mozzarella and vegetables on a gluten-free base', 'gluten-free-primavera.webp', 11.90, 1, 0, '2025-11-06 14:30:00', '2025-11-06 14:30:00'),
-(9, 'La Crema Bianca', 'la-crema-bianca', 'Pizza with creamy base, mozzarella, gorgonzola, parmesan and fontina', 'la-crema-bianca.webp', 12.90, 1, 0, '2025-11-06 14:30:00', '2025-11-06 14:30:00');
+(1,'Margherita Classica','margherita-classica','Pizza with tomato sauce, mozzarella and dried basil for a true Italian flavor','Pizza s paradajkovou omáčkou, mozzarellou a sušenou bazalkou pre pravú taliansku chuť','margherita-classica.webp',10.90,1,1,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(2,'Capricciosa','capricciosa','Pizza with tomato sauce, ham, artichokes, black olives and mushrooms','Pizza s paradajkovou omáčkou, šunkou, artičokmi, čiernymi olivami a šampiňónmi','capricciosa.webp',11.40,1,0,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(3,'Carbonara','carbonara','Pizza with creamy base, pancetta, egg, parmesan and black pepper','Pizza so smotanovým základom, pancettou, vajcom, parmezánom a čiernym korením','carbonara-pizza.webp',11.70,1,0,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(4,'Delicatezza Rustica','delicatezza-rustica','Pizza with tomato base, prosciutto, rucola, sun-dried tomatoes and olives','Pizza s paradajkovým základom, prosciuttom, rukolou, sušenými paradajkami a olivami','delicatezza-rustica.webp',12.40,1,1,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(5,'Diavola Piccante','diavola-piccante','Pizza with tomato sauce, mozzarella, pepperoni and chili for a spicy kick','Pizza s paradajkovou omáčkou, mozzarellou, pikantnou salámou a čili','diavola-piccante.webp',11.90,1,1,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(6,'Funghi','funghi','Pizza with tomato sauce, mozzarella and mushrooms in a classic style','Pizza s paradajkovou omáčkou, mozzarellou a šampiňónmi v klasickom štýle','funghi.webp',10.80,1,0,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(7,'Funghi al Panna','funghi-al-panna','Pizza with creamy base, pecorino cheese and spinach for a smooth taste','Pizza so smotanovým základom, syrom pecorino a špenátom','funghi-al-panna.webp',11.20,1,0,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(8,'Gluten-Free Primavera','gluten-free-primavera','Pizza with tomato sauce, mozzarella and vegetables on a gluten-free base','Pizza s paradajkovou omáčkou, mozzarellou a zeleninou na bezlepkovom ceste','gluten-free-primavera.webp',11.90,1,0,'2025-11-06 14:30:00','2025-11-06 14:30:00'),
+(9,'La Crema Bianca','la-crema-bianca','Pizza with creamy base, mozzarella, gorgonzola, parmesan and fontina','Pizza so smotanovým základom, mozzarellou, gorgonzolou, parmezánom a fontinou','la-crema-bianca.webp',12.90,1,0,'2025-11-06 14:30:00','2025-11-06 14:30:00');
 
 CREATE TABLE `pizza_available_sizes` (
   `pizza_id` int(11) NOT NULL,

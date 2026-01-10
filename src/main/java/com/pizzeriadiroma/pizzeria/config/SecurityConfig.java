@@ -43,25 +43,27 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/cart/**").authenticated()
+                        .requestMatchers("/order/**").authenticated()
+                        .requestMatchers("/checkout/**").authenticated()
+                        .requestMatchers("/profile/**").authenticated()
+
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/kitchen/**").hasAnyRole("COOK", "ADMIN")
+
                         .requestMatchers(
                                 "/",
                                 "/login",
                                 "/register",
                                 "/pizza/**",
+                                "/filter",
                                 "/images/**",
                                 "/css/**",
                                 "/js/**",
-                                "/favicon.png"
+                                "/favicon.png",
+                                "/terms",
+                                "/privacy"
                         ).permitAll()
-
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        .requestMatchers(
-                                "/cart/**",
-                                "/order/**",
-                                "/checkout/**",
-                                "/profile/**"
-                        ).authenticated()
 
                         .anyRequest().authenticated()
                 )

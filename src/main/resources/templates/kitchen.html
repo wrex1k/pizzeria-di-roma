@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kitchen Dashboard - Manage incoming orders and track preparation">
+    <meta name="author" content="Pizzeria di Roma">
+
+    <title>Kitchen Dashboard - Pizzeria di Roma</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        border: 'hsl(30, 30%, 85%)',
+                        input: 'hsl(30, 30%, 90%)',
+                        ring: 'hsl(0, 70%, 51%)',
+                        background: 'hsl(32, 65%, 95%)',
+                        foreground: 'hsl(0, 0%, 11%)',
+                        primary: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(32, 65%, 95%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(0, 70%, 51%)',
+                            foreground: 'hsl(0, 0%, 100%)',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(30, 40%, 88%)',
+                            foreground: 'hsl(0, 0%, 45%)',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(45, 98%, 60%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(0, 0%, 100%)',
+                            foreground: 'hsl(0, 0%, 11%)',
+                        },
+                    },
+                    borderRadius: {
+                        lg: '0.75rem',
+                        md: 'calc(0.75rem - 2px)',
+                        sm: 'calc(0.75rem - 4px)',
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(10px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.3s ease-out',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: hsl(32, 65%, 95%);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, hsl(0, 70%, 51%) 0%, hsl(0, 60%, 40%) 100%);
+        }
+
+        .hero-gradient:hover {
+            background: linear-gradient(135deg, hsl(0, 70%, 45%) 0%, hsl(0, 60%, 35%) 100%);
+        }
+
+        /* Progress Bar Animation */
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-enter {
+            animation: modal-fade-in 0.2s ease-out;
+        }
+
+        @keyframes modal-fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Overdue Order Alert */
+        .order-overdue {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+
+            0%,
+            100% {
+                border-color: hsl(0, 70%, 51%);
+            }
+
+            50% {
+                border-color: hsl(0, 70%, 65%);
+            }
+        }
+
+        /* Time Tracker Styles */
+        .time-elapsed {
+            background: linear-gradient(90deg, hsl(0, 70%, 51%) 0%, hsl(45, 98%, 60%) 100%);
+        }
+
+        .time-normal {
+            background: linear-gradient(90deg, hsl(45, 98%, 60%) 0%, hsl(120, 60%, 50%) 100%);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-background font-sans p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Top Navigation Bar with User Info and Logout -->
+        <div class="flex items-center justify-between mb-6 p-4 bg-card rounded-xl border shadow-md">
+            <!-- Logo/Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-primary">
+                        <path
+                            d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                        </path>
+                        <path d="M6 17h12"></path>
+                    </svg>
+                </div>
+                <div class="hidden sm:block">
+                    <p class="text-sm font-semibold text-foreground">Pizzeria di Roma</p>
+                    <p class="text-xs text-muted-foreground">Kitchen Dashboard</p>
+                </div>
+            </div>
+
+            <!-- User Info and Logout -->
+            <div class="flex items-center gap-3">
+                <!-- Current User Info -->
+                <div class="flex items-center gap-3 px-4 py-2 bg-muted/30 rounded-lg border">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-primary">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div class="hidden md:block">
+                            <p class="text-sm font-semibold text-foreground"
+                                th:text="${currentUser != null ? currentUser.firstName + ' ' + currentUser.lastName : 'Chef User'}">Chef Marco Rossi</p>
+                            <p class="text-xs text-muted-foreground">Kitchen Staff</p>
+                        </div>
+                        <div class="block md:hidden">
+                            <p class="text-sm font-semibold text-foreground"
+                                th:text="${currentUser != null ? currentUser.firstName : 'Chef'}">Marco</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span class="hidden sm:inline">Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-display font-bold mb-2">Kitchen Dashboard</h1>
+            <p class="text-muted-foreground">Real-time order tracking and kitchen management</p>
+        </div>
+
+        <!-- Enhanced Kitchen Statistics - 5 Column Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+            <!-- Active Chefs -->
+            <div class="rounded-xl border bg-card text-card-foreground shadow-md">
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-muted-foreground uppercase tracking-wide">Active Chefs</p>
+                            <p class="text-3xl font-bold text-primary mt-1" th:text="${stats.activeChefs}">3</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="h-8 w-8 text-primary opacity-70">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Prep Time -->
+            <div class="rounded-xl border bg-card text-card-foreground shadow-md">
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-muted-foreground uppercase tracking-wide">Avg Prep Time</p>
+                            <p class="text-3xl font-bold text-accent mt-1" th:text="${stats.averagePrepTime} + 'm'">12m</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="h-8 w-8 text-accent opacity-70">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Longest Pending -->
+            <div class="rounded-xl border bg-card text-card-foreground shadow-md">
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-muted-foreground uppercase tracking-wide">Longest Pending</p>
+                            <p class="text-3xl font-bold text-orange-600 mt-1" th:text="${stats.longestPending} + 'm'">18m</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="h-8 w-8 text-orange-600 opacity-70">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delayed Orders -->
+            <div class="rounded-xl border bg-card text-card-foreground shadow-md">
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-muted-foreground uppercase tracking-wide">Delayed</p>
+                            <p class="text-3xl font-bold text-red-600 mt-1" th:text="${stats.delayedOrders}">2</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="h-8 w-8 text-red-600 opacity-70">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="m15 9-6 6"></path>
+                            <path d="m9 9 6 6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Today -->
+            <div class="rounded-xl border bg-card text-card-foreground shadow-md">
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-muted-foreground uppercase tracking-wide">Completed Today</p>
+                            <p class="text-3xl font-bold text-green-600 mt-1" th:text="${stats.completedToday}">47</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="h-8 w-8 text-green-600 opacity-70">
+                            <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                            <path d="m9 11 3 3L22 4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Orders Section -->
+        <div class="mb-8">
+            <h2 class="text-xl font-display font-bold mb-4 text-foreground">Active Orders</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <!-- Loop through active orders -->
+                <div th:each="order : ${activeOrders}" 
+                     th:class="${order.status.name() == 'PREPARING' ? 'rounded-xl border-2 border-primary/30 bg-card text-card-foreground shadow-md hover-lift animate-fade-in' : order.status.name() == 'READY' ? 'rounded-xl border-2 border-green-500/30 bg-card text-card-foreground shadow-md hover-lift animate-fade-in' : 'rounded-xl border bg-card text-card-foreground shadow-md hover-lift animate-fade-in'}">
+                    <!-- Card Header -->
+                    <div class="flex flex-col space-y-1.5 p-6 pb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg" th:text="${order.deliveryMethod.name() == 'DELIVERY' ? '🚗' : '🏠'}" 
+                                      th:title="${order.deliveryMethod.name() == 'DELIVERY' ? 'Delivery' : 'Pickup'}">🚗</span>
+                                <h3 class="font-semibold tracking-tight text-xl" th:text="'Order #' + ${order.orderNumber}">Order #1234</h3>
+                            </div>
+                            <div th:class="${order.status.name() == 'PENDING' ? 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-accent/10 text-accent-foreground border-accent' : order.status.name() == 'PREPARING' ? 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-primary/10 text-primary border-primary' : 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-green-500/10 text-green-700 border-green-500'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-4 w-4">
+                                    <circle cx="12" cy="12" r="10" th:if="${order.status.name() == 'PENDING'}"></circle>
+                                    <polyline points="12 6 12 12 16 14" th:if="${order.status.name() == 'PENDING'}"></polyline>
+                                    <path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" th:if="${order.status.name() == 'PREPARING'}"></path>
+                                    <path d="M6 17h12" th:if="${order.status.name() == 'PREPARING'}"></path>
+                                    <path d="M21.801 10A10 10 0 1 1 17 3.335" th:if="${order.status.name() == 'READY'}"></path>
+                                    <path d="m9 11 3 3L22 4" th:if="${order.status.name() == 'READY'}"></path>
+                                </svg>
+                                <span class="ml-2 capitalize" th:text="${#strings.toLowerCase(order.status.name())}">pending</span>
+                            </div>
+                        </div>
+
+                        <!-- Time Info -->
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span th:text="${order.status.name() == 'PENDING' ? 'Received' : order.status.name() == 'PREPARING' ? 'Started' : 'Ready at'} + ': ' + ${#temporals.format(order.createdAt, 'HH:mm')}">Received: 12:43 PM</span>
+                            <span>•</span>
+                            <span th:class="${order.minutesSinceCreated > 20 ? 'text-orange-600 font-medium' : order.status.name() == 'PREPARING' ? 'text-primary font-medium' : 'text-green-700 font-medium'}" 
+                                  th:text="${order.minutesSinceCreated} + ' mins ago'">18 mins ago</span>
+                        </div>
+
+                        <!-- Chef Assignment -->
+                        <div th:if="${order.assignedChefName == null}" class="flex items-center justify-between mt-2 p-2 bg-muted/30 rounded-md">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-muted-foreground">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs text-muted-foreground italic">Not assigned yet</span>
+                            </div>
+                            <button th:onclick="'assignToMe(' + ${order.id} + ')'" class="text-xs text-primary hover:underline font-medium">Assign to me</button>
+                        </div>
+                        
+                        <div th:if="${order.assignedChefName != null}" 
+                             th:class="${order.status.name() == 'READY' ? 'flex items-center justify-between mt-2 p-2 bg-green-500/5 rounded-md border border-green-500/20' : 'flex items-center justify-between mt-2 p-2 bg-primary/5 rounded-md border border-primary/20'}">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" th:class="${order.status.name() == 'READY' ? 'text-green-700' : 'text-primary'}">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs font-medium" 
+                                      th:class="${order.status.name() == 'READY' ? 'text-green-700' : 'text-primary'}"
+                                      th:text="'Chef ' + ${order.assignedChefName}">Chef Marco Rossi</span>
+                            </div>
+                            <div th:if="${order.status.name() == 'PREPARING'}" class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                            <svg th:if="${order.status.name() == 'READY'}" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-green-600">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li th:each="item : ${order.items}" class="text-sm text-muted-foreground flex items-center">
+                                    <span class="w-2 h-2 rounded-full mr-2" 
+                                          th:class="${order.status.name() == 'READY' ? 'bg-green-600' : 'bg-primary'}"></span>
+                                    <span th:text="${item.pizzaName} + ' (' + ${item.size} + ') x' + ${item.quantity}">Margherita (M)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div th:if="${order.deliveryInstructions != null and !#strings.isEmpty(order.deliveryInstructions)}" 
+                             th:class="${order.status.name() == 'READY' ? 'p-3 bg-green-50 border-l-4 border-green-400 rounded' : 'p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded'}">
+                            <p class="text-xs font-semibold mb-1" 
+                               th:class="${order.status.name() == 'READY' ? 'text-green-800' : 'text-yellow-800'}">📝 Customer Notes:</p>
+                            <p class="text-sm" 
+                               th:class="${order.status.name() == 'READY' ? 'text-green-900' : 'text-yellow-900'}"
+                               th:text="${order.deliveryInstructions}">Extra cheese on Margherita, please.</p>
+                        </div>
+
+                        <!-- Time Estimate & Progress -->
+                        <div class="space-y-2" th:if="${order.status.name() != 'READY'}">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-muted-foreground" th:text="${order.status.name() == 'PENDING' ? 'Estimated time:' : 'Est. completion:'}">Estimated time:</span>
+                                <span class="font-semibold text-foreground" th:text="${order.estimatedPreparationTime} + ' mins'">15 mins</span>
+                            </div>
+                            <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
+                                <div class="h-full rounded-full" 
+                                     th:class="${order.minutesSinceCreated > 20 ? 'bg-orange-600' : order.status.name() == 'PREPARING' ? 'time-normal' : 'bg-orange-600'}" 
+                                     th:style="'width: ' + ${order.status.name() == 'PREPARING' ? (order.minutesSincePreparationStart * 100 / order.estimatedPreparationTime) : 0} + '%'"></div>
+                            </div>
+                            <p class="text-xs font-medium" 
+                               th:class="${order.minutesSinceCreated > 20 ? 'text-orange-600' : order.status.name() == 'PREPARING' ? 'text-primary' : 'text-orange-600'}"
+                               th:text="${order.minutesSinceCreated > 20 ? '⚠️ Waiting for ' + order.minutesSinceCreated + ' minutes' : '🔥 Preparing'}">⚠️ Waiting for 18 minutes</p>
+                        </div>
+
+                        <!-- Completion Time for READY status -->
+                        <div class="space-y-2" th:if="${order.status.name() == 'READY'}">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-muted-foreground">Total prep time:</span>
+                                <span class="font-semibold text-green-700" th:text="${order.minutesSincePreparationStart} + ' minutes'">11 minutes</span>
+                            </div>
+                            <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
+                                <div class="h-full bg-green-600 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <p class="text-xs text-green-700 font-medium">✓ Completed on time</p>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button th:if="${order.status.name() == 'PENDING'}"
+                            th:onclick="'startPreparing(' + ${order.id} + ')'"
+                            class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 hero-gradient">
+                            Start Preparing
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </button>
+
+                        <button th:if="${order.status.name() == 'PREPARING'}"
+                            th:onclick="'markAsReady(' + ${order.id} + ')'"
+                            class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-accent text-accent-foreground hover:bg-accent/90 h-10 px-4 py-2">
+                            Mark as Ready
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </button>
+
+                        <button th:if="${order.status.name() == 'READY'}" disabled
+                            class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-600 text-white h-10 px-4 py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Ready for Pickup
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Completed Orders Section -->
+        <div class="mb-8" th:if="${!completedOrders.isEmpty()}">
+            <h2 class="text-xl font-display font-bold mb-4 text-muted-foreground">Completed Orders</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <div th:each="order : ${completedOrders}" 
+                     th:class="${order.status.name() == 'CANCELLED' ? 'rounded-xl border-2 border-red-500/30 bg-card text-card-foreground shadow-md opacity-60 animate-fade-in' : 'rounded-xl border bg-card text-card-foreground shadow-md opacity-75 animate-fade-in'}">
+                    <!-- Card Header -->
+                    <div class="flex flex-col space-y-1.5 p-6 pb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg" th:class="${order.status.name() == 'CANCELLED' ? 'opacity-60' : ''}"
+                                      th:text="${order.deliveryMethod.name() == 'DELIVERY' ? '🚗' : '🏠'}" 
+                                      th:title="${order.deliveryMethod.name() == 'DELIVERY' ? 'Delivery' : 'Pickup'}">🚗</span>
+                                <h3 class="font-semibold tracking-tight text-xl" 
+                                    th:class="${order.status.name() == 'CANCELLED' ? 'line-through' : ''}"
+                                    th:text="'Order #' + ${order.orderNumber}">Order #1230</h3>
+                            </div>
+                            <div th:class="${order.status.name() == 'CANCELLED' ? 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-red-500/10 text-red-700 border-red-500' : order.status.name() == 'PICKED_UP' or order.status.name() == 'DELIVERED' ? 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-blue-500/10 text-blue-700 border-blue-500' : 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-green-500/10 text-green-700 border-green-500'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-4 w-4">
+                                    <circle cx="12" cy="12" r="10" th:if="${order.status.name() == 'CANCELLED'}"></circle>
+                                    <path d="m15 9-6 6" th:if="${order.status.name() == 'CANCELLED'}"></path>
+                                    <path d="m9 9 6 6" th:if="${order.status.name() == 'CANCELLED'}"></path>
+                                    <path d="M5 12h14" th:if="${order.status.name() != 'CANCELLED'}"></path>
+                                    <path d="m12 5 7 7-7 7" th:if="${order.status.name() != 'CANCELLED'}"></path>
+                                </svg>
+                                <span class="ml-2 capitalize" th:text="${#strings.toLowerCase(order.status.name()).replace('_', ' ')}">picked up</span>
+                            </div>
+                        </div>
+
+                        <!-- Time Info -->
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span th:text="${order.status.name() == 'CANCELLED' ? 'Cancelled' : 'Completed'} + ': ' + ${#temporals.format(order.createdAt, 'HH:mm')}">Picked up: 12:35 PM</span>
+                            <span>•</span>
+                            <span th:class="${order.status.name() == 'CANCELLED' ? 'text-red-700 font-medium' : 'text-blue-700 font-medium'}" 
+                                  th:text="${order.minutesSinceCreated} + ' mins ago'">26 mins ago</span>
+                        </div>
+
+                        <!-- Chef Assignment or Cancellation Reason -->
+                        <div th:if="${order.status.name() == 'CANCELLED'}" class="mt-2 p-2 bg-red-500/5 rounded-md border border-red-500/20">
+                            <p class="text-xs text-red-700 font-medium">⚠️ Order cancelled</p>
+                        </div>
+                        
+                        <div th:if="${order.status.name() != 'CANCELLED' and order.assignedChefName != null}"
+                             class="flex items-center justify-between mt-2 p-2 bg-blue-500/5 rounded-md border border-blue-500/20">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-blue-700">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs font-medium text-blue-700" th:text="'Chef ' + ${order.assignedChefName}">Chef Marco Rossi</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-blue-600">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li th:each="item : ${order.items}" 
+                                    th:class="${order.status.name() == 'CANCELLED' ? 'text-sm text-muted-foreground flex items-center line-through opacity-60' : 'text-sm text-muted-foreground flex items-center'}">
+                                    <span class="w-2 h-2 rounded-full mr-2" 
+                                          th:class="${order.status.name() == 'CANCELLED' ? 'bg-red-600' : 'bg-blue-600'}"></span>
+                                    <span th:text="${item.pizzaName} + ' (' + ${item.size} + ') x' + ${item.quantity}">Marinara (M)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div th:if="${order.deliveryInstructions != null and !#strings.isEmpty(order.deliveryInstructions)}" 
+                             th:class="${order.status.name() == 'CANCELLED' ? 'p-3 bg-gray-50 border-l-4 border-gray-400 rounded opacity-60' : 'p-3 bg-gray-50 border-l-4 border-gray-400 rounded opacity-60'}">
+                            <p class="text-xs font-semibold text-gray-700 mb-1">📝 Customer Notes:</p>
+                            <p class="text-sm text-gray-800" 
+                               th:class="${order.status.name() == 'CANCELLED' ? 'line-through' : ''}"
+                               th:text="${order.deliveryInstructions}">Extra basil.</p>
+                        </div>
+
+                        <!-- Delivery Status for picked up/delivered orders -->
+                        <div th:if="${order.status.name() == 'PICKED_UP' or order.status.name() == 'OUT_FOR_DELIVERY' or order.status.name() == 'DELIVERED'}" 
+                             class="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                            <p class="text-xs text-blue-700 font-medium" 
+                               th:text="${order.status.name() == 'DELIVERED' ? '✓ Delivered successfully' : order.status.name() == 'OUT_FOR_DELIVERY' ? '✓ Out for delivery' : '✓ Picked up'}">✓ Out for delivery</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Order Status Updates -->
+    <script th:inline="javascript">
+        function assignToMe(orderId) {
+            fetch('/kitchen/orders/' + orderId + '/assign', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Failed to assign order');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error assigning order:', error);
+                    alert('Failed to assign order');
+                });
+        }
+
+        function startPreparing(orderId) {
+            fetch('/kitchen/orders/' + orderId + '/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Failed to start preparing order');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error starting order:', error);
+                    alert('Failed to start preparing order');
+                });
+        }
+
+        function markAsReady(orderId) {
+            fetch('/kitchen/orders/' + orderId + '/ready', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Failed to mark order as ready');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error marking order as ready:', error);
+                    alert('Failed to mark order as ready');
+                });
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(function() {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+
+</html>
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-muted-foreground">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs text-muted-foreground italic">Not assigned yet</span>
+                            </div>
+                            <button class="text-xs text-primary hover:underline font-medium">Assign to me</button>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li class="text-sm text-muted-foreground flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+                                    <span>Margherita (M)</span>
+                                </li>
+                                <li class="text-sm text-muted-foreground flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+                                    <span>Quattro Formaggi (L)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                            <p class="text-xs font-semibold text-yellow-800 mb-1">📝 Customer Notes:</p>
+                            <p class="text-sm text-yellow-900">"Extra cheese on Margherita, please. No olives."</p>
+                        </div>
+
+                        <!-- Time Estimate & Progress -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-muted-foreground">Estimated time:</span>
+                                <span class="font-semibold text-foreground">15 mins</span>
+                            </div>
+                            <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
+                                <div class="h-full bg-orange-600 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-orange-600 font-medium">⚠️ Waiting for 18 minutes</p>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button
+                            class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 hero-gradient">
+                            Start Preparing
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ENHANCED ORDER 2 - PREPARING -->
+                <div
+                    class="rounded-xl border-2 border-primary/30 bg-card text-card-foreground shadow-md hover-lift animate-fade-in">
+                    <!-- Card Header -->
+                    <div class="flex flex-col space-y-1.5 p-6 pb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg" title="Dine-in">🏠</span>
+                                <h3 class="font-semibold tracking-tight text-xl">Order #1235</h3>
+                            </div>
+                            <div
+                                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-primary/10 text-primary border-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-4 w-4">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="ml-2 capitalize">preparing</span>
+                            </div>
+                        </div>
+
+                        <!-- Time Info -->
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>Started: 12:56 PM</span>
+                            <span>•</span>
+                            <span class="text-primary font-medium">5 mins ago</span>
+                        </div>
+
+                        <!-- Chef Assignment -->
+                        <div
+                            class="flex items-center justify-between mt-2 p-2 bg-primary/5 rounded-md border border-primary/20">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-primary">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs font-medium text-primary">Chef Marco Rossi</span>
+                            </div>
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li class="text-sm text-muted-foreground flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-primary mr-2"></span>
+                                    <span>Quattro Formaggi (L)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
+                            <p class="text-xs font-semibold text-blue-800 mb-1">📝 Customer Notes:</p>
+                            <p class="text-sm text-blue-900">"Well done crust, please."</p>
+                        </div>
+
+                        <!-- Time Estimate & Progress -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-muted-foreground">Est. completion:</span>
+                                <span class="font-semibold text-foreground">1:08 PM (7 mins left)</span>
+                            </div>
+                            <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
+                                <div class="h-full time-normal rounded-full progress-bar" style="width: 42%"></div>
+                            </div>
+                            <p class="text-xs text-primary font-medium">🔥 Preparing</p>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button
+                            class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-accent text-accent-foreground hover:bg-accent/90 h-10 px-4 py-2">
+                            Mark as Ready
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ENHANCED ORDER 3 - READY -->
+                <div
+                    class="rounded-xl border-2 border-green-500/30 bg-card text-card-foreground shadow-md hover-lift animate-fade-in">
+                    <!-- Card Header -->
+                    <div class="flex flex-col space-y-1.5 p-6 pb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg" title="Delivery">🚗</span>
+                                <h3 class="font-semibold tracking-tight text-xl">Order #1236</h3>
+                            </div>
+                            <div
+                                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-green-500/10 text-green-700 border-green-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-4 w-4">
+                                    <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                                    <path d="m9 11 3 3L22 4"></path>
+                                </svg>
+                                <span class="ml-2 capitalize">ready</span>
+                            </div>
+                        </div>
+
+                        <!-- Time Info -->
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>Ready at: 12:53 PM</span>
+                            <span>•</span>
+                            <span class="text-green-700 font-medium">8 mins ago</span>
+                        </div>
+
+                        <!-- Chef Assignment -->
+                        <div
+                            class="flex items-center justify-between mt-2 p-2 bg-green-500/5 rounded-md border border-green-500/20">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-green-700">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs font-medium text-green-700">Chef Sofia Bianchi</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-green-600">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li class="text-sm text-muted-foreground flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-green-600 mr-2"></span>
+                                    <span>Diavola (M)</span>
+                                </li>
+                                <li class="text-sm text-muted-foreground flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-green-600 mr-2"></span>
+                                    <span>Vegetariana (M)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="p-3 bg-green-50 border-l-4 border-green-400 rounded">
+                            <p class="text-xs font-semibold text-green-800 mb-1">📝 Customer Notes:</p>
+                            <p class="text-sm text-green-900">"Cut into 8 slices."</p>
+                        </div>
+
+                        <!-- Completion Time -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-muted-foreground">Total prep time:</span>
+                                <span class="font-semibold text-green-700">11 minutes</span>
+                            </div>
+                            <div class="w-full bg-muted rounded-full h-2 overflow-hidden">
+                                <div class="h-full bg-green-600 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <p class="text-xs text-green-700 font-medium">✓ Completed on time</p>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button disabled
+                            class="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-green-600 text-white h-10 px-4 py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Ready for Pickup
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Completed Orders Section -->
+        <div class="mb-8">
+            <h2 class="text-xl font-display font-bold mb-4 text-muted-foreground">Completed Orders</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <!-- ENHANCED ORDER 4 - PICKED_UP -->
+                <div class="rounded-xl border bg-card text-card-foreground shadow-md opacity-75 animate-fade-in">
+                    <!-- Card Header -->
+                    <div class="flex flex-col space-y-1.5 p-6 pb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg" title="Delivery">🚗</span>
+                                <h3 class="font-semibold tracking-tight text-xl">Order #1230</h3>
+                            </div>
+                            <div
+                                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-blue-500/10 text-blue-700 border-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-4 w-4">
+                                    <path d="M5 12h14"></path>
+                                    <path d="m12 5 7 7-7 7"></path>
+                                </svg>
+                                <span class="ml-2 capitalize">picked up</span>
+                            </div>
+                        </div>
+
+                        <!-- Time Info -->
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>Picked up: 12:35 PM</span>
+                            <span>•</span>
+                            <span class="text-blue-700 font-medium">26 mins ago</span>
+                        </div>
+
+                        <!-- Chef Assignment -->
+                        <div
+                            class="flex items-center justify-between mt-2 p-2 bg-blue-500/5 rounded-md border border-blue-500/20">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-blue-700">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z">
+                                    </path>
+                                    <path d="M6 17h12"></path>
+                                </svg>
+                                <span class="text-xs font-medium text-blue-700">Chef Marco Rossi</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-blue-600">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li class="text-sm text-muted-foreground flex items-center line-through opacity-60">
+                                    <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
+                                    <span>Marinara (M)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="p-3 bg-gray-50 border-l-4 border-gray-400 rounded opacity-60">
+                            <p class="text-xs font-semibold text-gray-700 mb-1">📝 Customer Notes:</p>
+                            <p class="text-sm text-gray-800 line-through">"Extra basil."</p>
+                        </div>
+
+                        <!-- Delivery Status -->
+                        <div class="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                            <p class="text-xs text-blue-700 font-medium">✓ Out for delivery</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ENHANCED ORDER 5 - CANCELLED -->
+                <div
+                    class="rounded-xl border-2 border-red-500/30 bg-card text-card-foreground shadow-md opacity-60 animate-fade-in">
+                    <!-- Card Header -->
+                    <div class="flex flex-col space-y-1.5 p-6 pb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg opacity-60" title="Dine-in">🏠</span>
+                                <h3 class="font-semibold tracking-tight text-xl line-through">Order #1229</h3>
+                            </div>
+                            <div
+                                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-red-500/10 text-red-700 border-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-4 w-4">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m15 9-6 6"></path>
+                                    <path d="m9 9 6 6"></path>
+                                </svg>
+                                <span class="ml-2 capitalize">cancelled</span>
+                            </div>
+                        </div>
+
+                        <!-- Time Info -->
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>Cancelled: 12:40 PM</span>
+                            <span>•</span>
+                            <span class="text-red-700 font-medium">21 mins ago</span>
+                        </div>
+
+                        <!-- Cancellation Reason -->
+                        <div class="mt-2 p-2 bg-red-500/5 rounded-md border border-red-500/20">
+                            <p class="text-xs text-red-700 font-medium">⚠️ Customer requested cancellation</p>
+                        </div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-6 pb-6 space-y-4">
+                        <!-- Items List -->
+                        <div>
+                            <p class="text-sm font-semibold mb-2">Items:</p>
+                            <ul class="space-y-1">
+                                <li class="text-sm text-muted-foreground flex items-center line-through opacity-60">
+                                    <span class="w-2 h-2 rounded-full bg-red-600 mr-2"></span>
+                                    <span>Capricciosa (L)</span>
+                                </li>
+                                <li class="text-sm text-muted-foreground flex items-center line-through opacity-60">
+                                    <span class="w-2 h-2 rounded-full bg-red-600 mr-2"></span>
+                                    <span>Funghi (M)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="p-3 bg-gray-50 border-l-4 border-gray-400 rounded opacity-60">
+                            <p class="text-xs font-semibold text-gray-700 mb-1">📝 Customer Notes:</p>
+                            <p class="text-sm text-gray-800 line-through">"Deliver to back door."</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History Modal -->
+    <div id="orderLogModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="modal-backdrop fixed inset-0" onclick="closeOrderLog()"></div>
+        <div class="relative z-10 w-full max-w-2xl modal-enter">
+            <div class="rounded-xl border bg-card shadow-lg">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-6 border-b">
+                    <div>
+                        <h2 class="text-2xl font-display font-bold">Order History</h2>
+                        <p class="text-sm text-muted-foreground mt-1">Track all status changes and actions</p>
+                    </div>
+                    <button onclick="closeOrderLog()" class="rounded-md p-2 hover:bg-muted transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6 max-h-96 overflow-y-auto">
+                    <div id="orderLogContent" class="space-y-1">
+                        <!-- Log entries will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex justify-end gap-3 p-6 border-t bg-muted/30">
+                    <button onclick="closeOrderLog()"
+                        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Order Status Updates & Modal -->
+    <script th:inline="javascript">
+        // Mock order logs data
+        const orderLogs = {
+            '1234': [
+                { timestamp: '12:43 PM', status: 'Order received', changedBy: 'System', statusColor: 'text-accent' }
+            ],
+            '1235': [
+                { timestamp: '12:51 PM', status: 'Order received', changedBy: 'System', statusColor: 'text-accent' },
+                { timestamp: '12:56 PM', status: 'Assigned to Chef Marco Rossi', changedBy: 'System', statusColor: 'text-primary' },
+                { timestamp: '12:56 PM', status: 'Started preparing', changedBy: 'Chef Marco Rossi', statusColor: 'text-primary' }
+            ],
+            '1236': [
+                { timestamp: '12:42 PM', status: 'Order received', changedBy: 'System', statusColor: 'text-accent' },
+                { timestamp: '12:45 PM', status: 'Assigned to Chef Sofia Bianchi', changedBy: 'System', statusColor: 'text-primary' },
+                { timestamp: '12:45 PM', status: 'Started preparing', changedBy: 'Chef Sofia Bianchi', statusColor: 'text-primary' },
+                { timestamp: '12:53 PM', status: 'Marked as ready', changedBy: 'Chef Sofia Bianchi', statusColor: 'text-green-700' }
+            ],
+            '1230': [
+                { timestamp: '12:15 PM', status: 'Order received', changedBy: 'System', statusColor: 'text-accent' },
+                { timestamp: '12:18 PM', status: 'Assigned to Chef Marco Rossi', changedBy: 'System', statusColor: 'text-primary' },
+                { timestamp: '12:18 PM', status: 'Started preparing', changedBy: 'Chef Marco Rossi', statusColor: 'text-primary' },
+                { timestamp: '12:28 PM', status: 'Marked as ready', changedBy: 'Chef Marco Rossi', statusColor: 'text-green-700' },
+                { timestamp: '12:35 PM', status: 'Picked up by courier', changedBy: 'Courier Service', statusColor: 'text-blue-700' }
+            ],
+            '1229': [
+                { timestamp: '12:35 PM', status: 'Order received', changedBy: 'System', statusColor: 'text-accent' },
+                { timestamp: '12:40 PM', status: 'Cancelled - Customer request', changedBy: 'Admin', statusColor: 'text-red-700' }
+            ]
+        };
+
+        // Open Order Log Modal
+        function openOrderLog(orderId) {
+            const modal = document.getElementById('orderLogModal');
+            const content = document.getElementById('orderLogContent');
+
+            // Get logs for this order
+            const logs = orderLogs[orderId] || [];
+
+            // Build log entries HTML
+            let logsHTML = `
+                <div class="mb-4">
+                    <h3 class="font-semibold text-lg mb-2">Order #${orderId}</h3>
+                </div>
+                <div class="space-y-3">
+            `;
+
+            logs.forEach((log, index) => {
+                logsHTML += `
+                    <div class="flex items-start gap-4 p-4 rounded-lg bg-muted/30 border">
+                        <div class="flex-shrink-0 w-20 text-xs text-muted-foreground font-medium">
+                            ${log.timestamp}
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold ${log.statusColor}">${log.status}</p>
+                            <p class="text-xs text-muted-foreground mt-1">by ${log.changedBy}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="w-2 h-2 rounded-full ${log.statusColor === 'text-green-700' ? 'bg-green-600' : log.statusColor === 'text-primary' ? 'bg-primary' : 'bg-accent'}"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            logsHTML += '</div>';
+
+            if (logs.length === 0) {
+                logsHTML = `
+                    <div class="text-center py-8 text-muted-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="mx-auto mb-4 opacity-50">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <p>No history available for this order</p>
+                    </div>
+                `;
+            }
+
+            content.innerHTML = logsHTML;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Close Order Log Modal
+        function closeOrderLog() {
+            const modal = document.getElementById('orderLogModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Update Order Status
+        function updateOrderStatus(orderId) {
+            fetch('/api/kitchen/orders/' + orderId + '/update-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error updating order:', error);
+                    alert('Failed to update order status');
+                });
+        }
+
+        // Auto-update progress bars based on time
+        function updateProgressBars() {
+            // This would be connected to real-time data in production
+            console.log('Progress bars updated');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Update progress every 30 seconds
+            setInterval(updateProgressBars, 30000);
+        });
+    </script>
+</body>
+
+</html>
