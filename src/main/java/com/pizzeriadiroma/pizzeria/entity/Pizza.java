@@ -2,6 +2,7 @@ package com.pizzeriadiroma.pizzeria.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +29,12 @@ public class Pizza {
     @NotBlank(message = "{validation.description.required}")
     @Size(max = 2000, message = "{validation.description.size.max}")
     @Column(nullable = false)
-    private String description;
+    private String description_en;
+
+    @NotBlank(message = "{validation.description.required}")
+    @Size(max = 2000, message = "{validation.description.size.max}")
+    @Column(nullable = false)
+    private String description_sk;
 
     @Size(max = 500, message = "{validation.imageUrl.size}")
     @Column(name = "image_url")
@@ -114,11 +120,23 @@ public class Pizza {
     }
 
     public String getDescription() {
-        return description;
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if ("sk".equals(locale.getLanguage())) {
+            return description_sk;
+        }
+
+        return description_en;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if ("sk".equals(locale.getLanguage())) {
+            this.description_sk = description;
+        } else {
+            this.description_en = description;
+        }
     }
 
     public String getImageUrl() {
