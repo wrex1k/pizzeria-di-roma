@@ -14,57 +14,57 @@ public class CompanyInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Company name must not be blank.")
-    @Size(min = 2, max = 100, message = "Company name must be between 2 and 100 characters.")
+    @NotBlank(message = "{validation.companyName.required}")
+    @Size(min = 2, max = 100, message = "{validation.companyName.size}")
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @NotBlank(message = "Description must not be blank.")
-    @Size(max = 2000, message = "Description must be max 2000 characters.")
+    @NotBlank(message = "{validation.description.required}")
+    @Size(max = 2000, message = "{validation.description.size.max}")
     @Column(name = "description", nullable = false, length = 2000)
     private String description;
 
     @Pattern(
             regexp = "^\\+\\d{1,3}(\\s?\\d{3}){3}$",
-            message = "Invalid phone number format. Expected format: +421 905 123 456"
+            message = "{validation.companyPhone.invalid}"
     )
-    @Size(max = 30, message = "Phone number must not exceed 30 characters.")
+    @Size(max = 30, message = "{validation.companyPhone.size}")
     @Column(name = "phone", length = 30)
     private String phone;
 
     @Pattern(
             regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
-            message = "Invalid email format. Example: info@pizzeriadiroma.it"
+            message = "{validation.companyEmail.invalid}"
     )
-    @Size(max = 100, message = "Email must not exceed 100 characters.")
+    @Size(max = 100, message = "{validation.companyEmail.size}")
     @Column(name = "email", length = 100)
     private String email;
 
-    @Size(max = 100, message = "Address must not exceed 100 characters.")
+    @Size(max = 100, message = "{validation.address.size}")
     @Column(name = "address", length = 100)
     private String address;
 
     @Pattern(
             regexp = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",
-            message = "Invalid URL format."
+            message = "{validation.url.invalid}"
     )
-    @Size(max = 200, message = "Facebook URL must not exceed 200 characters.")
+    @Size(max = 200, message = "{validation.facebookUrl.size}")
     @Column(name = "facebook_url", length = 200)
     private String facebookUrl;
 
     @Pattern(
             regexp = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",
-            message = "Invalid URL format."
+            message = "{validation.url.invalid}"
     )
-    @Size(max = 200, message = "Instagram URL must not exceed 200 characters.")
+    @Size(max = 200, message = "{validation.instagramUrl.size}")
     @Column(name = "instagram_url", length = 200)
     private String instagramUrl;
 
     @Pattern(
             regexp = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",
-            message = "Invalid URL format."
+            message = "{validation.url.invalid}"
     )
-    @Size(max = 200, message = "Twitter URL must not exceed 200 characters.")
+    @Size(max = 200, message = "{validation.twitterUrl.size}")
     @Column(name = "twitter_url", length = 200)
     private String twitterUrl;
 

@@ -6,38 +6,38 @@ import java.util.List;
 
 public class AddPizzaRequest {
 
-    @NotBlank(message = "Pizza name is required.")
-    @Size(min = 2, max = 50, message = "Pizza name must be between 2 and 50 characters.")
+    @NotBlank(message = "{validation.pizzaName.required}")
+    @Size(min = 2, max = 50, message = "{validation.pizzaName.size}")
     @Pattern(
             regexp = "^[\\p{L}0-9][\\p{L}0-9 '\\-&,\\.]*$",
-            message = "Pizza name contains invalid characters."
+            message = "{validation.pizzaName.pattern}"
     )
     private String name;
 
-    @NotBlank(message = "Description is required.")
-    @Size(min = 10, max = 2000, message = "Description must be between 10 and 2000 characters.")
+    @NotBlank(message = "{validation.description.required}")
+    @Size(min = 10, max = 2000, message = "{validation.description.size.min}")
     private String description;
 
-    @NotNull(message = "Base price is required.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "Base price must be 0.00 or more.")
-    @DecimalMax(value = "9999.99", inclusive = true, message = "Base price must not exceed 9999.99.")
-    @Digits(integer = 4, fraction = 2, message = "Base price must have up to 4 digits and 2 decimal places (e.g., 9.99).")
+    @NotNull(message = "{validation.basePrice.required}")
+    @DecimalMin(value = "0.00", inclusive = true, message = "{validation.basePrice.decimalMin}")
+    @DecimalMax(value = "9999.99", inclusive = true, message = "{validation.basePrice.decimalMax}")
+    @Digits(integer = 4, fraction = 2, message = "{validation.basePrice.digits}")
     private BigDecimal basePrice;
 
-    @NotNull(message = "Image URL is required.")
-    @Size(max = 100, message = "Image URL must not exceed 500 characters.")
+    @NotNull(message = "{validation.imageUrl.required}")
+    @Size(max = 100, message = "{validation.imageUrl.size}")
     private String imageUrl;
 
     private Boolean available;
     private Boolean featured;
 
-    @Size(max = 20, message = "You can select up to 20 tags.")
-    private List<@NotNull(message = "Tag ID cannot be null.")
-    @Positive(message = "Tag ID must be a positive number.") Integer> tagIds;
+    @Size(max = 20, message = "{validation.tagIds.size}")
+    private List<@NotNull(message = "{validation.tagId.notNull}")
+    @Positive(message = "{validation.tagId.positive}") Integer> tagIds;
 
-    @Size(max = 50, message = "You can select up to 50 ingredients.")
-    private List<@NotNull(message = "Ingredient ID cannot be null.")
-    @Positive(message = "Ingredient ID must be a positive number.") Integer> ingredientIds;
+    @Size(max = 50, message = "{validation.ingredientIds.size}")
+    private List<@NotNull(message = "{validation.ingredientId.notNull}")
+    @Positive(message = "{validation.ingredientId.positive}") Integer> ingredientIds;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

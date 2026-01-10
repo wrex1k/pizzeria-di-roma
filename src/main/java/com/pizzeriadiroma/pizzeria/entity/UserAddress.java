@@ -21,33 +21,33 @@ public class UserAddress {
     @Column(name = "label", length = 80)
     private String label;
 
-    @NotBlank(message = "Street is required")
-    @Size(min = 3, max = 160, message = "Street must be between 3 and 160 characters")
-    @Pattern(regexp = "^[^\\d]+$", message = "Street cannot contain numbers")
+    @NotBlank(message = "{validation.street.required}")
+    @Size(min = 3, max = 160, message = "{validation.street.size}")
+    @Pattern(regexp = "^[^\\d]+$", message = "{validation.street.pattern}")
     @Column(name = "street", nullable = false, length = 160)
     private String street;
 
-    @NotBlank(message = "House number is required")
-    @Pattern(regexp = "\\d+", message = "House number must contain only digits")
-    @Size(min = 1, max = 40, message = "House number must be between 1 and 40 characters")
+    @NotBlank(message = "{validation.houseNumber.required}")
+    @Pattern(regexp = "\\d+", message = "{validation.houseNumber.pattern}")
+    @Size(min = 1, max = 40, message = "{validation.houseNumber.size}")
     @Column(name = "house_number", nullable = false, length = 40)
     private String houseNumber;
 
-    @NotBlank(message = "City is required")
-    @Size(min = 2, max = 120, message = "City must be between 2 and 120 characters")
-    @Pattern(regexp = "^[^\\d]+$", message = "City cannot contain numbers")
+    @NotBlank(message = "{validation.city.required}")
+    @Size(min = 2, max = 120, message = "{validation.city.size}")
+    @Pattern(regexp = "^[^\\d]+$", message = "{validation.city.pattern}")
     @Column(name = "city", nullable = false, length = 120)
     private String city;
 
-    @NotBlank(message = "Postal code is required")
-    @Pattern(regexp = "\\d+", message = "Postal code must contain only digits")
-    @Size(min = 3, max = 10, message = "Postal code must be between 3 and 10 characters")
+    @NotBlank(message = "{validation.postalCode.required}")
+    @Pattern(regexp = "\\d+", message = "{validation.postalCode.pattern}")
+    @Size(min = 3, max = 10, message = "{validation.postalCode.size}")
     @Column(name = "postal_code", nullable = false, length = 10)
     private String postalCode;
 
-    @NotBlank(message = "Country is required")
-    @Size(min = 2, max = 80, message = "Country must be between 2 and 80 characters")
-    @Pattern(regexp = "^[^\\d]+$", message = "Country cannot contain numbers")
+    @NotBlank(message = "{validation.country.required}")
+    @Size(min = 2, max = 80, message = "{validation.country.size}")
+    @Pattern(regexp = "^[^\\d]+$", message = "{validation.country.pattern}")
     @Column(name = "country", nullable = false, length = 80)
     private String country;
 

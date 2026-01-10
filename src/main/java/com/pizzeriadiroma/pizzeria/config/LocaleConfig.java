@@ -1,7 +1,12 @@
 package com.pizzeriadiroma.pizzeria.config;
 
+import jakarta.validation.MessageInterpolator;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,5 +35,12 @@ public class LocaleConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+    }
+
+    @Bean
+    public LocalValidatorFactoryBean validator(MessageSource messageSource) {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(messageSource);
+        return validator;
     }
 }

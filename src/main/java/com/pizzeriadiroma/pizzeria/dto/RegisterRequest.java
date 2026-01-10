@@ -4,36 +4,36 @@ import jakarta.validation.constraints.*;
 
 public class RegisterRequest {
 
-    @NotBlank(message = "First name is required.")
-    @Size(min = 2, max = 20, message = "First name must be between 2 and 20 characters.")
+    @NotBlank(message = "{validation.firstName.required}")
+    @Size(min = 2, max = 20, message = "{validation.firstName.size}")
     private String firstName;
 
-    @NotBlank(message = "Last name is required.")
-    @Size(min = 2, max = 40, message = "Last name must be between 2 and 40 characters.")
+    @NotBlank(message = "{validation.lastName.required}")
+    @Size(min = 2, max = 40, message = "{validation.lastName.size}")
     private String lastName;
 
-    @NotBlank(message = "Email is required.")
-    @Email(message = "Email should be valid.")
-    @Size(max = 255, message = "Email must not exceed 255 characters.")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.invalid}")
+    @Size(max = 255, message = "{validation.email.size}")
     private String email;
 
-    @NotBlank(message = "Phone number is required.")
-    @Pattern(regexp = "^\\+[0-9]{1,3}[\\s0-9]{7,15}$", message = "Enter a valid phone number (e.g., +421944025567 or +421 944 025 567)")
-    @Size(min = 9, max = 20, message = "Phone number must be 9-20 characters")
+    @NotBlank(message = "{validation.phone.required}")
+    @Pattern(regexp = "^\\+[0-9]{1,3}[\\s0-9]{7,15}$", message = "{validation.phone.invalid}")
+    @Size(min = 9, max = 20, message = "{validation.phone.size}")
     private String phone;
 
-    @NotBlank(message = "Password is required.")
-    @Size(min = 8, message = "Password must be at least 8 characters long.")
+    @NotBlank(message = "{validation.password.required}")
+    @Size(min = 8, message = "{validation.password.size}")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).+$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+            message = "{validation.password.pattern}"
     )
     private String password;
 
-    @NotBlank(message = "Please confirm your password.")
+    @NotBlank(message = "{validation.confirmPassword.required}")
     private String confirmPassword;
 
-    @AssertTrue(message = "You must agree to the Terms & Conditions.")
+    @AssertTrue(message = "{validation.termsAccepted.required}")
     private Boolean termsAccepted;
 
     public String getFirstName() {

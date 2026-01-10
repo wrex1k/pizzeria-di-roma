@@ -6,61 +6,61 @@ import java.math.BigDecimal;
 
 public class CompanyInfoRequest {
 
-    @NotBlank(message = "Company name must not be blank.")
-    @Size(min = 2, max = 100, message = "Company name must be between 2 and 100 characters.")
+    @NotBlank(message = "{validation.companyName.required}")
+    @Size(min = 2, max = 100, message = "{validation.companyName.size}")
     private String name;
 
-    @NotBlank(message = "Description must not be blank.")
-    @Size(max = 2000, message = "Description must be max 2000 characters.")
+    @NotBlank(message = "{validation.description.required}")
+    @Size(max = 2000, message = "{validation.description.size.max}")
     private String description;
 
     @Pattern(
             regexp = "^\\+\\d{1,3}(\\s?\\d{3}){3}$",
-            message = "Invalid phone number format. Expected format: +421 905 123 456"
+            message = "{validation.companyPhone.invalid}"
     )
-    @Size(max = 30, message = "Phone number must not exceed 30 characters.")
+    @Size(max = 30, message = "{validation.companyPhone.size}")
     private String phone;
 
     @Pattern(
             regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
-            message = "Invalid email format. Example: info@pizzeriadiroma.it"
+            message = "{validation.companyEmail.invalid}"
     )
-    @Size(max = 100, message = "Email must not exceed 100 characters.")
+    @Size(max = 100, message = "{validation.companyEmail.size}")
     private String email;
 
-    @Size(max = 100, message = "Address must not exceed 100 characters.")
+    @Size(max = 100, message = "{validation.address.size}")
     private String address;
 
     @Pattern(regexp = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",
-            message = "Invalid URL format.")
-    @Size(max = 200, message = "Facebook URL must not exceed 100 characters.")
+            message = "{validation.url.invalid}")
+    @Size(max = 200, message = "{validation.facebookUrl.size}")
     private String facebookUrl;
 
     @Pattern(regexp = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",
-            message = "Invalid URL format.")
-    @Size(max = 200, message = "Instagram URL must not exceed 100 characters.")
+            message = "{validation.url.invalid}")
+    @Size(max = 200, message = "{validation.instagramUrl.size}")
     private String instagramUrl;
 
     @Pattern(regexp = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",
-            message = "Invalid URL format.")
-    @Size(max = 200, message = "Twitter URL must not exceed 100 characters.")
+            message = "{validation.url.invalid}")
+    @Size(max = 200, message = "{validation.twitterUrl.size}")
     private String twitterUrl;
 
-    @NotNull(message = "DPH rate is required.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "DPH must be >= 0.")
-    @DecimalMax(value = "100.00", inclusive = true, message = "DPH must be <= 100.")
+    @NotNull(message = "{validation.dphRate.required}")
+    @DecimalMin(value = "0.00", inclusive = true, message = "{validation.dphRate.decimalMin}")
+    @DecimalMax(value = "100.00", inclusive = true, message = "{validation.dphRate.decimalMax}")
     private BigDecimal dphRate;
 
-    @NotNull(message = "Free delivery from is required.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "Free delivery from must be >= 0.")
+    @NotNull(message = "{validation.freeDeliveryFrom.required}")
+    @DecimalMin(value = "0.00", inclusive = true, message = "{validation.freeDeliveryFrom.decimalMin}")
     private BigDecimal freeDeliveryFrom;
 
-    @NotNull(message = "Delivery price is required.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "Delivery price must be >= 0.")
+    @NotNull(message = "{validation.deliveryPrice.required}")
+    @DecimalMin(value = "0.00", inclusive = true, message = "{validation.deliveryPrice.decimalMin}")
     private BigDecimal deliveryPrice;
 
-    @NotNull(message = "Extra ingredient price is required.")
-    @DecimalMin(value = "0.00", inclusive = true, message = "Extra ingredient price must be >= 0.")
+    @NotNull(message = "{validation.extraIngredientPrice.required}")
+    @DecimalMin(value = "0.00", inclusive = true, message = "{validation.extraIngredientPrice.decimalMin}")
     private BigDecimal extraIngredientPrice;
 
     public String getName() {
