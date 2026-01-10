@@ -90,7 +90,8 @@ CREATE TABLE user_addresses (
 CREATE TABLE company_info (
                               id INT NOT NULL AUTO_INCREMENT,
                               name VARCHAR(100) NOT NULL,
-                              description VARCHAR(2000) NOT NULL,
+                              description_en VARCHAR(2000) NOT NULL,
+                              description_sk VARCHAR(2000) NOT NULL,
 
                               phone VARCHAR(30) NULL,
                               email VARCHAR(100) NULL,

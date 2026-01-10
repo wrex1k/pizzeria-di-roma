@@ -390,8 +390,7 @@
                                               th:text="#{checkout.delivery.noFee}">No fee</span>
                                     </div>
                                     <p class="text-sm text-muted-foreground"
-                                       th:text="#{checkout.delivery.pickupAddress}">
-                                        Via Roma 123, Bratislava
+                                       th:text="${companyInfo.address}">
                                     </p>
                                     <p class="text-xs text-muted-foreground mt-1"
                                        th:text="#{checkout.delivery.pickupReady}">

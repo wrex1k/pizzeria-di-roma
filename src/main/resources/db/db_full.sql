@@ -284,7 +284,8 @@ INSERT INTO `cart_items` (`id`, `cart_id`, `pizza_id`, `drink_id`, `size_id`, `i
 CREATE TABLE `company_info` (
                                 `id` int(11) NOT NULL,
                                 `name` varchar(100) NOT NULL,
-                                `description` varchar(2000) NOT NULL,
+                                `description_en` varchar(2000) NOT NULL,
+                                `description_sk` varchar(2000) NOT NULL,
                                 `phone` varchar(30) DEFAULT NULL,
                                 `email` varchar(100) DEFAULT NULL,
                                 `address` varchar(100) DEFAULT NULL,
@@ -299,8 +300,8 @@ CREATE TABLE `company_info` (
                                 `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `company_info` (`id`, `name`, `description`, `phone`, `email`, `address`, `facebook_url`, `instagram_url`, `twitter_url`, `dph_rate`, `free_delivery_from`, `delivery_price`, `extra_ingredient_price`, `created_at`, `updated_at`) VALUES
-    (1, 'Pizzeria Di Roma', 'Authentic Italian pizza made with passion, delivered with love.', '+421 944 205 514', 'info@pizzeriadroma.com', 'Michalska 15, Bratislava, Slovakia', 'https://www.facebook.com/pizzeriadroma', 'https://www.instagram.com/pizzeriadroma', 'https://www.twitter.com/pizzeriadroma', 20.00, 50.00, 4.90, 3.00, '2025-11-06 14:30:00', '2025-11-06 14:30:00');
+INSERT INTO `company_info` (`id`, `name`, `description_en`, `description_sk`, `phone`, `email`, `address`, `facebook_url`, `instagram_url`, `twitter_url`, `dph_rate`, `free_delivery_from`, `delivery_price`, `extra_ingredient_price`, `created_at`, `updated_at`) VALUES
+    (1, 'Pizzeria Di Roma', 'Authentic Italian pizza made with passion, delivered with love.', 'Autentická talianska pizza pripravená s vášňou, doručená s láskou. <3', '+421 944 205 514', 'info@pizzeriadroma.com', 'Michalská 15, Bratislava, Slovakia', 'https://www.facebook.com/pizzeriadroma', 'https://www.instagram.com/pizzeriadroma', 'https://www.twitter.com/pizzeriadroma', 23.00, 50.00, 3, 1.50,'2025-11-06 14:30:00', '2025-11-06 14:30:00');
 
 CREATE TABLE `drinks` (
                           `id` bigint(20) NOT NULL,

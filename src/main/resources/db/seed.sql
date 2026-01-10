@@ -153,24 +153,25 @@ INSERT INTO pizza_available_sizes (pizza_id, size_id) VALUES
 -- =====================================================================
 
 INSERT INTO company_info (
-    id, name, description, phone, email, address,
+    id, name, description_en, description_sk, phone, email, address,
     facebook_url, instagram_url, twitter_url,
     dph_rate, free_delivery_from, delivery_price, extra_ingredient_price,
     created_at, updated_at
 ) VALUES (
              1,
              'Pizzeria Di Roma',
-             'Authentic Italian pizza made with passion, delivered with love.',
+             'Authentic Italian pizza made with passion, delivered with love. <3',
+             'Autentická talianska pizza pripravená s vášňou, doručená s láskou. <3',
              '+421 944 205 514',
              'info@pizzeriadroma.com',
-             'Michalska 15, Bratislava, Slovakia',
+             'Michalská 15, Bratislava, Slovakia',
              'https://www.facebook.com/pizzeriadroma',
              'https://www.instagram.com/pizzeriadroma',
              'https://www.twitter.com/pizzeriadroma',
-             20.00,
+             23.00,
              50.00,
-             4.90,
-             3.00,
+             3,
+             1.50,
              '2025-11-06 14:30:00',
              '2025-11-06 14:30:00'
          );

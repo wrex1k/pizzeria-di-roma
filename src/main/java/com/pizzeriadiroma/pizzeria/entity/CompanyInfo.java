@@ -2,9 +2,11 @@ package com.pizzeriadiroma.pizzeria.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Entity
 @Table(name = "company_info")
@@ -21,8 +23,13 @@ public class CompanyInfo {
 
     @NotBlank(message = "{validation.description.required}")
     @Size(max = 2000, message = "{validation.description.size.max}")
-    @Column(name = "description", nullable = false, length = 2000)
-    private String description;
+    @Column(name = "description_en", nullable = false, length = 2000)
+    private String description_en;
+
+    @NotBlank(message = "{validation.description.required}")
+    @Size(max = 2000, message = "{validation.description.size.max}")
+    @Column(name = "description_sk", nullable = false, length = 2000)
+    private String description_sk;
 
     @Pattern(
             regexp = "^\\+\\d{1,3}(\\s?\\d{3}){3}$",
@@ -113,8 +120,25 @@ public class CompanyInfo {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getDescription() {
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if ("sk".equals(locale.getLanguage())) {
+            return description_sk;
+        }
+
+        return description_en;
+    }
+
+    public void setDescription(String description) {
+        Locale locale = LocaleContextHolder.getLocale();
+
+        if ("sk".equals(locale.getLanguage())) {
+            this.description_sk = description;
+        } else {
+            this.description_en = description;
+        }
+    }
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
